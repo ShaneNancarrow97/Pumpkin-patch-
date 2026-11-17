@@ -1,0 +1,101 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Hollow-Hayride.html",
+  "sha256": "724c935ee6e95970d52e16ca6c56293113ab1b0b94637a36df2d1732c8d2598b",
+  "passed": false,
+  "checks": [
+    {
+      "ok": true,
+      "label": "final phone: scrollable management fits with 44px targets",
+      "data": {
+        "width": 390,
+        "height": 844,
+        "horizontalOverflow": false,
+        "clipped": [],
+        "small": [],
+        "scrollable": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "final phone-landscape: scrollable management fits with 44px targets",
+      "data": {
+        "width": 844,
+        "height": 390,
+        "horizontalOverflow": false,
+        "clipped": [],
+        "small": [],
+        "scrollable": true
+      }
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "samples": [
+    {
+      "name": "phone-management",
+      "state": {
+        "time": 0,
+        "coins": 72000,
+        "earned": 200000,
+        "sold": 0,
+        "tips": {
+          "stall": 0,
+          "shop": 0
+        },
+        "version": 11,
+        "h": {
+          "purchased": true,
+          "tier": 3,
+          "open": false,
+          "ticketPrice": 8,
+          "invested": 28000,
+          "ticketsSold": 0,
+          "income": 0,
+          "completed": 0,
+          "missed": 0,
+          "runHome": 0,
+          "departures": 0,
+          "partyAt": null,
+          "nextVisit": 0,
+          "nextRun": 1,
+          "receipts": [],
+          "haunts": {
+            "owned": [],
+            "active": []
+          },
+          "convoy": {
+            "phase": "loading",
+            "elapsed": 0,
+            "progress": 0,
+            "loadWait": 0,
+            "runId": "hayride-run-0",
+            "manifest": []
+          },
+          "lastEvent": null
+        },
+        "visitors": []
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 390,
+        "bufferHeight": 844,
+        "postprocessWidth": 390,
+        "postprocessHeight": 844,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.002564102564102564,
+          0.001184834123222749
+        ],
+        "touchDevice": true,
+        "calls": 62,
+        "triangles": 792954,
+        "geometries": 50,
+        "textures": 12
+      }
+    }
+  ],
+  "limitations": [],
+  "rendering": "Chromium SwiftShader, performance profile, bloom/shadows/mist/lake lights off; desktop and phone/Fold layouts; real UI clicks with stability polling bypassed; game-time advancement uses ordinary rules"
+}

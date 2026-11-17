@@ -1,0 +1,21 @@
+{
+  "ids": [
+    "ghost",
+    "witch",
+    "vampire",
+    "skeleton",
+    "scarecrow",
+    "mummy",
+    "zombie",
+    "werewolf",
+    "dead-pirate",
+    "clown",
+    "baron"
+  ],
+  "grid": [
+    3,
+    4
+  ],
+  "cell": 512,
+  "source": "Unmodified first shipped frames; reference only"
+}

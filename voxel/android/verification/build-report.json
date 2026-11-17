@@ -1,0 +1,53 @@
+{
+  "applicationId": "com.shanenatalie.pumpkinpatch.voxel",
+  "versionCode": 26110801,
+  "minSdk": 26,
+  "targetSdk": 35,
+  "sourceHtml": {
+    "filename": "Pumpkin-Patch-Village-Play-Polish.html",
+    "bytes": 58259782,
+    "sha256": "9314af490ecceb32d030b6ac57772927a15013790f910146ff27ccaf0d54ce17"
+  },
+  "extractedHtml": {
+    "path": "index.html",
+    "bytes": 4174189,
+    "sha256": "631931d433a6fde8ede6ace66b26a29e02213a48906c1b555bd644beec84f06e"
+  },
+  "packagedHtml": {
+    "bytes": 4174274,
+    "sha256": "321e95387a72122932cb3c5764e790614f0f7e7600f8a1a830cfddac6cf978aa"
+  },
+  "shell": {
+    "bytes": 12351,
+    "sha256": "a54e6c8a07be244da9475f558927a066a059c935f180faa33545550ee382dc46"
+  },
+  "assetStatistics": {
+    "dataUriReferences": 274,
+    "uniqueMediaAssets": 273,
+    "mimeReferenceCounts": {
+      "audio/mpeg": 164,
+      "font/woff": 1,
+      "font/woff2": 2,
+      "image/png": 22,
+      "image/webp": 85
+    },
+    "uniqueDecodedMediaBytes": 40531747,
+    "parseByteReduction": 54085593,
+    "parseByteReductionPercent": 92.8352,
+    "remainingTargetBase64Uris": 0
+  },
+  "apk": {
+    "file": "Pumpkin-Patch-Village-Play-Polish.apk",
+    "bytes": 42068590,
+    "sha256": "bd2876295b40747880a287ff13db558154c06a80c999827372297b237b1c323c"
+  },
+  "checks": {
+    "signature": true,
+    "zipalign": true,
+    "zipCrc": true,
+    "mediaHashes": true,
+    "mediaStoredWithoutRecompression": true
+  },
+  "signing": "Persistent local test signing key and random password are outside source; retain them for in-place app updates.",
+  "runtime": "Android System WebView/WebGL2, not a native3D rewrite; real hardware/performance verification is separate."
+}

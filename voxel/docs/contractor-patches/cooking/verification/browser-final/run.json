@@ -1,0 +1,10 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Cooking.html",
+  "sha256": "4f4c95522325f9dc699388508d184cd7376098f81345ada1503bac28d9ad4f57",
+  "started": "2026-10-26T01:34:49.230Z",
+  "fixture": "QA-only funds and level gates; game rules, UI handlers and HTML are unmodified",
+  "checks": [],
+  "errors": [],
+  "externalRequests": [],
+  "samples": []
+}

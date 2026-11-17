@@ -1,0 +1,13 @@
+ok all thirty generated icons load from the bundled atlas
+ok all five navigation shortcuts use the generated artwork and retain labels
+ok More destinations use one consistent icon family
+ok Build opens a clearly titled management menu
+ok mummy, zombie, werewolf, undead pirate and clown each render four walking frames
+ok walking changes the sprite frame for all five new visitors
+ok phone: navigation fits and retains touch targets
+ok phone: generated menu icons cause no horizontal overflow
+ok fold: navigation fits and retains touch targets
+ok fold: generated menu icons cause no horizontal overflow
+ok landscape: navigation fits and retains touch targets
+ok landscape: generated menu icons cause no horizontal overflow
+ok no page or console errors

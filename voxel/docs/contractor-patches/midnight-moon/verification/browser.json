@@ -1,0 +1,30 @@
+{
+  "sha256": "9c8da2415dad4141114479233ea32f6b4c201c715c3195bc3fd9721757d1c4c5",
+  "checks": [
+    {
+      "ok": true,
+      "label": "seed menu exposes fifth tier"
+    },
+    {
+      "ok": true,
+      "label": "actual purchase charges 7800 for one plot"
+    },
+    {
+      "ok": true,
+      "label": "reload preserves fifth crop and five stock bins"
+    },
+    {
+      "ok": true,
+      "label": "unfolded Fold layout exposes Midnight Moon selection"
+    },
+    {
+      "ok": true,
+      "label": "no horizontal page overflow on unfolded Fold"
+    },
+    {
+      "ok": true,
+      "label": "no browser runtime errors"
+    }
+  ],
+  "errors": []
+}

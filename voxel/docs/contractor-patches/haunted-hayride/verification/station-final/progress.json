@@ -1,0 +1,79 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Hollow-Hayride.html",
+  "sha256": "00452771188d0a6cdaf1a020f34c5ed21e610520f4f15ea09f82b757e8d1aa8d",
+  "checks": [
+    {
+      "ok": true,
+      "label": "final visual build renders the upgraded physical station"
+    },
+    {
+      "ok": true,
+      "label": "the compact farm station and full woodland use separate scenes",
+      "data": {
+        "separate": true,
+        "farm": {
+          "x0": -23.5,
+          "x1": -8,
+          "z0": 11,
+          "z1": 44
+        },
+        "ride": {
+          "x0": -51,
+          "x1": -8,
+          "z0": 1,
+          "z1": 40
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "farm convoy hides beyond the portals and returns visibly to the platform",
+      "data": {
+        "outsideReturn": false,
+        "insideReturn": true,
+        "departed": false,
+        "platform": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "station-only Fold management: scrollable management fits with 44px targets",
+      "data": {
+        "width": 874,
+        "height": 787,
+        "horizontalOverflow": false,
+        "clipped": [],
+        "small": [],
+        "scrollable": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "fullscreen control remains available for the unfolded game"
+    },
+    {
+      "ok": true,
+      "label": "managed fullscreen policy leaves the returned farm usable"
+    },
+    {
+      "ok": true,
+      "label": "the expansion retains one main WebGL canvas"
+    },
+    {
+      "ok": true,
+      "label": "the single-file HTML needs no external runtime asset requests",
+      "data": []
+    },
+    {
+      "ok": true,
+      "label": "the integrated expansion reports no page or console errors",
+      "data": []
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "limitations": [
+    "Station-only verification covers the final tile geometry refinement, Fold management, one canvas and runtime errors/dependencies. It supplements the preceding full core/POV report; those flows are not replayed here.",
+    "Managed Chromium disables fullscreen (FullscreenAllowed: false). Successful native OS fullscreen is unverified; the game button remains available."
+  ]
+}

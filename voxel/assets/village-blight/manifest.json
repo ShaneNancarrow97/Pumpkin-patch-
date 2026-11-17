@@ -1,0 +1,31 @@
+{
+  "id": "cursed-spores",
+  "generator": "image_gen",
+  "original": "/workspace/generated_images/exec-74056ab2-2300-45e2-9fa5-19d68163c560.png",
+  "source": {
+    "path": "source.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "sha256": "e2b6eed52ebb32fb14d644edf5eadbe9aa569a2d2f16ab91acb7f255cd7bd28b"
+  },
+  "runtime": {
+    "path": "cursed-spores.webp",
+    "size": [
+      128,
+      128
+    ],
+    "inset": 6,
+    "bytes": 24722,
+    "sha256": "ee0a844aeaaafccbce4447ba6a44fe4b4747565efd159d6b12c89bed0c4981a6"
+  },
+  "sourceCrop": [
+    65,
+    95,
+    1167,
+    1185
+  ],
+  "processing": "Alpha-bound crop, proportional Lanczos fit and transparent padding only.",
+  "prompt": "PROMPT.md"
+}

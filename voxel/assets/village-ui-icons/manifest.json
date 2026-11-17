@@ -1,0 +1,269 @@
+{
+  "generatedBy": "voxel/tools/bake-village-ui-icons.py",
+  "source": "assets/village-ui-concepts/source.png",
+  "sourceSha256": "ae7c0208658877ed9441b01dc69d78fce4ffc4fd5f5ce6d3363619c31fd56009",
+  "sourceSize": [
+    1448,
+    1086
+  ],
+  "grid": {
+    "columns": 4,
+    "rows": 3,
+    "cell": 128,
+    "inset": 10
+  },
+  "items": [
+    {
+      "id": "map",
+      "column": 0,
+      "row": 0,
+      "sourceBounds": [
+        0,
+        0,
+        362,
+        362
+      ],
+      "alphaBounds": [
+        33,
+        73,
+        340,
+        322
+      ],
+      "renderSize": [
+        108,
+        88
+      ]
+    },
+    {
+      "id": "people",
+      "column": 1,
+      "row": 0,
+      "sourceBounds": [
+        362,
+        0,
+        724,
+        362
+      ],
+      "alphaBounds": [
+        20,
+        78,
+        346,
+        318
+      ],
+      "renderSize": [
+        108,
+        80
+      ]
+    },
+    {
+      "id": "quests",
+      "column": 2,
+      "row": 0,
+      "sourceBounds": [
+        724,
+        0,
+        1086,
+        362
+      ],
+      "alphaBounds": [
+        43,
+        44,
+        327,
+        341
+      ],
+      "renderSize": [
+        103,
+        108
+      ]
+    },
+    {
+      "id": "satchel",
+      "column": 3,
+      "row": 0,
+      "sourceBounds": [
+        1086,
+        0,
+        1448,
+        362
+      ],
+      "alphaBounds": [
+        31,
+        57,
+        324,
+        312
+      ],
+      "renderSize": [
+        108,
+        94
+      ]
+    },
+    {
+      "id": "workshop",
+      "column": 0,
+      "row": 1,
+      "sourceBounds": [
+        0,
+        362,
+        362,
+        724
+      ],
+      "alphaBounds": [
+        35,
+        38,
+        343,
+        338
+      ],
+      "renderSize": [
+        108,
+        105
+      ]
+    },
+    {
+      "id": "build",
+      "column": 1,
+      "row": 1,
+      "sourceBounds": [
+        362,
+        362,
+        724,
+        724
+      ],
+      "alphaBounds": [
+        26,
+        44,
+        337,
+        327
+      ],
+      "renderSize": [
+        108,
+        98
+      ]
+    },
+    {
+      "id": "farm",
+      "column": 2,
+      "row": 1,
+      "sourceBounds": [
+        724,
+        362,
+        1086,
+        724
+      ],
+      "alphaBounds": [
+        15,
+        47,
+        342,
+        319
+      ],
+      "renderSize": [
+        108,
+        90
+      ]
+    },
+    {
+      "id": "home",
+      "column": 3,
+      "row": 1,
+      "sourceBounds": [
+        1086,
+        362,
+        1448,
+        724
+      ],
+      "alphaBounds": [
+        26,
+        11,
+        333,
+        336
+      ],
+      "renderSize": [
+        102,
+        108
+      ]
+    },
+    {
+      "id": "tree",
+      "column": 0,
+      "row": 2,
+      "sourceBounds": [
+        0,
+        724,
+        362,
+        1086
+      ],
+      "alphaBounds": [
+        22,
+        11,
+        348,
+        331
+      ],
+      "renderSize": [
+        108,
+        106
+      ]
+    },
+    {
+      "id": "lock",
+      "column": 1,
+      "row": 2,
+      "sourceBounds": [
+        362,
+        724,
+        724,
+        1086
+      ],
+      "alphaBounds": [
+        49,
+        24,
+        290,
+        328
+      ],
+      "renderSize": [
+        86,
+        108
+      ]
+    },
+    {
+      "id": "axe",
+      "column": 2,
+      "row": 2,
+      "sourceBounds": [
+        724,
+        724,
+        1086,
+        1086
+      ],
+      "alphaBounds": [
+        24,
+        18,
+        319,
+        326
+      ],
+      "renderSize": [
+        103,
+        108
+      ]
+    },
+    {
+      "id": "pickaxe",
+      "column": 3,
+      "row": 2,
+      "sourceBounds": [
+        1086,
+        724,
+        1448,
+        1086
+      ],
+      "alphaBounds": [
+        35,
+        32,
+        331,
+        330
+      ],
+      "renderSize": [
+        107,
+        108
+      ]
+    }
+  ]
+}

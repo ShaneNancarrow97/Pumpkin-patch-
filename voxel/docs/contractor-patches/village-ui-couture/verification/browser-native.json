@@ -1,0 +1,239 @@
+{
+  "date": "2026-11-13T13:54:43.775Z",
+  "html": "/tmp/Pumpkin-Patch-Mothlight-Couture.html",
+  "htmlSha256": "232535a2d4fdb6a3273314b8f152e10a175ae8db1ff7bbdbe81d3d725d2e1290",
+  "bytes": 61789302,
+  "harnessSha256": "9ace3365510d15c06895e12d991fc62fbbc30eaeac3c141f72d6cde884bc4f33",
+  "fixtureSha256": "c92d0cd5e2e59569b76ddfcbc991195cbe8d018232d962bf293980a4bcee417c",
+  "stateVersion": 20,
+  "preferences": {
+    "music": false,
+    "sound": false,
+    "voiceEnabled": false,
+    "frameRate": "30",
+    "renderQuality": "sharp",
+    "voxelCharacters": false,
+    "glow": true,
+    "shadows": true,
+    "villageTrackedQuest": "green-research"
+  },
+  "quick": false,
+  "heroOnly": true,
+  "holdDrawsRequested": false,
+  "drawHeld": false,
+  "mapIncluded": false,
+  "scope": "Exact unchanged offline HTML over loopback; declared level20 supplied-inventory fixture, not earned progression. Actual DOM clicks and keyboard use native game RAF with actual WebGL throughout; no held draws, patched renderer, manual game ticks or UI replacement. Limited native hero pass: desktop journal, real nearby Rowan dialogue and portrait journal only; full UI parity belongs to the separate broad report. Explicit WebGL fallback isolates the HTML/CSS change from GPU compilation. Viewports and software rendering do not certify physical Bluetooth, Fold or TV performance.",
+  "fixtureNotes": [
+    "Completed introduction/tour and staged restoration entries including Rowan’s stall",
+    "Both original mainline and expansion stories available",
+    "30 of each material, 2 moth lamps and 1 stool supplied for catalogue states; gathering kit owned"
+  ],
+  "checks": [
+    {
+      "label": "The tested HTML retains its actual explicit WebGL village fallback",
+      "pass": true,
+      "detail": {
+        "requested": "webgl",
+        "backend": "webgl",
+        "stage": "disabled",
+        "reason": null,
+        "failureStack": null,
+        "frames": 0
+      }
+    },
+    {
+      "label": "Native desktop journal retains readable controls",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 820,
+          "y": 82,
+          "right": 1260,
+          "bottom": 698,
+          "width": 440,
+          "height": 616
+        },
+        "viewport": [
+          1280,
+          800
+        ],
+        "scale": 1,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "vg-panel-body",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "Native nearby Rowan dialogue remains readable",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 28,
+          "y": 219,
+          "right": 1252,
+          "bottom": 779,
+          "width": 1224,
+          "height": 560
+        },
+        "viewport": [
+          1280,
+          800
+        ],
+        "scale": 1,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "village-dialogue-body",
+            "x": 0
+          },
+          {
+            "class": "village-dialogue-replies",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "Native dialogue is Rowan’s real greeting with canonical activity choices",
+      "pass": true
+    },
+    {
+      "label": "Native portrait journal retains readable controls",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 10,
+          "y": 96,
+          "right": 380,
+          "bottom": 678.359375,
+          "width": 370,
+          "height": 582.359375
+        },
+        "viewport": [
+          390,
+          844
+        ],
+        "scale": 1,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "vg-panel-body",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "Native hero pass never replaces the renderer or composer draw functions",
+      "pass": true
+    },
+    {
+      "label": "No page, console, failed or external requests occur in the offline build",
+      "pass": true,
+      "detail": {
+        "page": 0,
+        "console": 0,
+        "failed": 0,
+        "external": 0
+      }
+    }
+  ],
+  "screenshots": [
+    "native-desktop-journal.png",
+    "native-desktop-dialogue.png",
+    "native-portrait-journal.png"
+  ],
+  "captures": [
+    {
+      "file": "native-desktop-journal.png",
+      "drawHeld": false,
+      "scope": "Native actual WebGL with game RAF"
+    },
+    {
+      "file": "native-desktop-dialogue.png",
+      "drawHeld": false,
+      "scope": "Native actual WebGL with game RAF"
+    },
+    {
+      "file": "native-portrait-journal.png",
+      "drawHeld": false,
+      "scope": "Native actual WebGL with game RAF"
+    }
+  ],
+  "errors": [],
+  "consoleErrors": [],
+  "externalRequests": [],
+  "failedRequests": [],
+  "observations": [
+    {
+      "stage": "launching Chromium",
+      "elapsedMs": 0,
+      "at": "2026-11-13T13:54:43.819Z"
+    },
+    {
+      "stage": "loading offline HTML",
+      "elapsedMs": 543,
+      "at": "2026-11-13T13:54:44.362Z"
+    },
+    {
+      "stage": "DOM loaded; waiting for game ready",
+      "elapsedMs": 15035,
+      "at": "2026-11-13T13:54:58.854Z"
+    },
+    {
+      "stage": "game ready; building the actual village",
+      "elapsedMs": 15419,
+      "at": "2026-11-13T13:54:59.238Z"
+    },
+    {
+      "stage": "village constructed; waiting for native frames",
+      "elapsedMs": 31438,
+      "at": "2026-11-13T13:55:15.257Z"
+    },
+    {
+      "stage": "village native frames ready",
+      "elapsedMs": 56517,
+      "at": "2026-11-13T13:55:40.336Z"
+    },
+    {
+      "stage": "native hero surfaces",
+      "elapsedMs": 56523,
+      "at": "2026-11-13T13:55:40.342Z"
+    },
+    {
+      "stage": "native hero surfaces finished",
+      "elapsedMs": 294419,
+      "at": "2026-11-13T13:59:38.238Z"
+    }
+  ],
+  "browserVersion": "154.0.8037.57",
+  "launchArgs": [
+    "--no-sandbox",
+    "--disable-dev-shm-usage",
+    "--use-angle=swiftshader",
+    "--enable-unsafe-swiftshader",
+    "--ignore-gpu-blocklist"
+  ],
+  "renderer": {
+    "requested": "webgl",
+    "backend": "webgl",
+    "stage": "disabled",
+    "reason": null,
+    "failureStack": null,
+    "frames": 0
+  },
+  "passed": true
+}

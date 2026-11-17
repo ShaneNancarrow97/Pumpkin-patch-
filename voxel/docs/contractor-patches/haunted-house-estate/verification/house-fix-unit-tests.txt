@@ -1,0 +1,41 @@
+
+> pumpkin-patch-voxel@0.1.0 test
+> node --test "test/**/*.test.mjs"
+
+✔ test/audio-player.test.mjs (205.678413ms)
+✔ test/camera-and-shuffle.test.mjs (73.714618ms)
+✔ test/cocoa-menu-and-guests.test.mjs (100.182237ms)
+✔ test/costume-expansion.test.mjs (98.075041ms)
+✔ test/customer-care.test.mjs (201.039632ms)
+✔ test/estate-controls.test.mjs (81.63842ms)
+✔ test/festival-meadow-art.test.mjs (4735.591089ms)
+✔ test/festival-meadow.test.mjs (168.590287ms)
+✔ test/foyer-controls.test.mjs (96.887872ms)
+✔ test/guest-card.test.mjs (42.508616ms)
+✔ test/harvest-rush.test.mjs (108.033591ms)
+✔ test/hollow-art.test.mjs (200.769424ms)
+✔ test/hollow-house.test.mjs (190.809875ms)
+✔ test/house-estate-art.test.mjs (356.312738ms)
+✔ test/house-estate.test.mjs (93.828451ms)
+✔ test/house.test.mjs (106.545436ms)
+✔ test/levels-and-visitors.test.mjs (102.611999ms)
+✔ test/midi.test.mjs (231.463834ms)
+✔ test/model.test.mjs (156.849542ms)
+✔ test/npc-rewards.test.mjs (115.578886ms)
+✔ test/piece-colours.test.mjs (145.364758ms)
+✔ test/placement-controls.test.mjs (142.96121ms)
+✔ test/premium-furniture-house.test.mjs (1646.969438ms)
+✔ test/premium-furniture.test.mjs (2406.122652ms)
+✔ test/premium-wall-house.test.mjs (1076.042223ms)
+✔ test/premium-walls.test.mjs (1188.034518ms)
+✔ test/shelves.test.mjs (898.762973ms)
+✔ test/storage-and-visitors.test.mjs (101.160431ms)
+✔ test/visitor-tiers.test.mjs (103.805508ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15188.639627

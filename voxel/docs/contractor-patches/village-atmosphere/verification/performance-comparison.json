@@ -1,0 +1,312 @@
+{
+  "scope": "Exact HTML bytes served unchanged over loopback. Native requestAnimationFrame and real renderer/composer execute throughout. Native Gamepad API mock drives the actual owner/collision/camera route. Eighteen fixed 0.1s controller/view simulation steps per drawn frame accelerate the walk, identically in both builds; 12 stationary actual draws at each of three destinations provide 36 steady samples per traversal. This simulation workload is intentionally accelerated and is not normal gameplay CPU cost. Frame metrics only include RAF callbacks that drew the active village; no held draws, manual renders, readPixels, gl.finish or hardware FPS claim. Renderer.info aggregates every real render pass within each composer draw. First-use and warmed second traversal are separate; the second traversal restores the same saved fixture without clearing GPU resources. Wall clock and Math.random are fixed; animation follows the fixed simulation clock. CPU draw duration excludes asynchronous GPU completion; drawnFrameIntervalMs measures wall time between actual drawn RAF callbacks, including software GPU/browser scheduling. SwiftShader is a relative same-environment comparison, not phone or LG TV performance certification.",
+  "same_fixture": true,
+  "same_route": true,
+  "same_contract": true,
+  "before_html_sha256": "e34c817796fa9e9fe0175357dfe8827f5d91ec587da2e8c0708553a86f6401fc",
+  "after_html_sha256": "b415649f8ae46d4dc6083a6eb48dec4ccca8241cc3698aace27cc42e3c6305cb",
+  "final_component_delta": {
+    "source_commit": "f7f15d3901d0ecd5af96248f6356e252e43c076e",
+    "path": "src/ui/village-conversation.css",
+    "scope": "Final component-only opaque gold gradient and hover precedence for focused TV dialogue replies. No scene, gameplay, renderer or route code changed after the world/performance candidate. Full tests, normal UI/controller/contrast and compatibility smoke cover the final HTML.",
+    "world_candidate_sha256": "b415649f8ae46d4dc6083a6eb48dec4ccca8241cc3698aace27cc42e3c6305cb",
+    "final_sha256": "0ebe0c57436becfccd44f87b47bf36e1ab8e01b8edfc58421cf38be4a33ac786"
+  },
+  "before": [
+    {
+      "phase": "first-use",
+      "summary": {
+        "frames": 57,
+        "drawnFrameIntervalMs": {
+          "n": 56,
+          "p50": 1832.6,
+          "p95": 2778.8,
+          "max": 5144.3
+        },
+        "rafCallbackCpuMs": {
+          "n": 57,
+          "p50": 103.4,
+          "p95": 809.5,
+          "max": 5127.8
+        },
+        "drawCpuMs": {
+          "n": 57,
+          "p50": 4.9,
+          "p95": 738.5,
+          "max": 4863.7
+        },
+        "drawCalls": {
+          "n": 57,
+          "p50": 173,
+          "p95": 229,
+          "max": 232
+        },
+        "triangles": {
+          "n": 57,
+          "p50": 935232,
+          "p95": 1425338,
+          "max": 1485168
+        },
+        "newPrograms": 33,
+        "largeTextureUploads": 29
+      },
+      "steady": {
+        "frames": 36,
+        "drawnFrameIntervalMs": {
+          "n": 36,
+          "p50": 1857.7,
+          "p95": 2763.3,
+          "max": 2778.8
+        },
+        "rafCallbackCpuMs": {
+          "n": 36,
+          "p50": 94.4,
+          "p95": 183.5,
+          "max": 192.8
+        },
+        "drawCpuMs": {
+          "n": 36,
+          "p50": 4.3,
+          "p95": 10.1,
+          "max": 11.3
+        },
+        "drawCalls": {
+          "n": 36,
+          "p50": 173,
+          "p95": 203,
+          "max": 203
+        },
+        "triangles": {
+          "n": 36,
+          "p50": 935232,
+          "p95": 1338658,
+          "max": 1338658
+        },
+        "newPrograms": 0,
+        "largeTextureUploads": 6
+      }
+    },
+    {
+      "phase": "warmed",
+      "summary": {
+        "frames": 57,
+        "drawnFrameIntervalMs": {
+          "n": 56,
+          "p50": 1930,
+          "p95": 2889.6,
+          "max": 4308.3
+        },
+        "rafCallbackCpuMs": {
+          "n": 57,
+          "p50": 113.4,
+          "p95": 193.1,
+          "max": 4302
+        },
+        "drawCpuMs": {
+          "n": 57,
+          "p50": 4.8,
+          "p95": 30.6,
+          "max": 4097.2
+        },
+        "drawCalls": {
+          "n": 57,
+          "p50": 173,
+          "p95": 229,
+          "max": 231
+        },
+        "triangles": {
+          "n": 57,
+          "p50": 935232,
+          "p95": 1425338,
+          "max": 1485168
+        },
+        "newPrograms": 3,
+        "largeTextureUploads": 6
+      },
+      "steady": {
+        "frames": 36,
+        "drawnFrameIntervalMs": {
+          "n": 36,
+          "p50": 1989.9,
+          "p95": 2889.6,
+          "max": 3301.5
+        },
+        "rafCallbackCpuMs": {
+          "n": 36,
+          "p50": 111.1,
+          "p95": 193.1,
+          "max": 254.7
+        },
+        "drawCpuMs": {
+          "n": 36,
+          "p50": 4.3,
+          "p95": 30.6,
+          "max": 35.5
+        },
+        "drawCalls": {
+          "n": 36,
+          "p50": 173,
+          "p95": 203,
+          "max": 203
+        },
+        "triangles": {
+          "n": 36,
+          "p50": 935232,
+          "p95": 1338658,
+          "max": 1338658
+        },
+        "newPrograms": 0,
+        "largeTextureUploads": 6
+      }
+    }
+  ],
+  "after": [
+    {
+      "phase": "first-use",
+      "summary": {
+        "frames": 57,
+        "drawnFrameIntervalMs": {
+          "n": 56,
+          "p50": 1790.4,
+          "p95": 2928.1,
+          "max": 5326.6
+        },
+        "rafCallbackCpuMs": {
+          "n": 57,
+          "p50": 105,
+          "p95": 1120.8,
+          "max": 5303.4
+        },
+        "drawCpuMs": {
+          "n": 57,
+          "p50": 4.8,
+          "p95": 1021.7,
+          "max": 3887.4
+        },
+        "drawCalls": {
+          "n": 57,
+          "p50": 174,
+          "p95": 230,
+          "max": 233
+        },
+        "triangles": {
+          "n": 57,
+          "p50": 935372,
+          "p95": 1425478,
+          "max": 1485308
+        },
+        "newPrograms": 34,
+        "largeTextureUploads": 28
+      },
+      "steady": {
+        "frames": 36,
+        "drawnFrameIntervalMs": {
+          "n": 36,
+          "p50": 1871,
+          "p95": 2928.1,
+          "max": 2984.2
+        },
+        "rafCallbackCpuMs": {
+          "n": 36,
+          "p50": 101.5,
+          "p95": 245.3,
+          "max": 296.3
+        },
+        "drawCpuMs": {
+          "n": 36,
+          "p50": 4.5,
+          "p95": 8.3,
+          "max": 8.5
+        },
+        "drawCalls": {
+          "n": 36,
+          "p50": 174,
+          "p95": 204,
+          "max": 204
+        },
+        "triangles": {
+          "n": 36,
+          "p50": 935372,
+          "p95": 1338798,
+          "max": 1338798
+        },
+        "newPrograms": 0,
+        "largeTextureUploads": 6
+      }
+    },
+    {
+      "phase": "warmed",
+      "summary": {
+        "frames": 57,
+        "drawnFrameIntervalMs": {
+          "n": 56,
+          "p50": 1853.4,
+          "p95": 2577.7,
+          "max": 2724.1
+        },
+        "rafCallbackCpuMs": {
+          "n": 57,
+          "p50": 96.4,
+          "p95": 223.1,
+          "max": 1808.5
+        },
+        "drawCpuMs": {
+          "n": 57,
+          "p50": 4.5,
+          "p95": 29.6,
+          "max": 1618.6
+        },
+        "drawCalls": {
+          "n": 57,
+          "p50": 174,
+          "p95": 230,
+          "max": 232
+        },
+        "triangles": {
+          "n": 57,
+          "p50": 935372,
+          "p95": 1425478,
+          "max": 1485308
+        },
+        "newPrograms": 3,
+        "largeTextureUploads": 6
+      },
+      "steady": {
+        "frames": 36,
+        "drawnFrameIntervalMs": {
+          "n": 36,
+          "p50": 1960.9,
+          "p95": 2432.6,
+          "max": 2577.7
+        },
+        "rafCallbackCpuMs": {
+          "n": 36,
+          "p50": 94.8,
+          "p95": 223.1,
+          "max": 236.8
+        },
+        "drawCpuMs": {
+          "n": 36,
+          "p50": 4.3,
+          "p95": 29.6,
+          "max": 30.7
+        },
+        "drawCalls": {
+          "n": 36,
+          "p50": 174,
+          "p95": 204,
+          "max": 204
+        },
+        "triangles": {
+          "n": 36,
+          "p50": 935372,
+          "p95": 1338798,
+          "max": 1338798
+        },
+        "newPrograms": 0,
+        "largeTextureUploads": 6
+      }
+    }
+  ],
+  "limits": "SwiftShader normal draws with identical accelerated controller/view steps, not normal gameplay CPU or physical phone/TV FPS. First use and warmed traversal remain separate; no causal hardware-speed claim. The final dialogue-only CSS delta is explicitly recorded; this route has no dialogue."
+}

@@ -1,0 +1,1319 @@
+{
+ "format": "pumpkin-patch-voxel-save",
+ "fileVersion": 1,
+ "stateVersion": 20,
+ "savedAt": "2026-11-04T17:30:00.000Z",
+ "build": "voxel-reference",
+ "summary": {
+  "level": 8,
+  "levelName": "Haunted hideaway",
+  "coins": 47410,
+  "earned": 42500,
+  "plots": 9,
+  "houseLevel": 2,
+  "playSeconds": 5400
+ },
+ "prefs": {
+  "music": true,
+  "tvMode": true,
+  "tvSize": "standard"
+ },
+ "checksum": "439e28bd",
+ "state": {
+  "version": 20,
+  "coins": 47410,
+  "earned": 42500,
+  "sold": 0,
+  "harvested": 0,
+  "taps": 0,
+  "time": 5400,
+  "wholesale": 0,
+  "plots": [
+   {
+    "phase": "growing",
+    "progress": 0.4,
+    "variety": 0
+   },
+   {
+    "phase": "ready",
+    "progress": 1,
+    "variety": 1,
+    "ripe": 5300
+   },
+   {
+    "phase": "empty",
+    "progress": 0,
+    "variety": 0
+   },
+   {
+    "phase": "empty",
+    "progress": 0,
+    "variety": 0
+   },
+   {
+    "phase": "empty",
+    "progress": 0,
+    "variety": 0
+   },
+   {
+    "phase": "empty",
+    "progress": 0,
+    "variety": 0
+   },
+   {
+    "phase": "empty",
+    "progress": 0,
+    "variety": 0
+   },
+   {
+    "phase": "empty",
+    "progress": 0,
+    "variety": 0
+   },
+   {
+    "phase": "empty",
+    "progress": 0,
+    "variety": 0
+   },
+   {
+    "phase": "empty",
+    "progress": 0,
+    "variety": 0
+   },
+   {
+    "phase": "empty",
+    "progress": 0,
+    "variety": 0
+   },
+   {
+    "phase": "empty",
+    "progress": 0,
+    "variety": 0
+   },
+   {
+    "phase": "empty",
+    "progress": 0,
+    "variety": 0
+   },
+   {
+    "phase": "empty",
+    "progress": 0,
+    "variety": 0
+   },
+   {
+    "phase": "empty",
+    "progress": 0,
+    "variety": 0
+   },
+   {
+    "phase": "empty",
+    "progress": 0,
+    "variety": 0
+   },
+   {
+    "phase": "empty",
+    "progress": 0,
+    "variety": 0
+   },
+   {
+    "phase": "empty",
+    "progress": 0,
+    "variety": 0
+   },
+   {
+    "phase": "empty",
+    "progress": 0,
+    "variety": 0
+   },
+   {
+    "phase": "empty",
+    "progress": 0,
+    "variety": 0
+   },
+   {
+    "phase": "empty",
+    "progress": 0,
+    "variety": 0
+   },
+   {
+    "phase": "empty",
+    "progress": 0,
+    "variety": 0
+   },
+   {
+    "phase": "empty",
+    "progress": 0,
+    "variety": 0
+   },
+   {
+    "phase": "empty",
+    "progress": 0,
+    "variety": 0
+   }
+  ],
+  "plotLevels": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "plotCrops": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "pinata": {
+   "level": 0,
+   "popped": 0,
+   "items": 0,
+   "last": null
+  },
+  "fountain": {
+   "owned": false,
+   "planted": 0,
+   "popped": 0,
+   "pumpkins": 0,
+   "coins": 0,
+   "last": null
+  },
+  "carvingStand": {
+   "built": false,
+   "open": true,
+   "benches": 0,
+   "tools": 0,
+   "sign": 0,
+   "designs": [
+    "classic"
+   ],
+   "extras": [],
+   "carvers": [],
+   "next": 0,
+   "serial": 0,
+   "carved": 0,
+   "income": 0,
+   "tally": {},
+   "last": null
+  },
+  "upgrades": {
+   "tools": 2,
+   "yield": 0,
+   "auto": 0,
+   "plots": 1,
+   "sign": 0,
+   "storage": 1,
+   "cart": 0
+  },
+  "visitorUpgrades": {
+   "party": 0,
+   "lights": 0,
+   "cocoa": 0,
+   "loyalty": 0,
+   "crowd": 0,
+   "appetite": 0,
+   "janitor": 0
+  },
+  "helperTimer": 0,
+  "streak": {
+   "count": 0,
+   "until": 0,
+   "best": 0,
+   "bonusCoins": 0,
+   "nextBonusAt": 0,
+   "visitorBoost": 0,
+   "visitorBoostUntil": 0,
+   "last": 0
+  },
+  "farmWork": {
+   "version": 1,
+   "boost": {
+    "power": 0,
+    "cooling": 0,
+    "heat": 0,
+    "overheated": false,
+    "lastUse": -1
+   },
+   "helpers": {
+    "shane": {
+     "hired": false,
+     "plant": 0,
+     "water": 0,
+     "capacity": 0,
+     "timer": 0,
+     "cursor": 0,
+     "kind": null
+    },
+    "natalie": {
+     "hired": false,
+     "plant": 0,
+     "water": 0,
+     "capacity": 0,
+     "timer": 0,
+     "cursor": 0,
+     "kind": null
+    }
+   }
+  },
+  "stock": [
+   12,
+   6,
+   3,
+   0,
+   0
+  ],
+  "fresh": [
+   [],
+   [],
+   [],
+   [],
+   []
+  ],
+  "pumpkinAges": [
+   [
+    [
+     5400,
+     12
+    ]
+   ],
+   [
+    [
+     5400,
+     6
+    ]
+   ],
+   [
+    [
+     5400,
+     3
+    ]
+   ],
+   [],
+   []
+  ],
+  "stockWaste": {
+   "discarded": [
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "lastAt": 0,
+   "lastCount": 0
+  },
+  "wanted": {
+   "variety": null,
+   "until": 0,
+   "serial": 0
+  },
+  "orders": {
+   "list": [],
+   "next": 0,
+   "serial": 0,
+   "filled": 0,
+   "missed": 0,
+   "income": 0,
+   "trust": {},
+   "board": 0
+  },
+  "holds": [],
+  "visitorEvents": {
+   "seed": 1298752622,
+   "rush": {
+    "level": 0,
+    "enabled": true,
+    "remaining": 300,
+    "event": 0,
+    "pending": null
+   },
+   "vip": {
+    "level": 0,
+    "enabled": true,
+    "remaining": 240,
+    "event": 0,
+    "pending": null
+   },
+   "ledger": {
+    "rushGroups": 0,
+    "rushGuests": 0,
+    "vipGroups": 0,
+    "vipGuests": 0
+   }
+  },
+  "stall": {
+   "income": 0,
+   "itemsSold": 0,
+   "served": 0,
+   "missedBudget": 0,
+   "missedStock": 0,
+   "cocoa": 0,
+   "receipts": []
+  },
+  "visitors": [],
+  "arriving": [],
+  "nextVisitor": 0,
+  "nextParty": 0,
+  "visitorTimer": 3,
+  "shop": {
+   "unlocked": false,
+   "capacityLevel": 0,
+   "displayLevel": 0,
+   "checkoutLevel": 0,
+   "browseLevel": 0,
+   "wrapLevel": 0,
+   "displays": [
+    0,
+    1,
+    null,
+    null
+   ],
+   "customers": [],
+   "nextCustomer": 0,
+   "arrivalTimer": 2,
+   "income": 0,
+   "itemsSold": 0,
+   "served": 0,
+   "invested": 0
+  },
+  "bigSpender": {
+   "timer": 110,
+   "seen": 0,
+   "spent": 0,
+   "pumpkins": 0
+  },
+  "festival": {
+   "meadow": false,
+   "comforts": [],
+   "cocoa": {
+    "level": 0,
+    "stock": 0,
+    "price": 4,
+    "open": true,
+    "courier": false,
+    "autoSupply": false,
+    "barista": false,
+    "bulkCourier": false,
+    "autoSpecials": [],
+    "sold": 0,
+    "gross": 0,
+    "supplies": 0,
+    "invested": 0,
+    "missed": 0,
+    "prices": {
+     "flake": 6,
+     "deluxe": 7,
+     "midnight": 9,
+     "smores": 5,
+     "ghost-wafer": 13,
+     "caramel-flake": 15,
+     "smores-platter": 12
+    },
+    "extras": {
+     "flake": {
+      "stock": 0,
+      "sold": 0,
+      "gross": 0,
+      "supplies": 0
+     },
+     "deluxe": {
+      "stock": 0,
+      "sold": 0,
+      "gross": 0,
+      "supplies": 0
+     },
+     "midnight": {
+      "stock": 0,
+      "sold": 0,
+      "gross": 0,
+      "supplies": 0
+     },
+     "smores": {
+      "stock": 0,
+      "sold": 0,
+      "gross": 0,
+      "supplies": 0
+     },
+     "ghost-wafer": {
+      "stock": 0,
+      "sold": 0,
+      "gross": 0,
+      "supplies": 0
+     },
+     "caramel-flake": {
+      "stock": 0,
+      "sold": 0,
+      "gross": 0,
+      "supplies": 0
+     },
+     "smores-platter": {
+      "stock": 0,
+      "sold": 0,
+      "gross": 0,
+      "supplies": 0
+     }
+    },
+    "lastSaleAt": -10
+   }
+  },
+  "customerCare": {
+   "bags": 0,
+   "tipJar": 0,
+   "serial": 0,
+   "invested": 0,
+   "tips": {
+    "stall": 0,
+    "shop": 0
+   },
+   "tipped": {
+    "stall": 0,
+    "shop": 0
+   },
+   "qualityTotal": 0,
+   "graded": 0,
+   "receipts": []
+  },
+  "house": {
+   "level": 2,
+   "activeRoom": "parlour",
+   "roomStyles": {
+    "parlour": "house-default",
+    "bedroom": "bedroom-base",
+    "kitchen": "kitchen-base",
+    "attic": "attic-base",
+    "bathroom": "bathroom-plum"
+   },
+   "ownedRoomStyles": [],
+   "owned": [
+    "f01",
+    "f11",
+    "b01",
+    "household-piano",
+    "household-moth-rug",
+    "household-wall-television"
+   ],
+   "copies": {
+    "f01": 1,
+    "f11": 1,
+    "b01": 1,
+    "household-piano": 1,
+    "household-moth-rug": 1,
+    "household-wall-television": 1
+   },
+   "extensions": {
+    "bathroom": false
+   },
+   "wallpapers": {},
+   "nextInstance": 5,
+   "reading": {},
+   "placed": [
+    {
+     "instance": "piece-0",
+     "id": "f01",
+     "room": "parlour",
+     "x": 2,
+     "z": 3,
+     "flip": false,
+     "books": []
+    },
+    {
+     "instance": "piece-1",
+     "id": "f11",
+     "room": "parlour",
+     "x": 6,
+     "z": 0,
+     "flip": false,
+     "books": [
+      "b01"
+     ]
+    },
+    {
+     "instance": "piece-2",
+     "id": "household-piano",
+     "room": "parlour",
+     "x": 0,
+     "z": 0,
+     "flip": false,
+     "books": []
+    },
+    {
+     "instance": "piece-3",
+     "id": "household-moth-rug",
+     "room": "parlour",
+     "x": 0,
+     "z": 0,
+     "flip": false,
+     "books": []
+    },
+    {
+     "instance": "piece-4",
+     "id": "household-wall-television",
+     "room": "parlour",
+     "x": 3.45,
+     "z": 0,
+     "flip": false,
+     "books": []
+    }
+   ]
+  },
+  "estate": {
+   "expansion": 0,
+   "finishes": {
+    "walls": "warm-timber",
+    "roof": "midnight-slate",
+    "trim": "old-brass",
+    "door": "plum-door",
+    "fence": "gothic-iron"
+   },
+   "ownedFinishes": [
+    "warm-timber",
+    "midnight-slate",
+    "old-brass",
+    "plum-door",
+    "gothic-iron"
+   ],
+   "ownedDecor": {
+    "lantern-post": 0,
+    "rose-bed": 0,
+    "pumpkin-pile": 0,
+    "stone-urn": 0,
+    "garden-bench": 0,
+    "bird-bath": 0,
+    "gargoyle": 0,
+    "crooked-tree": 0,
+    "moon-fountain": 0,
+    "coffin-planter": 0,
+    "rose-arch": 0,
+    "wishing-well": 0,
+    "bat-hedge": 0,
+    "mushroom-patch": 0,
+    "fire-pit": 0,
+    "ghost-scarecrow": 0,
+    "berry-patch": 0,
+    "herb-planter": 0,
+    "vegetable-bed": 0,
+    "apple-tree": 0,
+    "carving-bench": 0,
+    "hay-bales": 0,
+    "gravestones": 0,
+    "owl-perch": 0,
+    "witch-cauldron": 0,
+    "picnic-table": 0,
+    "lantern-garland": 0,
+    "lily-pond": 0,
+    "fishing-lake": 0
+   },
+   "placed": [
+    {
+     "instance": "garden-0",
+     "id": "lantern-post",
+     "x": -3,
+     "z": 8,
+     "rotation": 0
+    },
+    {
+     "instance": "garden-1",
+     "id": "lantern-post",
+     "x": 3,
+     "z": 8,
+     "rotation": 0
+    },
+    {
+     "instance": "garden-2",
+     "id": "rose-bed",
+     "x": -10,
+     "z": -4,
+     "rotation": 0
+    },
+    {
+     "instance": "garden-3",
+     "id": "garden-bench",
+     "x": 10,
+     "z": 2,
+     "rotation": 0
+    },
+    {
+     "instance": "garden-4",
+     "id": "pumpkin-pile",
+     "x": 5.2,
+     "z": 9.3,
+     "rotation": 0
+    }
+   ],
+   "nextInstance": 5,
+   "invested": 0
+  },
+  "fishing": {
+   "rod": 0,
+   "bait": 0,
+   "trapTier": 0,
+   "traps": [],
+   "log": {},
+   "caught": 0,
+   "earned": 0,
+   "seed": 20261105,
+   "line": null
+  },
+  "village": {
+   "expansion": {
+    "revision": 1,
+    "area": "green",
+    "effects": [],
+    "completed": {},
+    "chapters": {},
+    "puzzles": {},
+    "gems": {
+     "lantern-amethyst": 0,
+     "ember-garnet": 0,
+     "hollow-opal": 0
+    },
+    "veins": {},
+    "pity": {
+     "cave-shallows": 0,
+     "cave-workings": 0,
+     "cave-cathedral": 0
+    },
+    "questItems": {},
+    "receipts": {},
+    "baselines": {},
+    "choices": {},
+    "tracked": null,
+    "seed": 20261109,
+    "gemIncome": 0,
+    "outfits": {},
+    "economy": {
+     "upgrades": [],
+     "invested": 0,
+     "wax": 0,
+     "waxJob": null,
+     "treated": {},
+     "commissions": {},
+     "income": 0,
+     "portions": 0,
+     "vipIn": 300,
+     "vipDue": false,
+     "vipGroups": 0,
+     "herbsProcessed": 0,
+     "waxCooked": 0,
+     "treatments": 0,
+     "treatedPumpkins": 0
+    },
+    "companions": {
+     "selected": null,
+     "jobs": [],
+     "gathered": {}
+    }
+   },
+   "invited": false,
+   "toured": false,
+   "visits": 0,
+   "seed": 20261105,
+   "clock": 0,
+   "quests": {},
+   "claims": {},
+   "unlocks": [],
+   "effects": [],
+   "built": {},
+   "found": {},
+   "friends": {
+    "elowen": {
+     "xp": 0,
+     "met": false,
+     "chatIn": 0,
+     "gifts": [],
+     "seen": []
+    },
+    "rowan": {
+     "xp": 0,
+     "met": false,
+     "chatIn": 0,
+     "gifts": [],
+     "seen": []
+    },
+    "mabel": {
+     "xp": 0,
+     "met": false,
+     "chatIn": 0,
+     "gifts": [],
+     "seen": []
+    },
+    "tansy": {
+     "xp": 0,
+     "met": false,
+     "chatIn": 0,
+     "gifts": [],
+     "seen": []
+    },
+    "opal": {
+     "xp": 0,
+     "met": false,
+     "chatIn": 0,
+     "gifts": [],
+     "seen": []
+    },
+    "cinder": {
+     "xp": 0,
+     "met": false,
+     "chatIn": 0,
+     "gifts": [],
+     "seen": []
+    },
+    "corvus": {
+     "xp": 0,
+     "met": false,
+     "chatIn": 0,
+     "gifts": [],
+     "seen": []
+    },
+    "baron": {
+     "xp": 0,
+     "met": false,
+     "chatIn": 0,
+     "gifts": [],
+     "seen": []
+    },
+    "granny": {
+     "xp": 0,
+     "met": false,
+     "chatIn": 0,
+     "gifts": [],
+     "seen": []
+    }
+   },
+   "materials": {
+    "logs": 0,
+    "stone": 0,
+    "fibre": 0,
+    "herbs": 0,
+    "hardwood": 0,
+    "moth-silk": 0,
+    "iron": 0,
+    "clay": 0,
+    "moonstone": 0,
+    "emberbloom": 0,
+    "star-amber": 0,
+    "cursed-spores": 0
+   },
+   "nodes": {
+    "logs-01": 0,
+    "logs-02": 0,
+    "logs-03": 0,
+    "logs-04": 0,
+    "logs-05": 0,
+    "logs-06": 0,
+    "logs-07": 0,
+    "logs-08": 0,
+    "stone-01": 0,
+    "stone-02": 0,
+    "stone-03": 0,
+    "stone-04": 0,
+    "stone-05": 0,
+    "stone-06": 0,
+    "fibre-01": 0,
+    "fibre-02": 0,
+    "fibre-03": 0,
+    "fibre-04": 0,
+    "fibre-05": 0,
+    "fibre-06": 0,
+    "herbs-01": 0,
+    "herbs-02": 0,
+    "herbs-03": 0,
+    "herbs-04": 0,
+    "logs-09": 0,
+    "logs-10": 0,
+    "stone-07": 0,
+    "stone-08": 0,
+    "fibre-07": 0,
+    "fibre-08": 0,
+    "herbs-05": 0,
+    "herbs-06": 0,
+    "hardwood-01": 0,
+    "hardwood-02": 0,
+    "hardwood-03": 0,
+    "hardwood-04": 0,
+    "moth_silk-01": 0,
+    "moth_silk-02": 0,
+    "iron-01": 0,
+    "iron-02": 0,
+    "iron-03": 0,
+    "clay-01": 0,
+    "clay-02": 0,
+    "clay-03": 0,
+    "moonstone-01": 0,
+    "moonstone-02": 0,
+    "emberbloom-01": 0,
+    "emberbloom-02": 0,
+    "emberbloom-03": 0,
+    "star_amber-01": 0,
+    "logs-11": 0,
+    "herbs-07": 0,
+    "stone-09": 0,
+    "fibre-09": 0,
+    "logs-12": 0,
+    "herbs-08": 0,
+    "stone-10": 0,
+    "fibre-10": 0,
+    "logs-13": 0,
+    "stone-11": 0,
+    "herbs-09": 0,
+    "fibre-11": 0,
+    "logs-14": 0,
+    "herbs-10": 0,
+    "stone-12": 0,
+    "logs-15": 0,
+    "fibre-12": 0,
+    "herbs-11": 0,
+    "stone-13": 0,
+    "fibre-13": 0,
+    "logs-16": 0,
+    "herbs-12": 0,
+    "stone-14": 0,
+    "fibre-14": 0,
+    "blight-green-01": 0,
+    "blight-green-02": 0,
+    "blight-green-03": 0,
+    "blight-green-04": 0,
+    "blight-green-05": 0,
+    "blight-green-06": 0,
+    "blight-green-07": 0,
+    "blight-green-08": 0,
+    "blight-green-09": 0,
+    "blight-green-10": 0,
+    "blight-green-11": 0,
+    "blight-green-12": 0,
+    "blight-green-13": 0,
+    "blight-green-14": 0,
+    "blight-green-15": 0,
+    "blight-green-16": 0,
+    "blight-green-17": 0,
+    "blight-green-18": 0,
+    "blight-green-19": 0,
+    "blight-green-20": 0,
+    "blight-green-21": 0,
+    "blight-green-22": 0,
+    "blight-green-23": 0,
+    "blight-green-24": 0,
+    "blight-green-25": 0,
+    "blight-green-26": 0,
+    "blight-green-27": 0,
+    "blight-green-28": 0,
+    "blight-green-29": 0,
+    "blight-green-30": 0,
+    "blight-green-31": 0,
+    "blight-green-32": 0,
+    "blight-copse-01": 0,
+    "blight-copse-02": 0,
+    "blight-quarry-01": 0,
+    "blight-quarry-02": 0
+   },
+   "gatherCycles": {},
+   "stall": {
+    "rotation": 0,
+    "refreshIn": 900,
+    "bought": {}
+   },
+   "discount": 0,
+   "decor": {
+    "owned": {},
+    "placed": [],
+    "next": 1
+   },
+   "favours": {
+    "elowen": {
+     "id": null,
+     "readyIn": 0,
+     "done": 0
+    },
+    "rowan": {
+     "id": null,
+     "readyIn": 0,
+     "done": 0
+    },
+    "mabel": {
+     "id": null,
+     "readyIn": 0,
+     "done": 0
+    },
+    "tansy": {
+     "id": null,
+     "readyIn": 0,
+     "done": 0
+    },
+    "opal": {
+     "id": null,
+     "readyIn": 0,
+     "done": 0
+    },
+    "cinder": {
+     "id": null,
+     "readyIn": 0,
+     "done": 0
+    },
+    "corvus": {
+     "id": null,
+     "readyIn": 0,
+     "done": 0
+    },
+    "baron": {
+     "id": null,
+     "readyIn": 0,
+     "done": 0
+    },
+    "granny": {
+     "id": null,
+     "readyIn": 0,
+     "done": 0
+    }
+   },
+   "almanac": {
+    "page": [],
+    "pages": 0,
+    "prize": 0
+   },
+   "stats": {
+    "chats": 0,
+    "gathered": 0,
+    "gifts": 0,
+    "favours": 0,
+    "placed": 0
+   }
+  },
+  "hollowHouse": {
+   "purchased": false,
+   "status": "derelict",
+   "restoreRemaining": 0,
+   "tier": 1,
+   "open": false,
+   "ticketPrice": 6,
+   "invested": 0,
+   "ticketsSold": 0,
+   "income": 0,
+   "completed": 0,
+   "missed": 0,
+   "runHome": 0,
+   "repeatVisits": 0,
+   "haunts": {
+    "owned": [],
+    "active": []
+   },
+   "nextVisit": 0,
+   "receipts": [],
+   "lastEvent": null,
+   "foyer": {
+    "ownedDecor": {
+     "velvet-bench": 0,
+     "spectral-sofa": 0,
+     "parlour-table": 0,
+     "gothic-cabinet": 0,
+     "skull-plinth": 0,
+     "pumpkin-cluster": 0,
+     "book-stack": 0,
+     "standing-lantern": 0,
+     "candle-cluster": 0,
+     "haunted-portrait": 0,
+     "cobweb": 0,
+     "ghost-orb": 0,
+     "fog-cauldron": 0,
+     "grand-chandelier": 0,
+     "curtain-arch": 0,
+     "ticket-sign": 0
+    },
+    "placed": [
+     {
+      "id": "velvet-bench",
+      "x": -3,
+      "z": 2.7,
+      "rotation": 0,
+      "instance": "foyer-0"
+     },
+     {
+      "id": "parlour-table",
+      "x": 3.2,
+      "z": 2.9,
+      "rotation": 0,
+      "instance": "foyer-1"
+     },
+     {
+      "id": "pumpkin-cluster",
+      "x": 3.8,
+      "z": 1.8,
+      "rotation": 0,
+      "instance": "foyer-2"
+     }
+    ],
+    "finishes": {
+     "floor": "wooden-boards",
+     "walls": "old-wallpaper",
+     "reception": "wood-counter",
+     "lighting": "candle-glow",
+     "entrance": "gothic-door",
+     "effects": "quiet-air"
+    },
+    "ownedFinishes": [
+     "wooden-boards",
+     "old-wallpaper",
+     "wood-counter",
+     "candle-glow",
+     "gothic-door",
+     "quiet-air"
+    ],
+    "nextInstance": 3
+   }
+  },
+  "hayride": {
+   "purchased": false,
+   "tier": 1,
+   "open": false,
+   "ticketPrice": 8,
+   "invested": 0,
+   "ticketsSold": 0,
+   "income": 0,
+   "completed": 0,
+   "missed": 0,
+   "runHome": 0,
+   "departures": 0,
+   "partyAt": null,
+   "nextVisit": 0,
+   "nextRun": 1,
+   "receipts": [],
+   "haunts": {
+    "owned": [],
+    "active": []
+   },
+   "convoy": {
+    "phase": "loading",
+    "elapsed": 0,
+    "progress": 0,
+    "loadWait": 0,
+    "runId": "hayride-run-0",
+    "manifest": []
+   },
+   "secondConvoy": null,
+   "fleet": 0,
+   "dispatch": 0,
+   "routeLevel": 0,
+   "lastEvent": null
+  },
+  "kitchen": {
+   "diners": [],
+   "cookAnimations": [],
+   "revision": 2,
+   "purchased": true,
+   "pantry": {
+    "flour": 0,
+    "sugar": 0,
+    "milk": 0,
+    "butter": 5,
+    "cocoa": 0,
+    "apples": 0,
+    "marshmallows": 0,
+    "vegetables": 0,
+    "meat": 0,
+    "chicken": 0,
+    "stock": 0,
+    "herbs": 0,
+    "spices": 0,
+    "berries": 0,
+    "seeds": 0,
+    "fish": 0,
+    "crayfish": 0
+   },
+   "food": {
+    "wedges": 0,
+    "soup": 0,
+    "toffee-apples": 0,
+    "pumpkin-jam": 0,
+    "ghost-cookies": 0,
+    "pumpkin-pie": 0,
+    "cocoa-brownies": 0,
+    "moonlight-tart": 0,
+    "garden-skillet": 0,
+    "harvest-broth": 0,
+    "spiced-roast": 0,
+    "moonfire-chicken": 0,
+    "haunted-pie": 0,
+    "pumpkin-spice-biscuits": 0,
+    "bramble-crumble": 0,
+    "toasted-seeds": 0,
+    "seed-brittle": 0,
+    "bramble-apple-pie": 0,
+    "fish-supper": 0,
+    "crayfish-boil": 0,
+    "witchs-fish-pie": 0,
+    "cinders-lantern-stew": 0,
+    "grannys-bramble-pudding": 0
+   },
+   "recipes": [
+    "wedges",
+    "soup"
+   ],
+   "prices": {
+    "wedges": 11,
+    "soup": 13,
+    "toffee-apples": 8,
+    "pumpkin-jam": 22,
+    "ghost-cookies": 4,
+    "pumpkin-pie": 27,
+    "cocoa-brownies": 7,
+    "moonlight-tart": 27,
+    "garden-skillet": 12,
+    "harvest-broth": 14,
+    "spiced-roast": 19,
+    "moonfire-chicken": 18,
+    "haunted-pie": 26,
+    "pumpkin-spice-biscuits": 8,
+    "bramble-crumble": 15,
+    "toasted-seeds": 6,
+    "seed-brittle": 9,
+    "bramble-apple-pie": 27,
+    "fish-supper": 16,
+    "crayfish-boil": 18,
+    "witchs-fish-pie": 25,
+    "cinders-lantern-stew": 20,
+    "grannys-bramble-pudding": 18
+   },
+   "displays": [
+    null,
+    null
+   ],
+   "sellAt": "truck",
+   "orders": [],
+   "jobs": {
+    "truck": null,
+    "home": null
+   },
+   "upgrades": {
+    "pantry": 0,
+    "storage": 0,
+    "speed": 0,
+    "truck-oven": 0,
+    "truck-spices": 0,
+    "chef": 0
+   },
+   "chefRecipe": null,
+   "ledger": {
+    "ingredientSpend": 0,
+    "researchSpend": 0,
+    "foodIncome": 0,
+    "foodSold": 0,
+    "invested": 0,
+    "deliveryFees": 0,
+    "batchesCooked": 0,
+    "receipts": []
+   },
+   "nextOrder": 1,
+   "nextJob": 1,
+   "delivered": [],
+   "foodHolds": []
+  },
+  "wardrobe": {
+   "owned": [
+    "natalie-base",
+    "shane-base",
+    "natalie-wheelchair"
+   ],
+   "equipped": {
+    "natalie": "natalie-base",
+    "shane": "shane-base"
+   }
+  },
+  "looks": {
+   "natalie": "olive",
+   "shane": "black",
+   "owned": [
+    "olive",
+    "black"
+   ]
+  },
+  "claimed": [],
+  "memories": [],
+  "progression": {
+   "claimed": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ],
+   "pending": [],
+   "receipts": {},
+   "bonusEarned": 0,
+   "levelCredit": 42500,
+   "observedTrade": 42500,
+   "homeVersion": 1,
+   "homeLegacyThrough": 1,
+   "homeActivities": {
+    "visit": 0,
+    "wardrobe": 0,
+    "cook": 0,
+    "decorate": 0,
+    "plant": 0,
+    "water": 0,
+    "harvest": 0
+   },
+   "pace": 3,
+   "floorLevel": 1,
+   "floorFrom": 0
+  },
+  "paused": false,
+  "introSeen": true,
+  "cleanliness": {
+   "litter": [],
+   "nextId": 0,
+   "seenSales": 0,
+   "cleaned": 0,
+   "janitors": []
+  },
+  "carving": {
+   "lanterns": [],
+   "current": null,
+   "made": 0,
+   "sold": 0,
+   "nextId": 1
+  },
+  "hollowVisitors": [],
+  "hayrideVisitors": []
+ }
+}

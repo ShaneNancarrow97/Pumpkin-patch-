@@ -1,0 +1,18 @@
+✔ native pad is standard and bounded, retains browser devices and fully releases on disconnect (4.48736ms)
+✔ background saves once, silences music, releases input and restores the previous pause state (1.008873ms)
+✔ native back closes the current voxel surface without leaking a second action (0.811527ms)
+✔ blob downloads export exact JSON and reject unsafe or invalid payloads (1.174591ms)
+✔ optional native picker produces a real File and honours cancellation without bypassing validation (2.100019ms)
+✔ fullscreen remains an Android request and never rewrites game preferences (0.756365ms)
+✔ all music and ride contexts suspend together and only previously running contexts resume (0.981202ms)
+✔ narration and delayed media play never leak into the background or replay automatically (1.78673ms)
+✔ repeated dialogue playback does not retain stopped, ended, errored or rejected media (4.966398ms)
+✔ late context resumes and contexts constructed in the background stay silent (1.237696ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 81.661272

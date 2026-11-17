@@ -1,0 +1,17 @@
+/* Consistent disclosures and selectors, with a visible affordance and touch area. */
+#sheet select{min-height:44px;max-width:100%;border:1px solid #a77942;border-radius:12px;background-color:#352b33;color:#ffe5b1;padding:10px 38px 10px 12px;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='12' viewBox='0 0 16 12'%3E%3Cpath d='m3 3 5 5 5-5' fill='none' stroke='%23ffcc7a' stroke-width='2'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;font:inherit;font-size:14px}
+#sheet select option{background:#302634;color:#ffedcf}
+#sheet details>summary{min-height:44px;padding:12px 34px 12px 12px;position:relative;border:1px solid #795f49;border-radius:12px;background:#3a2d32;cursor:pointer;list-style:none}
+#sheet details>summary::-webkit-details-marker{display:none}
+#sheet details>summary:after{content:'＋';position:absolute;right:12px;color:#ffcc7a;font-size:20px;top:8px}
+#sheet details[open]>summary:after{content:'−'}
+.cooking-reveal{position:fixed;z-index:300;left:50%;top:50%;transform:translate(-50%,-50%);width:min(380px,calc(100vw - 32px));padding:24px;text-align:center;background:linear-gradient(145deg,#312532fa,#1d1a26fa);border:1px solid #bc8a50;border-radius:24px;box-shadow:0 16px 70px #0009;color:#ffedcf;pointer-events:auto;box-sizing:border-box}
+.cooking-reveal button{position:absolute;right:10px;top:8px;min-height:44px;padding:8px 12px;border:0;border-radius:12px;background:#47343c;color:#ffdfa1;cursor:pointer}.cooking-reveal .eyebrow{margin-top:30px}.cooking-reveal h2{font-size:22px;margin:10px}.cooking-reveal-stage{height:180px;position:relative;overflow:hidden}.reveal-ingredients{display:flex;justify-content:center;gap:8px;position:absolute;top:0;left:0;right:0}.reveal-ingredients>span{animation:ingredient-toss 1.4s calc(var(--i)*.18s) both}.reveal-pot{font-size:86px;color:#c18a5b;margin-top:65px;animation:pot-stir 2.8s ease-in-out forwards}.reveal-dish{position:absolute;top:22px;left:50%;transform:translateX(-50%);animation:dish-reveal 5.5s both}.reveal-caption{font-size:15px}.cooking-reveal .small{font-size:12px;opacity:.8}
+@keyframes ingredient-toss{0%{transform:translateY(-40px);opacity:0}20%{opacity:1}100%{transform:translateY(100px) rotate(40deg) scale(.4);opacity:0}}@keyframes pot-stir{0%,70%{transform:rotate(-6deg)}25%,55%{transform:rotate(6deg)}100%{opacity:0;transform:scale(.7)}}@keyframes dish-reveal{0%,48%{opacity:0;transform:translateX(-50%) scale(.4)}65%,100%{opacity:1;transform:translateX(-50%) scale(1)}}
+@media(prefers-reduced-motion:reduce){.cooking-reveal *{animation:none!important}.reveal-ingredients,.reveal-pot{display:none}}
+
+.maisie-art{display:inline-block;width:64px;height:64px;flex-shrink:0;background-size:400% 200%;background-position:0 0}
+/* Flex items must shrink inside a fixed-width side sheet. Scroll only catalogues. */
+.sheet-frame{min-width:0;max-width:100%;box-sizing:border-box}
+.sheet-body{min-width:0;width:100%;box-sizing:border-box}
+.cooking-mix-add>.button{min-width:44px;padding-inline:8px}

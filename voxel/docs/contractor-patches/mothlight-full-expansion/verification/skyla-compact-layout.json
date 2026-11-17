@@ -1,0 +1,28 @@
+[
+  {
+    "width": 600,
+    "before": {
+      "height": 646.015625,
+      "overflow": false,
+      "minTarget": 113.390625
+    },
+    "after": {
+      "height": 417.359375,
+      "overflow": false,
+      "minTarget": 72
+    }
+  },
+  {
+    "width": 390,
+    "before": {
+      "height": 639.21875,
+      "overflow": false,
+      "minTarget": 119.390625
+    },
+    "after": {
+      "height": 517.453125,
+      "overflow": false,
+      "minTarget": 72
+    }
+  }
+]

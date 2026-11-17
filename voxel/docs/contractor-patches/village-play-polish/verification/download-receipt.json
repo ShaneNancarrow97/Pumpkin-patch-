@@ -1,0 +1,26 @@
+{
+  "artifactCommit": "abea66665f18f04e221d6880ed6af9440735aaa7",
+  "downloads": [
+    {
+      "file": "Pumpkin-Patch-Village-Play-Polish.html",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/abea66665f18f04e221d6880ed6af9440735aaa7/Pumpkin-Patch-Village-Play-Polish.html",
+      "bytes": 58258944,
+      "sha256": "bc7d34a08760e36b9e1004a48dae2b63d74b576dcce6622de648c3d3b60cd79e",
+      "verified": true
+    },
+    {
+      "file": "Pumpkin-Patch-Village-Play-Polish.zip",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/abea66665f18f04e221d6880ed6af9440735aaa7/Pumpkin-Patch-Village-Play-Polish.zip",
+      "bytes": 42070517,
+      "sha256": "5824eeeb66813b598d51d1941b502630b8728e967663f45a9c5d74f4ca92e436",
+      "verified": true
+    },
+    {
+      "file": "Pumpkin-Patch-Village-Play-Polish-Claude-Patch.zip",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/abea66665f18f04e221d6880ed6af9440735aaa7/Pumpkin-Patch-Village-Play-Polish-Claude-Patch.zip",
+      "bytes": 10280361,
+      "sha256": "fa38344234a8aa318561e8d418e56dc8a135087f5ba63eec6cb353d11f7937fb",
+      "verified": true
+    }
+  ]
+}

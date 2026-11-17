@@ -1,0 +1,1055 @@
+{
+  "date": "2026-11-08T18:23:07.618Z",
+  "html": "/workspace/Pumpkin-Patch-Village-Journey.html",
+  "sha256": "21e7270c572d9cdc6f2abae9eb9a27681d9d656841e93f81988e7320a375d3cb",
+  "bytes": 56977409,
+  "sourceCommit": "dc6725ee749709d4babcac0a7dcf01609435459d",
+  "workingTree": " M assets/voices/mothlight-v1/recording-status.json\n M assets/voices/mothlight-v1/voice-manifest.json\n M src/content/village-quests.js\n M src/content/village-tour.js\n M src/content/village-upgrades.js\n M src/content/village.js\n M src/cooking-world.js\n M src/festival-meadow-world.js\n M src/hayride-world.js\n M src/index.html\n M src/main.js\n M src/model.js\n M src/player-control.js\n M src/rules/farm.js\n M src/rules/village-navigation.js\n M src/rules/village-upgrades.js\n M src/rules/village.js\n M src/rules/wardrobe.js\n M src/scene.js\n M src/sprite-actors.js\n M src/style.css\n M src/ui/collection-sheets.js\n M src/ui/farm-sheets.js\n M src/ui/premium-icons.js\n M src/ui/village-chapters.js\n M src/ui/village-game.css\n M src/ui/village-item-markup.js\n M src/village-game.js\n M src/village-models.js\n M src/village-terrain.js\n M src/village-view.js\n M src/village-world.js\n M test/farm-growth.test.mjs\n M test/midnight-moon.test.mjs\n M test/model.test.mjs\n M test/unlocks.test.mjs\n M test/village-game.test.mjs\n M test/village-navigation.test.mjs\n?? assets/hd-natalie-empty-idle.webp\n?? assets/hd-shane-empty-idle.webp\n?? assets/owner-idle-concepts/\n?? src/content/owner-empty-idle-meta.js\n?? src/content/village-gateway.js\n?? src/farm-village-gate.js\n?? test/owner-empty-idle.test.mjs\n?? test/village-away-progression.test.mjs\n?? tools/bake-owner-empty-idle.py\n?? tools/village-journey-qa.mjs\n",
+  "sourceHashes": {
+    "src/main.js": "209f19ffe39bebdf6fc79d9cd07a85c17a1592e7575a8da3e2567ac53c7e9c28",
+    "src/model.js": "0b2bf61ac2d146a1feae06855b5151d3fcea3a87f6e855c24a926facbff265a9",
+    "src/village-game.js": "c5e9f56a90066d8e076d8a4d364b5121687d6b5b671d3d948eb5533dff23e266",
+    "src/village-view.js": "00475901aa84e621b5faade1ff9cd80006852d22183d4faa9219c009b1fe0059",
+    "src/content/village.js": "79eeca7e364d5c09da45d532a55b5c3b8b92d90f72297ca018aa1a911c0339d5",
+    "src/content/village-gateway.js": "ef4babb1f62fb20d03c4d4116c6351c0a375b6e16ef70431fef3ea4792b9eba1",
+    "src/rules/farm.js": "925dc66ceaeb63c6b03ecb01bebb37ee2a31a1884e710f6696892dfa1b4a4ff1",
+    "src/rules/wardrobe.js": "da06fd058f2d78477657a5e17cc56d11356ec6e419b4e70dce09ba834fa89a90",
+    "src/sprite-actors.js": "8956f8020ab386a0623a9f886a6d6772a52753569e4623f6c2830862dda066f2",
+    "assets/hd-natalie-empty-idle.webp": "57c139643fa52fdfc160a36cfd7dbd1af7cb7d5a4b4f09c8bd28bb43b9e494b9",
+    "assets/hd-shane-empty-idle.webp": "cddc935ad5c2001c0ee72709a2112d2bcf2ce967f5b788039900e084c876ab4c"
+  },
+  "scope": "Exact standalone HTML bytes on loopback. A declared level-3 save starts uninvited/untoured. Actual Playwright pointer/key events test visible navigation, gateway, gather and workshop controls. Walk setup uses the real collision/controller path with mocked standard-pad axes and accelerated 0.05s steps; farm gateway threshold uses declared teleport immediately before actual keyboard input. Gather snapshots freeze only village controller tick, then call its original tick with explicit dt. Late story state/inventory is explicitly fixture-set, not earned in play. Viewports emulate layout/touch, not physical phone, Fold, TV, Bluetooth or GPU performance.",
+  "fixture": {
+    "level": 3,
+    "coins": 20000,
+    "introSeen": true,
+    "invited": false,
+    "toured": false
+  },
+  "checks": [
+    {
+      "pass": true,
+      "label": "Declared level-3 save loads"
+    },
+    {
+      "pass": true,
+      "label": "Visible Village hotbar opens directly at level 3 and starts first-visit flight"
+    },
+    {
+      "pass": true,
+      "label": "Visible Skip tour restores playable owner and saves tour"
+    },
+    {
+      "pass": true,
+      "label": "Farm at work indicator displays base 2.5%"
+    },
+    {
+      "pass": true,
+      "label": "Source content supplies four forage clearings and 32 Green nodes",
+      "detail": {
+        "areas": [
+          {
+            "id": "fallen-timber",
+            "name": "Fallen Timber Grove",
+            "material": "logs",
+            "x": 27,
+            "z": -12,
+            "x0": 6,
+            "z0": -30,
+            "x1": 51,
+            "z1": -3
+          },
+          {
+            "id": "flax-hollow",
+            "name": "Flax Hollow",
+            "material": "fibre",
+            "x": 63,
+            "z": -10.5,
+            "x0": 54,
+            "z0": -31.5,
+            "x1": 73.5,
+            "z1": -3
+          },
+          {
+            "id": "moonflower-meadow",
+            "name": "Moonflower Meadow",
+            "material": "herbs",
+            "x": 117,
+            "z": -19.5,
+            "x0": 100.5,
+            "z0": -30,
+            "x1": 133.5,
+            "z1": -3
+          },
+          {
+            "id": "stone-bank",
+            "name": "Old Stone Bank",
+            "material": "stone",
+            "x": 154.5,
+            "z": -21,
+            "x0": 135,
+            "z0": -31.5,
+            "x1": 174,
+            "z1": -3
+          }
+        ],
+        "greenPolygon": [
+          [
+            0,
+            -33
+          ],
+          [
+            180,
+            -33
+          ],
+          [
+            180,
+            54
+          ],
+          [
+            0,
+            54
+          ]
+        ],
+        "arrival": {
+          "carriage": [
+            87,
+            -36.6
+          ],
+          "back": [
+            87,
+            -32.1
+          ],
+          "spawn": [
+            87,
+            -25.5
+          ],
+          "noticeboard": [
+            94.5,
+            43.2
+          ]
+        },
+        "areaGrowth": 61.111111111111114
+      }
+    },
+    {
+      "pass": true,
+      "label": "Actual canvas click on gateway enters Mothlight",
+      "detail": {
+        "point": {
+          "x": 1180.4444444444443,
+          "y": 334.2099056375796
+        },
+        "visible": "Mothlight village road",
+        "position": [
+          38,
+          1.75,
+          10.4
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "Real keyboard walk across gateway threshold autoenters",
+      "detail": {
+        "fixture": "Farm player teleported to (38,10.9), then actual w key crosses threshold"
+      }
+    },
+    {
+      "pass": true,
+      "label": "Distant resource pick guides without gathering or granting inventory",
+      "detail": {
+        "before": {
+          "x": 87,
+          "z": -25.5
+        },
+        "after": {
+          "active": true,
+          "inside": null,
+          "who": "shane",
+          "position": {
+            "x": 87,
+            "z": -25.5
+          },
+          "panel": null,
+          "touring": false,
+          "surveying": false,
+          "decorating": false,
+          "input": "pointer",
+          "waypoint": {
+            "x": 13.5,
+            "z": -9,
+            "label": "Softwood logs · Fallen Timber Grove"
+          },
+          "gathering": null
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "Controller route reaches logs-08",
+      "detail": {
+        "method": "Mock standard pad, actual collision/controller, accelerated .05s steps",
+        "route": [
+          {
+            "x": 37.5,
+            "z": -7.5
+          }
+        ],
+        "steps": 363,
+        "position": {
+          "x": 37.57557620501918,
+          "z": -7.527482256370613
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "logs-08: visible Gather starts timed action with no immediate award",
+      "detail": {
+        "before": {
+          "logs": 0,
+          "stone": 0,
+          "fibre": 0,
+          "herbs": 0,
+          "hardwood": 0,
+          "moth-silk": 0,
+          "iron": 0,
+          "clay": 0,
+          "moonstone": 0,
+          "emberbloom": 0,
+          "star-amber": 0
+        },
+        "started": {
+          "active": true,
+          "inside": null,
+          "who": "shane",
+          "position": {
+            "x": 37.57557620501918,
+            "z": -7.527482256370613
+          },
+          "panel": null,
+          "touring": false,
+          "surveying": false,
+          "decorating": false,
+          "input": "pointer",
+          "waypoint": {
+            "x": 37.5,
+            "z": -7.5,
+            "label": "Softwood logs · Fallen Timber Grove"
+          },
+          "gathering": {
+            "id": "logs-08",
+            "material": "logs",
+            "progress": 0,
+            "tool": "axe"
+          }
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "logs-08: partial action shows axe and no early inventory",
+      "detail": {
+        "status": {
+          "active": true,
+          "inside": null,
+          "who": "shane",
+          "position": {
+            "x": 37.57557620501918,
+            "z": -7.527482256370613
+          },
+          "panel": null,
+          "touring": false,
+          "surveying": false,
+          "decorating": false,
+          "input": "pointer",
+          "waypoint": {
+            "x": 37.5,
+            "z": -7.5,
+            "label": "Softwood logs · Fallen Timber Grove"
+          },
+          "gathering": {
+            "id": "logs-08",
+            "material": "logs",
+            "progress": 0.4210526315789474,
+            "tool": "axe"
+          }
+        },
+        "materials": {
+          "logs": 0,
+          "stone": 0,
+          "fibre": 0,
+          "herbs": 0,
+          "hardwood": 0,
+          "moth-silk": 0,
+          "iron": 0,
+          "clay": 0,
+          "moonstone": 0,
+          "emberbloom": 0,
+          "star-amber": 0
+        },
+        "nodes": {
+          "logs-01": 0,
+          "logs-02": 0,
+          "logs-03": 0,
+          "logs-04": 0,
+          "logs-05": 0,
+          "logs-06": 0,
+          "logs-07": 0,
+          "logs-08": 0,
+          "stone-01": 0,
+          "stone-02": 0,
+          "stone-03": 0,
+          "stone-04": 0,
+          "stone-05": 0,
+          "stone-06": 0,
+          "fibre-01": 0,
+          "fibre-02": 0,
+          "fibre-03": 0,
+          "fibre-04": 0,
+          "fibre-05": 0,
+          "fibre-06": 0,
+          "herbs-01": 0,
+          "herbs-02": 0,
+          "herbs-03": 0,
+          "herbs-04": 0,
+          "logs-09": 0,
+          "logs-10": 0,
+          "stone-07": 0,
+          "stone-08": 0,
+          "fibre-07": 0,
+          "fibre-08": 0,
+          "herbs-05": 0,
+          "herbs-06": 0,
+          "hardwood-01": 0,
+          "hardwood-02": 0,
+          "hardwood-03": 0,
+          "hardwood-04": 0,
+          "moth_silk-01": 0,
+          "moth_silk-02": 0,
+          "iron-01": 0,
+          "iron-02": 0,
+          "iron-03": 0,
+          "clay-01": 0,
+          "clay-02": 0,
+          "clay-03": 0,
+          "moonstone-01": 0,
+          "moonstone-02": 0,
+          "emberbloom-01": 0,
+          "emberbloom-02": 0,
+          "emberbloom-03": 0,
+          "star_amber-01": 0
+        },
+        "hits": [
+          {
+            "id": "logs-01",
+            "visible": true
+          },
+          {
+            "id": "logs-02",
+            "visible": true
+          },
+          {
+            "id": "logs-03",
+            "visible": true
+          },
+          {
+            "id": "logs-04",
+            "visible": true
+          },
+          {
+            "id": "logs-05",
+            "visible": true
+          },
+          {
+            "id": "logs-06",
+            "visible": true
+          },
+          {
+            "id": "logs-07",
+            "visible": true
+          },
+          {
+            "id": "logs-08",
+            "visible": true
+          },
+          {
+            "id": "stone-01",
+            "visible": true
+          },
+          {
+            "id": "stone-02",
+            "visible": true
+          },
+          {
+            "id": "stone-03",
+            "visible": true
+          },
+          {
+            "id": "stone-04",
+            "visible": true
+          },
+          {
+            "id": "stone-05",
+            "visible": true
+          },
+          {
+            "id": "stone-06",
+            "visible": true
+          },
+          {
+            "id": "fibre-01",
+            "visible": true
+          },
+          {
+            "id": "fibre-02",
+            "visible": true
+          },
+          {
+            "id": "fibre-03",
+            "visible": true
+          },
+          {
+            "id": "fibre-04",
+            "visible": true
+          },
+          {
+            "id": "fibre-05",
+            "visible": true
+          },
+          {
+            "id": "fibre-06",
+            "visible": true
+          },
+          {
+            "id": "herbs-01",
+            "visible": true
+          },
+          {
+            "id": "herbs-02",
+            "visible": true
+          },
+          {
+            "id": "herbs-03",
+            "visible": true
+          },
+          {
+            "id": "herbs-04",
+            "visible": true
+          },
+          {
+            "id": "logs-09",
+            "visible": true
+          },
+          {
+            "id": "logs-10",
+            "visible": true
+          },
+          {
+            "id": "stone-07",
+            "visible": true
+          },
+          {
+            "id": "stone-08",
+            "visible": true
+          },
+          {
+            "id": "fibre-07",
+            "visible": true
+          },
+          {
+            "id": "fibre-08",
+            "visible": true
+          },
+          {
+            "id": "herbs-05",
+            "visible": true
+          },
+          {
+            "id": "herbs-06",
+            "visible": true
+          }
+        ],
+        "tools": [
+          {
+            "name": "village-axe",
+            "visible": true,
+            "position": [
+              38.00557620501918,
+              1.22,
+              7.527482256370613
+            ]
+          }
+        ],
+        "actor": {
+          "direction": "front",
+          "map": [
+            1777,
+            662
+          ]
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "logs-08: overlapping second gather cannot replace action"
+    },
+    {
+      "pass": true,
+      "label": "logs-08: completion awards once and spent repeat awards nothing",
+      "detail": {
+        "before": {
+          "logs": 0,
+          "stone": 0,
+          "fibre": 0,
+          "herbs": 0,
+          "hardwood": 0,
+          "moth-silk": 0,
+          "iron": 0,
+          "clay": 0,
+          "moonstone": 0,
+          "emberbloom": 0,
+          "star-amber": 0
+        },
+        "finished": {
+          "logs": 2,
+          "stone": 0,
+          "fibre": 0,
+          "herbs": 0,
+          "hardwood": 0,
+          "moth-silk": 0,
+          "iron": 0,
+          "clay": 0,
+          "moonstone": 0,
+          "emberbloom": 0,
+          "star-amber": 0
+        },
+        "repeat": {
+          "logs": 2,
+          "stone": 0,
+          "fibre": 0,
+          "herbs": 0,
+          "hardwood": 0,
+          "moth-silk": 0,
+          "iron": 0,
+          "clay": 0,
+          "moonstone": 0,
+          "emberbloom": 0,
+          "star-amber": 0
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "logs-08: spent resource hit and held tool disappear",
+      "detail": {
+        "id": "logs-08",
+        "visible": false
+      }
+    },
+    {
+      "pass": true,
+      "label": "Controller route reaches stone-07",
+      "detail": {
+        "method": "Mock standard pad, actual collision/controller, accelerated .05s steps",
+        "route": [
+          {
+            "x": 148.5,
+            "z": -7.5
+          }
+        ],
+        "steps": 765,
+        "position": {
+          "x": 148.40728012048345,
+          "z": -7.500022971960659
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "stone-07: visible Gather starts timed action with no immediate award",
+      "detail": {
+        "before": {
+          "logs": 2,
+          "stone": 0,
+          "fibre": 0,
+          "herbs": 0,
+          "hardwood": 0,
+          "moth-silk": 0,
+          "iron": 0,
+          "clay": 0,
+          "moonstone": 0,
+          "emberbloom": 0,
+          "star-amber": 0
+        },
+        "started": {
+          "active": true,
+          "inside": null,
+          "who": "shane",
+          "position": {
+            "x": 148.40728012048345,
+            "z": -7.500022971960659
+          },
+          "panel": null,
+          "touring": false,
+          "surveying": false,
+          "decorating": false,
+          "input": "pointer",
+          "waypoint": {
+            "x": 148.5,
+            "z": -7.5,
+            "label": "Stone · Old Stone Bank"
+          },
+          "gathering": {
+            "id": "stone-07",
+            "material": "stone",
+            "progress": 0,
+            "tool": "pickaxe"
+          }
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "stone-07: partial action shows pickaxe and no early inventory",
+      "detail": {
+        "status": {
+          "active": true,
+          "inside": null,
+          "who": "shane",
+          "position": {
+            "x": 148.40728012048345,
+            "z": -7.500022971960659
+          },
+          "panel": null,
+          "touring": false,
+          "surveying": false,
+          "decorating": false,
+          "input": "pointer",
+          "waypoint": {
+            "x": 148.5,
+            "z": -7.5,
+            "label": "Stone · Old Stone Bank"
+          },
+          "gathering": {
+            "id": "stone-07",
+            "material": "stone",
+            "progress": 0.4210526315789474,
+            "tool": "pickaxe"
+          }
+        },
+        "materials": {
+          "logs": 2,
+          "stone": 0,
+          "fibre": 0,
+          "herbs": 0,
+          "hardwood": 0,
+          "moth-silk": 0,
+          "iron": 0,
+          "clay": 0,
+          "moonstone": 0,
+          "emberbloom": 0,
+          "star-amber": 0
+        },
+        "nodes": {
+          "logs-01": 0,
+          "logs-02": 0,
+          "logs-03": 0,
+          "logs-04": 0,
+          "logs-05": 0,
+          "logs-06": 0,
+          "logs-07": 0,
+          "logs-08": 179.8,
+          "stone-01": 0,
+          "stone-02": 0,
+          "stone-03": 0,
+          "stone-04": 0,
+          "stone-05": 0,
+          "stone-06": 0,
+          "fibre-01": 0,
+          "fibre-02": 0,
+          "fibre-03": 0,
+          "fibre-04": 0,
+          "fibre-05": 0,
+          "fibre-06": 0,
+          "herbs-01": 0,
+          "herbs-02": 0,
+          "herbs-03": 0,
+          "herbs-04": 0,
+          "logs-09": 0,
+          "logs-10": 0,
+          "stone-07": 0,
+          "stone-08": 0,
+          "fibre-07": 0,
+          "fibre-08": 0,
+          "herbs-05": 0,
+          "herbs-06": 0,
+          "hardwood-01": 0,
+          "hardwood-02": 0,
+          "hardwood-03": 0,
+          "hardwood-04": 0,
+          "moth_silk-01": 0,
+          "moth_silk-02": 0,
+          "iron-01": 0,
+          "iron-02": 0,
+          "iron-03": 0,
+          "clay-01": 0,
+          "clay-02": 0,
+          "clay-03": 0,
+          "moonstone-01": 0,
+          "moonstone-02": 0,
+          "emberbloom-01": 0,
+          "emberbloom-02": 0,
+          "emberbloom-03": 0,
+          "star_amber-01": 0
+        },
+        "hits": [
+          {
+            "id": "logs-01",
+            "visible": true
+          },
+          {
+            "id": "logs-02",
+            "visible": true
+          },
+          {
+            "id": "logs-03",
+            "visible": true
+          },
+          {
+            "id": "logs-04",
+            "visible": true
+          },
+          {
+            "id": "logs-05",
+            "visible": true
+          },
+          {
+            "id": "logs-06",
+            "visible": true
+          },
+          {
+            "id": "logs-07",
+            "visible": true
+          },
+          {
+            "id": "logs-08",
+            "visible": false
+          },
+          {
+            "id": "stone-01",
+            "visible": true
+          },
+          {
+            "id": "stone-02",
+            "visible": true
+          },
+          {
+            "id": "stone-03",
+            "visible": true
+          },
+          {
+            "id": "stone-04",
+            "visible": true
+          },
+          {
+            "id": "stone-05",
+            "visible": true
+          },
+          {
+            "id": "stone-06",
+            "visible": true
+          },
+          {
+            "id": "fibre-01",
+            "visible": true
+          },
+          {
+            "id": "fibre-02",
+            "visible": true
+          },
+          {
+            "id": "fibre-03",
+            "visible": true
+          },
+          {
+            "id": "fibre-04",
+            "visible": true
+          },
+          {
+            "id": "fibre-05",
+            "visible": true
+          },
+          {
+            "id": "fibre-06",
+            "visible": true
+          },
+          {
+            "id": "herbs-01",
+            "visible": true
+          },
+          {
+            "id": "herbs-02",
+            "visible": true
+          },
+          {
+            "id": "herbs-03",
+            "visible": true
+          },
+          {
+            "id": "herbs-04",
+            "visible": true
+          },
+          {
+            "id": "logs-09",
+            "visible": true
+          },
+          {
+            "id": "logs-10",
+            "visible": true
+          },
+          {
+            "id": "stone-07",
+            "visible": true
+          },
+          {
+            "id": "stone-08",
+            "visible": true
+          },
+          {
+            "id": "fibre-07",
+            "visible": true
+          },
+          {
+            "id": "fibre-08",
+            "visible": true
+          },
+          {
+            "id": "herbs-05",
+            "visible": true
+          },
+          {
+            "id": "herbs-06",
+            "visible": true
+          }
+        ],
+        "tools": [
+          {
+            "name": "village-axe",
+            "visible": false,
+            "position": [
+              38.00557620501918,
+              1.22,
+              7.527482256370613
+            ]
+          },
+          {
+            "name": "village-pickaxe",
+            "visible": true,
+            "position": [
+              148.83728012048346,
+              1.22,
+              7.500022971960659
+            ]
+          }
+        ],
+        "actor": {
+          "direction": "front",
+          "map": [
+            1777,
+            662
+          ]
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "stone-07: overlapping second gather cannot replace action"
+    },
+    {
+      "pass": true,
+      "label": "stone-07: completion awards once and spent repeat awards nothing",
+      "detail": {
+        "before": {
+          "logs": 2,
+          "stone": 0,
+          "fibre": 0,
+          "herbs": 0,
+          "hardwood": 0,
+          "moth-silk": 0,
+          "iron": 0,
+          "clay": 0,
+          "moonstone": 0,
+          "emberbloom": 0,
+          "star-amber": 0
+        },
+        "finished": {
+          "logs": 2,
+          "stone": 2,
+          "fibre": 0,
+          "herbs": 0,
+          "hardwood": 0,
+          "moth-silk": 0,
+          "iron": 0,
+          "clay": 0,
+          "moonstone": 0,
+          "emberbloom": 0,
+          "star-amber": 0
+        },
+        "repeat": {
+          "logs": 2,
+          "stone": 2,
+          "fibre": 0,
+          "herbs": 0,
+          "hardwood": 0,
+          "moth-silk": 0,
+          "iron": 0,
+          "clay": 0,
+          "moonstone": 0,
+          "emberbloom": 0,
+          "star-amber": 0
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "stone-07: spent resource hit and held tool disappear",
+      "detail": {
+        "id": "stone-07",
+        "visible": false
+      }
+    },
+    {
+      "pass": true,
+      "label": "Actual app advance obeys 2.5% farm rate",
+      "detail": {
+        "delta": 0.09999999999999787,
+        "rate": 0.025,
+        "display": "2.5%",
+        "effects": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "Actual app advance obeys 5% farm rate after visible workshop purchase",
+      "detail": {
+        "delta": 0.19999999999999574,
+        "rate": 0.05,
+        "display": "5%",
+        "effects": [
+          "upgrade:away-ledger"
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "Actual app advance obeys 7.5% farm rate after visible workshop purchase",
+      "detail": {
+        "delta": 0.2999999999999936,
+        "rate": 0.075,
+        "display": "7.5%",
+        "effects": [
+          "upgrade:away-ledger",
+          "upgrade:away-steward"
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "Actual app advance obeys 10% farm rate after visible workshop purchase",
+      "detail": {
+        "delta": 0.3999999999999915,
+        "rate": 0.1,
+        "display": "10%",
+        "effects": [
+          "upgrade:away-ledger",
+          "upgrade:away-steward",
+          "upgrade:away-network"
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "Late final plot purchase explains workshop story gate",
+      "detail": {
+        "containsWorkshopReason": true
+      }
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "01-intro-flight.png",
+      "kind": "Actual first visit, live flight path"
+    },
+    {
+      "file": "02-expanded-arrival.png",
+      "kind": "Normal arrival camera after skipping intro"
+    },
+    {
+      "file": "03-farm-gateway.png",
+      "kind": "Grounded physical gateway at x38 z10.4, management camera staged with scene.focus"
+    },
+    {
+      "file": "04-gather-axe.png",
+      "kind": "Visible Gather action; controller clock held at 0.4s of 0.95s to inspect tool"
+    },
+    {
+      "file": "05-gather-pickaxe.png",
+      "kind": "Visible Gather action; controller clock held at 0.4s of 0.95s to inspect tool"
+    },
+    {
+      "file": "06-workshop-rates.png",
+      "kind": "Real workshop purchase results, explicit materials and completed prerequisites fixture"
+    },
+    {
+      "file": "journey-failure.png",
+      "kind": "Failure evidence"
+    }
+  ],
+  "layouts": [],
+  "errors": [
+    "page.evaluate: TypeError: Cannot read properties of undefined (reading 'opened')\n    at Object.Fn [as openSheet] (http://127.0.0.1:45153/game.html:8289:56064)\n    at eval (eval at evaluate (:234:30), <anonymous>:1:18)\n    at UtilityScript.evaluate (<anonymous>:236:17)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at /workspace/pumpkin-menu-item-sprites/voxel/tools/village-journey-qa.mjs:80:13"
+  ],
+  "externalRequests": [],
+  "rates": [
+    {
+      "id": null,
+      "delta": 0.09999999999999787,
+      "rate": 0.025,
+      "display": "2.5%",
+      "effects": []
+    },
+    {
+      "id": "away-ledger",
+      "delta": 0.19999999999999574,
+      "rate": 0.05,
+      "display": "5%",
+      "effects": [
+        "upgrade:away-ledger"
+      ]
+    },
+    {
+      "id": "away-steward",
+      "delta": 0.2999999999999936,
+      "rate": 0.075,
+      "display": "7.5%",
+      "effects": [
+        "upgrade:away-ledger",
+        "upgrade:away-steward"
+      ]
+    },
+    {
+      "id": "away-network",
+      "delta": 0.3999999999999915,
+      "rate": 0.1,
+      "display": "10%",
+      "effects": [
+        "upgrade:away-ledger",
+        "upgrade:away-steward",
+        "upgrade:away-network"
+      ]
+    }
+  ],
+  "passed": false
+}

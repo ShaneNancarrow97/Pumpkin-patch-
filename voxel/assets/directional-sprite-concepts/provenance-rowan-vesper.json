@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "created": "2026-11-08",
+  "generator": "OpenAI image generation",
+  "directions": [
+    "front",
+    "frontRight",
+    "right",
+    "backRight",
+    "back",
+    "backLeft",
+    "left",
+    "frontLeft"
+  ],
+  "phases": [
+    "left-contact",
+    "left-down",
+    "right-pass",
+    "right-up",
+    "right-contact",
+    "right-down",
+    "left-pass",
+    "left-up"
+  ],
+  "technicalOperations": "Initial complete generated atlases subsequently received authored front-row gait corrections; see per-character provenance-*-front-footfall.json and provenance-green-front-prompts.json. No reflected or procedurally drawn frames. Runtime normalization follows separately.",
+  "characters": [
+    {
+      "id": "rowan",
+      "source": "rowan.png",
+      "references": [
+        "../village/rowan.webp"
+      ],
+      "prompt": "Production WALK sprite sheet of exactly the same Rowan scarecrow carpenter as reference. Same friendly button eyes, stitched smile, straw hair, broad green autumn-leaf hat, burgundy scarf, patchwork green coat, brown work apron, short dark trousers, brown boots and wooden mallet held in his RIGHT hand, painted details. Transparent background. 8 columns and 8 rows, exactly 64 evenly spaced complete figures, no text or grid lines. Art must fit each cell with transparent gap. Eight successive walk phases across each row: left foot contact, left weight down, right foot passes, right foot swing, RIGHT foot contact, right weight down, left foot passes, left foot swing. Clear alternate legs, BOTH boots shown, opposite arms counter-swing while retaining mallet. ALL bodies in a row face its specified direction; a different viewing angle for each row. CRITICAL VIEWER DIRECTIONS: row1 faces directly at viewer. Row2 nose points diagonally TO THE RIGHT EDGE OF IMAGE, viewer sees FRONT and rightward-facing cheek. Row3 PURE SIDE PROFILE, nose clearly points TO RIGHT EDGE OF IMAGE, all eyes look RIGHT. Row4 walks diagonally away TOWARDS RIGHT EDGE, viewer sees his BACK and only a tiny rightward edge of cheek. Row5 walks directly AWAY, ONLY BACK OF HEAD AND CLOTHING, NO FACE. Row6 walks diagonally away TOWARDS LEFT EDGE, BACK plus tiny leftward cheek. Row7 PURE SIDE PROFILE nose points TO LEFT EDGE OF IMAGE, all eyes look LEFT. Row8 diagonal front facing towards LEFT EDGE. Thus rows2,3,4 FACE THE OPPOSITE WAY to rows6,7,8. Real turnaround with accurate asymmetric props; do not merely mirror front-facing drawings, never give two left profiles. Continuous complete eight-phase walk loop per row, alternate left and right foot contacts clearly, all eight different poses, no duplicate standing poses. Uniform camera elevation only slightly above horizontal, same body scale, feet baseline and spacing all frames. No captions, arrows, floor/contact shadows or background. Highest image resolution available; square 2048x2048 preferred.",
+      "visualReview": {
+        "approved": true,
+        "frameCount": 64,
+        "grid": [
+          8,
+          8
+        ],
+        "notes": "Authored right/left profiles and rear views. Left/right boots visibly alternate. Rear yaw angles are approximate painted views rather than mechanically exact45degree renders. Preserve original idle/wave assets."
+      },
+      "initialGeneratedFile": "exec-ba90103c-b8c2-44a3-a083-a1d7fc82fd44.png",
+      "frontRepairProvenance": "provenance-rowan-front-footfall.json"
+    },
+    {
+      "id": "vesper",
+      "source": "vesper.png",
+      "references": [
+        "../village/vesper.webp",
+        "exec-ba90103c-b8c2-44a3-a083-a1d7fc82fd44.png",
+        "exec-64941815-43d2-4bf9-b9fd-6051864397ca.png"
+      ],
+      "prompt": "Correct ONLY the SECOND ROW of this 8x8 sprite atlas. Keep all other rows, all colours, body proportions, faces, outfit design and frame grid unchanged. Row2 currently wrongly looks toward screen LEFT. REDRAW row2 as the same eight walking poses but bodies turn toward SCREEN RIGHT at 45-degree FRONT THREE-QUARTER angle. Look at ROW3 right-facing profile for correct direction: row2 must face the same rightward direction as row3 but turn 45degrees towards viewer so the front waistcoat buttons and both eyes are visible. Keep same ADULT vampire's compact stylised body proportions, exactly identical head size and height to the other rows. Row2 has eight alternating left/right leg walk phases, preserving continuous motion and candelabrum right-hand prop. Full transparent RGBA atlas, 8columns8rows, no labels or grid. Correct row2 direction without making any other changes. Row2 noses must point to the RIGHT EDGE of image. Neither front-facing nor left-facing. The candelabrum is held in anatomical RIGHT hand and stays gold 3candles. Don't change body ratio or the look of Vesper. Maintain every figure on same baseline and cellcentre and ensure entire bodies inside their grid cell.",
+      "basePrompt": "Create ONE transparent 8-by-8 walk-cycle atlas of VESPER, the VAMPIRE in reference1. Reference2 is a direction/layout template ONLY: make Vesper face the same direction as Rowan in every corresponding row, but DO NOT use Rowan's appearance. Preserve Vesper EXACT painted character design: young pale adult vampire gentleman, dark swept hair, pointed ears, burgundy waistcoat, cream cravat, dark brown gold-brocade coat with red lining, trousers and lace-up boots, holding his golden candelabrum upright. 64 FULL BODY vampire sprites. Important: every figure entirely within its cell with clear transparent margin of at least 12% cell width and height; rightmost figures must NOT touch right canvas edge. Tops and feet must NOT touch canvas edges. EXACT 8col8row evenly sized grid. All 8 figures in ROW3 must point their NOSES AND TOES TO THE RIGHT SIDE OF THE IMAGE, as in reference2. All8figures in ROW7 point noses/toes TO LEFT SIDE. Full turn: row1 frontal towards viewer; row2 frontal diagonal toward image RIGHT; row3 RIGHT-FACING PURE PROFILE; row4 back diagonal moving away and RIGHT; row5 REAR VIEW ONLY no face; row6 rear diagonal away and LEFT; row7 LEFT-FACING PURE PROFILE; row8 front diagonal toward LEFT. Real fully rotated bodies, not all front views. Genuine 8phase WALK with LEFT contact, leftweight, rightpassing, rightswing, RIGHTcontact, rightweight, leftpassing, leftswing. Every column different leg placement, bent knees, opposite forward contacts. Whole candelabrum, hair and feet visible, no cropping. Same figure height and centre within allcells, no bouncing scale. NO text, labels, arrows, gridlines, shadows, floor or background; transparent RGBA. Render square highest resolution. Viewer-right rows2,3,4 and viewer-left rows6,7,8 are mandatory and visibly different.",
+      "visualReview": {
+        "approved": true,
+        "frameCount": 64,
+        "grid": [
+          8,
+          8
+        ],
+        "notes": "Regenerated second row to face front-right after initial atlas mistakenly repeated front-left. Both pure profiles now face opposite screen directions. Rear-only row5 shows no face. Earlier isolated-row trials were rejected for different head/body proportions and are not shipped. Candle prop occlusion varies with viewpoint; direction angles are approximate hand-painted views."
+      },
+      "initialGeneratedFile": "exec-df8f2556-90c4-4ec2-9f3c-2051753a445c.png",
+      "frontRepairProvenance": "provenance-vesper-front-footfall.json"
+    }
+  ]
+}

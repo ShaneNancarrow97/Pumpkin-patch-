@@ -1,0 +1,76 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Menu-Fix.html",
+  "checks": [
+    {
+      "ok": true,
+      "label": "fresh unpurchased house opens its level-gated card on touch"
+    },
+    {
+      "ok": true,
+      "label": "simulation continues after selecting the unpurchased house"
+    },
+    {
+      "ok": true,
+      "label": "Manage opens the locked purchase menu"
+    },
+    {
+      "ok": true,
+      "label": "unowned eligible house opens without a scope error"
+    },
+    {
+      "ok": true,
+      "label": "eligible player can purchase from the map menu"
+    },
+    {
+      "ok": true,
+      "label": "cocoa item atlas loads and every product thumbnail has visible dimensions",
+      "data": [
+        {
+          "w": 56,
+          "h": 56,
+          "loaded": true,
+          "size": "300% 200%",
+          "position": "0% 0%"
+        },
+        {
+          "w": 56,
+          "h": 56,
+          "loaded": true,
+          "size": "300% 200%",
+          "position": "50% 0%"
+        },
+        {
+          "w": 56,
+          "h": 56.0001220703125,
+          "loaded": true,
+          "size": "300% 200%",
+          "position": "100% 0%"
+        },
+        {
+          "w": 56,
+          "h": 56,
+          "loaded": true,
+          "size": "300% 200%",
+          "position": "0% 100%"
+        },
+        {
+          "w": 56,
+          "h": 56,
+          "loaded": true,
+          "size": "300% 200%",
+          "position": "50% 100%"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "label": "cocoa menu fits a narrow phone"
+    },
+    {
+      "ok": true,
+      "label": "no runtime errors",
+      "data": []
+    }
+  ],
+  "errors": []
+}

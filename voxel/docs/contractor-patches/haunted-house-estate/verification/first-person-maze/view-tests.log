@@ -1,0 +1,11 @@
+✔ pause freezes a pending look gesture, including deterministic advance (286.39601ms)
+✔ replay refreshes actor ownership and cue ids, while exit clears active input (116.401093ms)
+✔ every tier finishes on a finite rail pose and frames its authored reveals (688.335426ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1098.548234

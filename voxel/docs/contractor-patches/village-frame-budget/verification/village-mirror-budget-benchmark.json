@@ -1,0 +1,34 @@
+{
+  "baselineCommit": "5046b4bab3f30fad978f8fc33100230b6fd0f65d",
+  "scope": "Two isolated synchronous JavaScript bridge fixtures; no GPU, frame-rate, image-quality or physical-device claim.",
+  "before": {
+    "sharedLayouts": {
+      "liveMeshes": 240,
+      "geometryAttributeEnumerationsPerSync": 241
+    },
+    "replacements": {
+      "replacementFrames": 240,
+      "liveSourceMeshes": 1,
+      "liveMirroredObjects": 1,
+      "materialsCreatedDuringChurn": 240,
+      "retiredChurnMaterials": 0,
+      "retainedChurnMaterials": 240,
+      "allRetainedSourceOpacityReadsPerSync": 720
+    }
+  },
+  "after": {
+    "sharedLayouts": {
+      "liveMeshes": 240,
+      "geometryAttributeEnumerationsPerSync": 2
+    },
+    "replacements": {
+      "replacementFrames": 240,
+      "liveSourceMeshes": 1,
+      "liveMirroredObjects": 1,
+      "materialsCreatedDuringChurn": 240,
+      "retiredChurnMaterials": 239,
+      "retainedChurnMaterials": 1,
+      "allRetainedSourceOpacityReadsPerSync": 3
+    }
+  }
+}

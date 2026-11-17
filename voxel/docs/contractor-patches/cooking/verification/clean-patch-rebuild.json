@@ -1,0 +1,11 @@
+{
+  "base": "5083446e1ffcc94f370feff0e533150899c771f3",
+  "sourceRuntimeCommit": "ba99b87a5a6d7a94e8ba584d32fca42970828c30",
+  "patchAppliesCleanly": true,
+  "byteIdentical": true,
+  "htmlSha256": "e8601b62048df0df52e035fc332c4b080d612ea6fb52d6a986d9c362b49c5ecf",
+  "runtimePatchSha256": "527166ac07a861c06c9daeb2d1936f0393862316c5d37b611c225c8cdbe02b65",
+  "rebuildDirectory": "/workspace/cooking-clean-61w1zt_x",
+  "baseInputs": "voxel and unchanged shared src imports",
+  "precedingRuntimePatchVerified": "5011cc24bdf1bb9f74ce9cd6a7c60cb6f95455ee"
+}

@@ -1,0 +1,213 @@
+{
+  "file": "/tmp/Pumpkin-Patch-Mothlight-Recovery.html",
+  "htmlSha256": "4476b90884a37b4cf86c0009fb856281f9fed3e3b5551e02968f59596901dd5c",
+  "bytes": 61805422,
+  "harnessSha256": "aa67e17a4b1cfd6a4590d05252b3a6fcb74911b10aa5878c44418670afa74a84",
+  "fixtureSha256": "587a0875e64207c9a75f921b9845ed60744090f67028e0cc5825a4cd54746082",
+  "scope": "UI-only exact HTML acceptance. Two native village RAFs precede explicit renderer/composer draw holding. World pixels in ui-only screenshots are stale and are not renderer/performance evidence. Input, DOM and simulation use native game RAF. Supplied level20 fixture starts with no hidden keepsakes; later legitimate eligibility counters are staged and the native model update awards six colours. No real progression pacing or physical device certification is claimed.",
+  "checks": [
+    {
+      "label": "Discoveries start collapsed below the active objective",
+      "pass": true
+    },
+    {
+      "label": "Locked journal hides all secret colour names and swatches",
+      "pass": true
+    },
+    {
+      "label": "desktop: discovery text, targets and scrolling fit",
+      "pass": true,
+      "actual": {
+        "pass": true,
+        "box": {
+          "left": 820,
+          "top": 82,
+          "right": 1260,
+          "bottom": 698
+        },
+        "viewport": [
+          1280,
+          800
+        ],
+        "tiny": [],
+        "small": [],
+        "documentOverflow": 0,
+        "contentOverflow": 0
+      }
+    },
+    {
+      "label": "phone: discovery text, targets and scrolling fit",
+      "pass": true,
+      "actual": {
+        "pass": true,
+        "box": {
+          "left": 10,
+          "top": 88,
+          "right": 380,
+          "bottom": 670.359375
+        },
+        "viewport": [
+          390,
+          844
+        ],
+        "tiny": [],
+        "small": [],
+        "documentOverflow": 0,
+        "contentOverflow": 0
+      }
+    },
+    {
+      "label": "landscape: discovery text, targets and scrolling fit",
+      "pass": true,
+      "actual": {
+        "pass": true,
+        "box": {
+          "left": 394,
+          "top": 10,
+          "right": 834,
+          "bottom": 380
+        },
+        "viewport": [
+          844,
+          390
+        ],
+        "tiny": [],
+        "small": [],
+        "documentOverflow": 0,
+        "contentOverflow": 0
+      }
+    },
+    {
+      "label": "Reading and resizing the ledger changes no ownership or currency",
+      "pass": true
+    },
+    {
+      "label": "Native model awards all three paired keepsakes",
+      "pass": true
+    },
+    {
+      "label": "Earned colours reveal in the shared journal",
+      "pass": true
+    },
+    {
+      "label": "One real Wear tap equips an earned colour without charging",
+      "pass": true
+    },
+    {
+      "label": "Both owners receive all their own earned colour choices",
+      "pass": true
+    },
+    {
+      "label": "Shane has matching wearable choices",
+      "pass": true
+    },
+    {
+      "label": "desktop: earned wardrobe choices fit",
+      "pass": true,
+      "actual": {
+        "pass": true,
+        "box": {
+          "left": 350,
+          "top": 66,
+          "right": 930,
+          "bottom": 718
+        },
+        "viewport": [
+          1280,
+          800
+        ],
+        "tiny": [],
+        "small": [],
+        "documentOverflow": 0,
+        "contentOverflow": 0
+      }
+    },
+    {
+      "label": "phone: earned wardrobe choices fit",
+      "pass": true,
+      "actual": {
+        "pass": true,
+        "box": {
+          "left": 8,
+          "top": 244.734375,
+          "right": 382,
+          "bottom": 768
+        },
+        "viewport": [
+          390,
+          844
+        ],
+        "tiny": [],
+        "small": [],
+        "documentOverflow": 0,
+        "contentOverflow": 0
+      }
+    },
+    {
+      "label": "landscape: earned wardrobe choices fit",
+      "pass": true,
+      "actual": {
+        "pass": true,
+        "box": {
+          "left": 142,
+          "top": 8,
+          "right": 702,
+          "bottom": 310
+        },
+        "viewport": [
+          844,
+          390
+        ],
+        "tiny": [],
+        "small": [],
+        "documentOverflow": 0,
+        "contentOverflow": 0
+      }
+    },
+    {
+      "label": "Offline UI completes without page or loading errors",
+      "pass": true
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "ui-only-desktop-locked-discoveries.png",
+      "drawHeld": true
+    },
+    {
+      "file": "ui-only-phone-locked-discoveries.png",
+      "drawHeld": true
+    },
+    {
+      "file": "ui-only-landscape-locked-discoveries.png",
+      "drawHeld": true
+    },
+    {
+      "file": "ui-only-desktop-earned-wardrobe.png",
+      "drawHeld": true
+    },
+    {
+      "file": "ui-only-phone-earned-wardrobe.png",
+      "drawHeld": true
+    },
+    {
+      "file": "ui-only-landscape-earned-wardrobe.png",
+      "drawHeld": true
+    }
+  ],
+  "errors": [],
+  "consoleErrors": [],
+  "externalRequests": [],
+  "failedRequests": [],
+  "browser": "154.0.8037.57",
+  "rendererBeforeHold": {
+    "requested": "webgl",
+    "backend": "webgl",
+    "stage": "disabled",
+    "reason": null,
+    "failureStack": null,
+    "frames": 0
+  },
+  "drawHeld": true,
+  "passed": true
+}

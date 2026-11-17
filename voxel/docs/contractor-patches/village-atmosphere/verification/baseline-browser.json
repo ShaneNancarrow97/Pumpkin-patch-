@@ -1,0 +1,247 @@
+{
+  "file": "/tmp/Pumpkin-Patch-Village-Refined.html",
+  "baseline": true,
+  "htmlSha256": "e34c817796fa9e9fe0175357dfe8827f5d91ec587da2e8c0708553a86f6401fc",
+  "bytes": 60541720,
+  "scope": "Normal SwiftShader renderer. Declared progressed save opens existing district/home gates for comparison, without completing the authored stories through play. place() stages matching views; clock staging tests display palettes only. UI choices and real keyboard input check the followed task, map route, menu release and confirmed return. No draw suppression, device FPS claim or physical controller certification.",
+  "checks": [
+    {
+      "label": "baron home opens through its existing gate",
+      "pass": true
+    },
+    {
+      "label": "granny home opens through its existing gate",
+      "pass": true
+    },
+    {
+      "label": "The actual-world atlas restores save, camera, grade, palette and render target",
+      "pass": true
+    },
+    {
+      "label": "Normal draws compiled every observed program without page, console or shader errors",
+      "pass": true,
+      "actual": {
+        "count": 98,
+        "failed": []
+      }
+    }
+  ],
+  "errors": [],
+  "screenshots": [
+    "district-green.png",
+    "district-square.png",
+    "district-copse.png",
+    "district-quarry.png",
+    "district-moor.png",
+    "district-marsh.png",
+    "district-acre.png",
+    "granny-cottage-exterior.png",
+    "baron-interior.png",
+    "granny-interior.png",
+    "village-world-atlas.png",
+    "desktop-journal.png"
+  ],
+  "places": [
+    {
+      "id": "green",
+      "position": {
+        "x": 87,
+        "z": 12
+      },
+      "grade": {
+        "saturation": 1.1,
+        "contrast": 1.05,
+        "vignette": 0.24,
+        "shadows": [
+          0.004,
+          0.006,
+          0.03
+        ],
+        "lights": [
+          0.02,
+          0.008,
+          -0.014
+        ]
+      },
+      "fog": [
+        0.012286488353353374,
+        0.0069954101845983935,
+        0.02955683443236377
+      ],
+      "lights": 8
+    },
+    {
+      "id": "square",
+      "position": {
+        "x": 87,
+        "z": 78
+      },
+      "grade": {
+        "saturation": 1.1,
+        "contrast": 1.05,
+        "vignette": 0.24,
+        "shadows": [
+          0.004,
+          0.006,
+          0.03
+        ],
+        "lights": [
+          0.02,
+          0.008,
+          -0.014
+        ]
+      },
+      "fog": [
+        0.012286488353353374,
+        0.0069954101845983935,
+        0.02955683443236377
+      ],
+      "lights": 8
+    },
+    {
+      "id": "copse",
+      "position": {
+        "x": -36,
+        "z": 145.5
+      },
+      "grade": {
+        "saturation": 1.1,
+        "contrast": 1.05,
+        "vignette": 0.24,
+        "shadows": [
+          0.004,
+          0.006,
+          0.03
+        ],
+        "lights": [
+          0.02,
+          0.008,
+          -0.014
+        ]
+      },
+      "fog": [
+        0.012286488353353374,
+        0.0069954101845983935,
+        0.02955683443236377
+      ],
+      "lights": 8
+    },
+    {
+      "id": "quarry",
+      "position": {
+        "x": 87,
+        "z": 156
+      },
+      "grade": {
+        "saturation": 1.1,
+        "contrast": 1.05,
+        "vignette": 0.24,
+        "shadows": [
+          0.004,
+          0.006,
+          0.03
+        ],
+        "lights": [
+          0.02,
+          0.008,
+          -0.014
+        ]
+      },
+      "fog": [
+        0.012286488353353374,
+        0.0069954101845983935,
+        0.02955683443236377
+      ],
+      "lights": 8
+    },
+    {
+      "id": "moor",
+      "position": {
+        "x": 234,
+        "z": 51
+      },
+      "grade": {
+        "saturation": 1.1,
+        "contrast": 1.05,
+        "vignette": 0.24,
+        "shadows": [
+          0.004,
+          0.006,
+          0.03
+        ],
+        "lights": [
+          0.02,
+          0.008,
+          -0.014
+        ]
+      },
+      "fog": [
+        0.012286488353353374,
+        0.0069954101845983935,
+        0.02955683443236377
+      ],
+      "lights": 8
+    },
+    {
+      "id": "marsh",
+      "position": {
+        "x": 87,
+        "z": 228
+      },
+      "grade": {
+        "saturation": 1.1,
+        "contrast": 1.05,
+        "vignette": 0.24,
+        "shadows": [
+          0.004,
+          0.006,
+          0.03
+        ],
+        "lights": [
+          0.02,
+          0.008,
+          -0.014
+        ]
+      },
+      "fog": [
+        0.012286488353353374,
+        0.0069954101845983935,
+        0.02955683443236377
+      ],
+      "lights": 8
+    },
+    {
+      "id": "acre",
+      "position": {
+        "x": -93,
+        "z": 183
+      },
+      "grade": {
+        "saturation": 1.1,
+        "contrast": 1.05,
+        "vignette": 0.24,
+        "shadows": [
+          0.004,
+          0.006,
+          0.03
+        ],
+        "lights": [
+          0.02,
+          0.008,
+          -0.014
+        ]
+      },
+      "fog": [
+        0.012286488353353374,
+        0.0069954101845983935,
+        0.02955683443236377
+      ],
+      "lights": 8
+    }
+  ],
+  "programs": {
+    "count": 98,
+    "failed": []
+  },
+  "passed": true
+}

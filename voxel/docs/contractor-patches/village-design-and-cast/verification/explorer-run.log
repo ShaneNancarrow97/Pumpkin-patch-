@@ -1,0 +1,82 @@
+PASS village explorer boots with a live view
+PASS Map opens as an intentional drawer
+PASS desktop-map: page has no horizontal overflow
+PASS desktop-map: visible controls meet44px touch targets
+PASS desktop-map: control text stays at least12px
+SHOT final-desktop-map.png
+PASS choosing a map place closes the drawer
+PASS Elowen is reachable from Neighbours
+PASS meeting Elowen opens a compact conversation
+PASS desktop-conversation: page has no horizontal overflow
+PASS desktop-conversation: visible controls meet44px touch targets
+PASS desktop-conversation: control text stays at least12px
+SHOT final-desktop-conversation.png
+PASS conversation presents three clear tone choices
+PASS one answer advances to the neighbour's reply
+PASS conversation closes without a permanent speech panel
+PASS all eight neighbours and Vesper use the shipped painted sprites
+PASS the cast shares one2.3-unit scale
+PASS each painted walk alternates authored leg frames
+PASS all nine shipped sheets contain visibly distinct left and right steps
+PASS runtime idle and walking meshes share the same foot anchor
+SHOT final-cast-nine-authored-gaits.png
+PASS existing voxel cast remains available as a fallback
+PASS desktop: page has no horizontal overflow
+PASS desktop: visible controls meet44px touch targets
+PASS desktop: control text stays at least12px
+SHOT final-desktop-green.png
+SHOT final-desktop-moth-tree.png
+SHOT final-desktop-velvet-bat.png
+SHOT final-restored-rowan-window-detail.png
+SHOT final-copse-cottage-window-detail.png
+PASS interior velvet-bat opens
+PASS interior velvet-bat has its own location label
+SHOT final-inside-velvet-bat.png
+PASS interior elowen-library opens
+PASS interior elowen-library has its own location label
+SHOT final-inside-elowen-library.png
+PASS interior rowan-workshop opens
+PASS interior rowan-workshop has its own location label
+SHOT final-inside-rowan-workshop.png
+PASS leaving a hall restores its outdoor location label
+PASS Walk places an owner at true village scale
+SHOT final-desktop-walking.png
+PASS phone: page has no horizontal overflow
+PASS phone: visible controls meet44px touch targets
+PASS phone: control text stays at least12px
+SHOT final-phone-green.png
+PASS phone-map: page has no horizontal overflow
+PASS phone-map: visible controls meet44px touch targets
+PASS phone-map: control text stays at least12px
+SHOT final-phone-map.png
+PASS phone-conversation: page has no horizontal overflow
+PASS phone-conversation: visible controls meet44px touch targets
+PASS phone-conversation: control text stays at least12px
+SHOT final-phone-conversation.png
+PASS landscape: page has no horizontal overflow
+PASS landscape: visible controls meet44px touch targets
+PASS landscape: control text stays at least12px
+SHOT final-landscape-green.png
+PASS landscape-map: page has no horizontal overflow
+PASS landscape-map: visible controls meet44px touch targets
+PASS landscape-map: control text stays at least12px
+SHOT final-landscape-map.png
+PASS landscape-conversation: page has no horizontal overflow
+PASS landscape-conversation: visible controls meet44px touch targets
+PASS landscape-conversation: control text stays at least12px
+SHOT final-landscape-conversation.png
+PASS fold: page has no horizontal overflow
+PASS fold: visible controls meet44px touch targets
+PASS fold: control text stays at least12px
+SHOT final-fold-green.png
+PASS fold-map: page has no horizontal overflow
+PASS fold-map: visible controls meet44px touch targets
+PASS fold-map: control text stays at least12px
+SHOT final-fold-map.png
+PASS fold-conversation: page has no horizontal overflow
+PASS fold-conversation: visible controls meet44px touch targets
+PASS fold-conversation: control text stays at least12px
+SHOT final-fold-conversation.png
+PASS offline village makes no external font or asset requests
+PASS village views and interiors have no page or console errors
+{"passed":true,"checks":60,"errors":0,"screenshots":21,"sha256":"3972f586706fd56998fbbb527a491834e07b69f13802cdb51271804de022e710"}

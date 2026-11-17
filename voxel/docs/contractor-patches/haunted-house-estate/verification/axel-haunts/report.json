@@ -1,0 +1,12 @@
+{
+  "sourceCommit": "2baa936",
+  "htmlSha256": "ddd885c83df1925e707b7f83fb2a410fe78544af32b179c2e39ce10174b14308",
+  "unitArtTests": 195,
+  "unitTestFailures": 0,
+  "flowChecks": 18,
+  "finalSharpChecks": 5,
+  "browserErrors": [],
+  "flowBuildSha256": "3e738908fc9e2e45d6fcdd990137614169ac615bf18c9cbac1d7acff4215e848",
+  "finalBuildSha256": "ddd885c83df1925e707b7f83fb2a410fe78544af32b179c2e39ce10174b14308",
+  "note": "Flow ran at Performance mode at874x787,390x844 and844x390 with actual CDP touch. Final exact HTML ran at Fold874x787 DPR2 Sharp+bloom+shadows. Screenshots visually reviewed; software rendering is not a physical Fold FPS benchmark."
+}

@@ -1,0 +1,125 @@
+{
+  "sha256": "e21570c0f1ce2741d960c5cc0aa608d62622053ba2e1fd751f3c7d68823ff97a",
+  "passed": true,
+  "checks": [
+    {
+      "ok": true,
+      "label": "on-screen thumbstick moves Natalie",
+      "data": {
+        "before": {
+          "x": 13.2,
+          "z": 16.6
+        },
+        "after": {
+          "x": 14.767499999999988,
+          "z": 16.6
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "DualSense changes contextual prompt to Square"
+    },
+    {
+      "ok": true,
+      "label": "DualSense Square plants using real rules"
+    },
+    {
+      "ok": true,
+      "label": "Triangle opens radial tools"
+    },
+    {
+      "ok": true,
+      "label": "left stick selects a radial sector"
+    },
+    {
+      "ok": true,
+      "label": "Circle closes the radial"
+    },
+    {
+      "ok": true,
+      "label": "Options, d-pad and Cross select Shane"
+    },
+    {
+      "ok": true,
+      "label": "DualSense d-pad navigates the actual menu"
+    },
+    {
+      "ok": true,
+      "label": "Circle backs out of a management menu"
+    },
+    {
+      "ok": true,
+      "label": "phone exact release controls fits and touch targets are 44px",
+      "data": {
+        "overflow": false,
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone exact release radial fits and touch targets are 44px",
+      "data": {
+        "overflow": false,
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape exact release controls fits and touch targets are 44px",
+      "data": {
+        "overflow": false,
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape exact release radial fits and touch targets are 44px",
+      "data": {
+        "overflow": false,
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold exact release controls fits and touch targets are 44px",
+      "data": {
+        "overflow": false,
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold exact release radial fits and touch targets are 44px",
+      "data": {
+        "overflow": false,
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "Skyla renders in the home with shared crisp sprite sampling"
+    },
+    {
+      "ok": true,
+      "label": "exact release has no page errors",
+      "data": []
+    },
+    {
+      "ok": true,
+      "label": "exact release requests no external assets",
+      "data": []
+    }
+  ],
+  "errors": [],
+  "requests": [],
+  "shots": [
+    "phone-dualsense",
+    "phone-dualsense-radial",
+    "landscape-dualsense",
+    "landscape-dualsense-radial",
+    "fold-dualsense",
+    "fold-dualsense-radial",
+    "skyla-sharp-home"
+  ]
+}

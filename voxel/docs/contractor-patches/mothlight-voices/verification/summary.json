@@ -1,0 +1,18 @@
+{
+  "recordedClips": 164,
+  "cataloguedClips": 332,
+  "pendingCharacters": 11258,
+  "audioSeconds": 654.336,
+  "nodeTestFiles": 134,
+  "recorderPythonTests": 14,
+  "narrationBrowserChecks": 95,
+  "farmBrowserChecks": 54,
+  "screenshots": 8,
+  "browserErrors": 0,
+  "externalNarrationRequests": 0,
+  "publicDownloadHashesVerified": true,
+  "incrementalPatchAppliedCleanly": true,
+  "leadHead": "604fe2359427fc7e90a3d1248a6c4d1d6b0136c8",
+  "credentialIncluded": false,
+  "remainingBlocker": "ElevenLabs quota_exceeded; quest recordings remain text-only"
+}

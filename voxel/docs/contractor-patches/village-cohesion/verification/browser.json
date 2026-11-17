@@ -1,0 +1,695 @@
+{
+  "html": "/tmp/Pumpkin-Patch-Living-Village.html",
+  "sha256": "a2885c22f16f1cb65d84a2cb6460dda79c34d92297fc2c6d1382f4b50b8cd96d",
+  "bytes": 60533183,
+  "scope": "Declared progressed save. Normal SwiftShader rendering, no held draws. place() stages view positions; real keyboard input plus direct controller ticks tests park access, and short ticks exercise cosmetic visitors. These are functional checks, not performance measurements. Candidate/resource and full path walking compatibility are tested separately in pure navigation checks.",
+  "checks": [
+    {
+      "label": "Twenty-two authored neighbourhood clusters use three bounded batches and no new lights",
+      "pass": true,
+      "actual": {
+        "boxes": 6232,
+        "meshes": 3,
+        "addedLights": 0
+      }
+    },
+    {
+      "label": "The finished gardens use the existing eight-light pool and all measured solids",
+      "pass": true
+    },
+    {
+      "label": "The atlas captures the actual dressed world and caches without changing the save",
+      "pass": true
+    },
+    {
+      "label": "Actual keyboard movement can reach the eastern park beyond the old x120 boundary",
+      "pass": true
+    },
+    {
+      "label": "An existing owned decoration takes priority and the native court restores when it is removed",
+      "pass": true,
+      "actual": {
+        "hidden": true,
+        "restored": true
+      }
+    },
+    {
+      "label": "Two or three cosmetic passers-by include an actual moving garden stroller",
+      "pass": true,
+      "actual": [
+        {
+          "id": "village-stroll-0",
+          "kind": "ghost",
+          "lane": "lantern-common",
+          "x": 168.58908168596244,
+          "z": 87,
+          "walking": true,
+          "wait": 0,
+          "distance": 9.910918314037415,
+          "visible": true
+        },
+        {
+          "id": "village-stroll-1",
+          "kind": "werewolf",
+          "lane": "green-avenue",
+          "x": 86.3871034862307,
+          "z": 19.769162778461126,
+          "walking": true,
+          "wait": 0,
+          "distance": 6.595605116505303,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "label": "The actual world snapshot remains available in the Fold-sized map",
+      "pass": true
+    },
+    {
+      "label": "No page errors",
+      "pass": true,
+      "actual": []
+    }
+  ],
+  "errors": [],
+  "screenshots": [
+    "village-world-atlas.png",
+    "orchard-and-gardens.png",
+    "lantern-common.png",
+    "library-court.png",
+    "fold-village-map.png"
+  ],
+  "neighbourhoods": {
+    "marks": {},
+    "spread": "native",
+    "activeIDs": [
+      "cider-orchard-south",
+      "cider-orchard-north",
+      "market-orchard",
+      "community-pumpkin-garden",
+      "community-herb-garden",
+      "orchard-moonflower-border",
+      "market-moonflower-border",
+      "orchard-walk",
+      "orchard-loop",
+      "lantern-pergola",
+      "lantern-picnic",
+      "lantern-flower-garden",
+      "lantern-meadow",
+      "lantern-south-border",
+      "lantern-north-border",
+      "lantern-grove",
+      "lantern-walk",
+      "lantern-loop",
+      "library-reading-court",
+      "rowan-workyard",
+      "flax-edge-meadow",
+      "moonflower-edge-meadow"
+    ],
+    "paths": [
+      {
+        "points": [
+          [
+            -21,
+            51
+          ],
+          [
+            0,
+            51
+          ],
+          [
+            23,
+            51
+          ],
+          [
+            35,
+            54
+          ],
+          [
+            39,
+            58
+          ]
+        ],
+        "width": 2.6
+      },
+      {
+        "points": [
+          [
+            0,
+            51
+          ],
+          [
+            0,
+            68
+          ],
+          [
+            1,
+            70
+          ],
+          [
+            11,
+            72
+          ],
+          [
+            19,
+            72
+          ]
+        ],
+        "width": 2.2
+      },
+      {
+        "points": [
+          [
+            -21,
+            51
+          ],
+          [
+            -18,
+            51
+          ],
+          [
+            -18,
+            56
+          ],
+          [
+            -21,
+            61
+          ],
+          [
+            -21,
+            66
+          ],
+          [
+            -12,
+            76
+          ],
+          [
+            11,
+            76
+          ],
+          [
+            17,
+            76
+          ],
+          [
+            17,
+            72
+          ],
+          [
+            19,
+            72
+          ]
+        ],
+        "width": 2.4
+      },
+      {
+        "points": [
+          [
+            77,
+            58
+          ],
+          [
+            100,
+            58
+          ],
+          [
+            124,
+            58
+          ],
+          [
+            141,
+            49
+          ],
+          [
+            141,
+            37
+          ]
+        ],
+        "width": 2.6
+      },
+      {
+        "points": [
+          [
+            95,
+            58
+          ],
+          [
+            95,
+            62
+          ]
+        ],
+        "width": 2.2
+      },
+      {
+        "points": [
+          [
+            124,
+            58
+          ],
+          [
+            124,
+            59.5
+          ]
+        ],
+        "width": 2.2
+      },
+      {
+        "points": [
+          [
+            78,
+            58
+          ],
+          [
+            83,
+            72
+          ],
+          [
+            106,
+            74
+          ],
+          [
+            124,
+            74
+          ],
+          [
+            128,
+            76
+          ],
+          [
+            134,
+            76
+          ],
+          [
+            139,
+            72
+          ],
+          [
+            141,
+            67
+          ],
+          [
+            141,
+            61
+          ],
+          [
+            139,
+            56
+          ],
+          [
+            139,
+            53
+          ],
+          [
+            139,
+            50
+          ]
+        ],
+        "width": 2.4
+      },
+      {
+        "points": [
+          [
+            33,
+            22.2
+          ],
+          [
+            33,
+            24
+          ]
+        ],
+        "width": 2.2
+      },
+      {
+        "points": [
+          [
+            82,
+            16
+          ],
+          [
+            82,
+            17.5
+          ]
+        ],
+        "width": 2.2
+      }
+    ],
+    "obstacles": [
+      {
+        "x": -16,
+        "z": 44,
+        "r": 0.45
+      },
+      {
+        "x": -7,
+        "z": 43,
+        "r": 0.45
+      },
+      {
+        "x": 4,
+        "z": 46,
+        "r": 0.45
+      },
+      {
+        "x": -16,
+        "z": 57,
+        "r": 0.45
+      },
+      {
+        "x": -3,
+        "z": 60,
+        "r": 0.45
+      },
+      {
+        "x": -11,
+        "z": 56,
+        "r": 0.45
+      },
+      {
+        "x": 7,
+        "z": 56,
+        "r": 0.45
+      },
+      {
+        "x": -12,
+        "z": 71,
+        "r": 0.45
+      },
+      {
+        "x": 2,
+        "z": 72,
+        "r": 0.45
+      },
+      {
+        "x": -5,
+        "z": 68,
+        "r": 0.45
+      },
+      {
+        "x": 20,
+        "z": 44,
+        "r": 0.45
+      },
+      {
+        "x": 32,
+        "z": 44,
+        "r": 0.45
+      },
+      {
+        "x": 33,
+        "z": 61,
+        "r": 0.45
+      },
+      {
+        "x": 13,
+        "z": 42,
+        "r": 0.45
+      },
+      {
+        "x": 25,
+        "z": 47,
+        "r": 0.45
+      },
+      {
+        "x": 37,
+        "z": 42,
+        "r": 0.45
+      },
+      {
+        "x": 19,
+        "z": 56,
+        "r": 0.45
+      },
+      {
+        "x": 37,
+        "z": 74,
+        "r": 0.45
+      },
+      {
+        "x0": 19,
+        "z0": 75.225,
+        "x1": 33,
+        "z1": 75.775
+      },
+      {
+        "x0": 32.725,
+        "z0": 67.5,
+        "x1": 33.275,
+        "z1": 75.5
+      },
+      {
+        "x0": 5.5,
+        "z0": 69.225,
+        "x1": 18.5,
+        "z1": 69.775
+      },
+      {
+        "x0": -20.225,
+        "z0": 52.775,
+        "x1": -19.775,
+        "z1": 53.225
+      },
+      {
+        "x0": -1.225,
+        "z0": 69.775,
+        "x1": -0.775,
+        "z1": 70.225
+      },
+      {
+        "x0": 33.775,
+        "z0": 50.775,
+        "x1": 34.225,
+        "z1": 51.225
+      },
+      {
+        "x0": 119.44,
+        "z0": 67.08999999999999,
+        "x1": 119.96000000000001,
+        "z1": 67.61
+      },
+      {
+        "x0": 119.44,
+        "z0": 60.39,
+        "x1": 119.96000000000001,
+        "z1": 60.91
+      },
+      {
+        "x0": 128.04000000000002,
+        "z0": 67.08999999999999,
+        "x1": 128.56,
+        "z1": 67.61
+      },
+      {
+        "x0": 128.04000000000002,
+        "z0": 60.39,
+        "x1": 128.56,
+        "z1": 60.91
+      },
+      {
+        "x0": 121.7,
+        "z0": 63.53999999999999,
+        "x1": 126.3,
+        "z1": 64.66
+      },
+      {
+        "x0": 121.625,
+        "z0": 64.935,
+        "x1": 126.375,
+        "z1": 65.42500000000001
+      },
+      {
+        "x0": 121.625,
+        "z0": 62.775000000000006,
+        "x1": 126.375,
+        "z1": 63.265
+      },
+      {
+        "x0": 117,
+        "z0": 69.725,
+        "x1": 131,
+        "z1": 70.275
+      },
+      {
+        "x0": 130.725,
+        "z0": 62,
+        "x1": 131.275,
+        "z1": 70
+      },
+      {
+        "x0": 92.7,
+        "z0": 65.53999999999999,
+        "x1": 97.3,
+        "z1": 66.66
+      },
+      {
+        "x0": 92.625,
+        "z0": 66.935,
+        "x1": 97.375,
+        "z1": 67.42500000000001
+      },
+      {
+        "x0": 92.625,
+        "z0": 64.77499999999999,
+        "x1": 97.375,
+        "z1": 65.265
+      },
+      {
+        "x": 132,
+        "z": 44,
+        "r": 0.45
+      },
+      {
+        "x": 138,
+        "z": 64,
+        "r": 0.45
+      },
+      {
+        "x": 130,
+        "z": 73,
+        "r": 0.45
+      },
+      {
+        "x": 88,
+        "z": 42,
+        "r": 0.45
+      },
+      {
+        "x": 100,
+        "z": 42,
+        "r": 0.45
+      },
+      {
+        "x": 112,
+        "z": 47,
+        "r": 0.45
+      },
+      {
+        "x": 124,
+        "z": 47,
+        "r": 0.45
+      },
+      {
+        "x": 88,
+        "z": 63,
+        "r": 0.45
+      },
+      {
+        "x": 106,
+        "z": 63,
+        "r": 0.45
+      },
+      {
+        "x": 112,
+        "z": 69,
+        "r": 0.45
+      },
+      {
+        "x0": 81.775,
+        "z0": 60.775,
+        "x1": 82.225,
+        "z1": 61.225
+      },
+      {
+        "x0": 109.775,
+        "z0": 59.775,
+        "x1": 110.225,
+        "z1": 60.225
+      },
+      {
+        "x0": 135.775,
+        "z0": 53.775,
+        "x1": 136.225,
+        "z1": 54.225
+      },
+      {
+        "x0": 31.86,
+        "z0": 25.75,
+        "x1": 34.14,
+        "z1": 26.950000000000003
+      },
+      {
+        "x0": 29.14,
+        "z0": 28.875,
+        "x1": 30.86,
+        "z1": 29.825000000000003
+      },
+      {
+        "x0": 34.8,
+        "z0": 28.950000000000003,
+        "x1": 36.7,
+        "z1": 29.75
+      },
+      {
+        "x0": 34.52,
+        "z0": 25.87,
+        "x1": 35.38,
+        "z1": 26.73
+      },
+      {
+        "x0": 35.05,
+        "z0": 24.91,
+        "x1": 35.75,
+        "z1": 25.49
+      },
+      {
+        "x0": 37.175,
+        "z0": 28.974999999999998,
+        "x1": 37.625,
+        "z1": 29.425
+      },
+      {
+        "x0": 80.55,
+        "z0": 14.25,
+        "x1": 83.45,
+        "z1": 15.45
+      },
+      {
+        "x0": 78.15,
+        "z0": 10.85,
+        "x1": 80.35,
+        "z1": 12.65
+      },
+      {
+        "x0": 83.475,
+        "z0": 10.850000000000001,
+        "x1": 85.65,
+        "z1": 11.75
+      },
+      {
+        "x0": 86.275,
+        "z0": 8.775,
+        "x1": 86.725,
+        "z1": 9.225
+      }
+    ],
+    "featureBoxes": {
+      "cider-orchard-south": 483,
+      "cider-orchard-north": 207,
+      "market-orchard": 552,
+      "community-pumpkin-garden": 431,
+      "community-herb-garden": 527,
+      "orchard-moonflower-border": 147,
+      "market-moonflower-border": 149,
+      "orchard-walk": 394,
+      "orchard-loop": 191,
+      "lantern-pergola": 470,
+      "lantern-picnic": 52,
+      "lantern-flower-garden": 265,
+      "lantern-meadow": 164,
+      "lantern-south-border": 162,
+      "lantern-north-border": 124,
+      "lantern-grove": 690,
+      "lantern-walk": 362,
+      "lantern-loop": 323,
+      "library-reading-court": 167,
+      "rowan-workyard": 141,
+      "flax-edge-meadow": 109,
+      "moonflower-edge-meadow": 122
+    },
+    "visualBudget": {
+      "boxes": 6232,
+      "meshes": 3,
+      "addedLights": 0
+    }
+  },
+  "passed": true
+}

@@ -1,0 +1,857 @@
+{
+  "file": "/tmp/Pumpkin-Patch-Mothlight-Gilded-Village.html",
+  "baseline": false,
+  "uiOnly": true,
+  "tvOnly": false,
+  "worldOnly": false,
+  "referenceOnly": false,
+  "conversationOnly": true,
+  "returnOnly": false,
+  "htmlSha256": "6c71a20fd4858fbd4fb99e4aeae71e79a1350d37c138be7e0818b916208ecc63",
+  "bytes": 61066768,
+  "harnessSha256": "882ba88ec05690efa24c9faa05d10a9c7d6fad3c542d64159bf7ed34d32473b0",
+  "fixtureSha256": "8c4f22501f3217f4d466c57b95ca0988a8d10f7c92275719177c27fc533790be",
+  "stateVersion": 20,
+  "preferences": {
+    "music": false,
+    "sound": false,
+    "voiceEnabled": false,
+    "frameRate": "30",
+    "renderQuality": "sharp",
+    "voxelCharacters": false,
+    "glow": true,
+    "shadows": true,
+    "villageTrackedQuest": "green-research"
+  },
+  "skyAssetExpectation": {
+    "width": 1024,
+    "height": 512,
+    "encodedBytes": 34878,
+    "baseRgbaBytes": 2097152,
+    "estimatedMipRgbaBytes": 2796204,
+    "sha256": "c8bba551b3d9fb2336ca7aeb2478126060dd45e05f0dcb99cb34f30ba88fa22e"
+  },
+  "staging": {
+    "duskClock": 1800,
+    "period": 2700,
+    "phase": "dusk",
+    "owner": "natalie",
+    "views": {
+      "entrance": {
+        "x": 87,
+        "z": -7.5,
+        "yaw": 0,
+        "pitch": 0.3,
+        "distance": 13
+      },
+      "detail": {
+        "x": 83,
+        "z": -3,
+        "yaw": -0.12,
+        "pitch": 0.3,
+        "distance": 8
+      },
+      "granny": {
+        "x": -138,
+        "z": 179.25,
+        "yaw": 0,
+        "pitch": 0.24,
+        "distance": 12
+      },
+      "square": {
+        "x": 87,
+        "z": 78,
+        "yaw": 0,
+        "pitch": 0.3,
+        "distance": 13
+      }
+    },
+    "referenceEntrance": {
+      "x": 87,
+      "z": -16.5,
+      "yaw": 0,
+      "pitch": 0.20943951023931953,
+      "distance": 7.6
+    },
+    "referenceComparison": {
+      "baselineAndFinalUseSamePose": true,
+      "cameraSource": "OUTSIDE_VIEW.pitch and OUTSIDE_VIEW.distance",
+      "wideComparisonPoseUnchanged": true
+    },
+    "wallClock": "2026-11-13T21:00:00Z",
+    "randomSeed": 20261113
+  },
+  "scope": "Exact offline HTML served unchanged over loopback. Normal native RAF, renderer and composer throughout; no held draws or manual renders. A declared progressed fixture opens existing gates without claiming authored story completion. place() and saved-clock staging compose matching views; keyboard and injected standard Gamepad API exercise actual input. No physical Bluetooth or device FPS certification.",
+  "checks": [
+    {
+      "label": "The original sky art decodes within one bounded world texture",
+      "pass": true,
+      "fatal": true,
+      "actual": {
+        "cloudOctaves": 4,
+        "cloudWarpSamples": 1,
+        "cloudHashes": 20,
+        "silhouetteLayers": 3,
+        "addedMeshes": 0,
+        "addedDrawCalls": 0,
+        "addedLights": 0,
+        "addedTextures": 1,
+        "addedPasses": 0,
+        "maxLinearChannel": 0.68,
+        "maxTimeStep": 0.25,
+        "artSamples": 2,
+        "maxArtLongSide": 1024,
+        "artLongitudeRepeats": 2,
+        "time": 0.30000000000000004,
+        "artReady": true,
+        "artWidth": 1024,
+        "artHeight": 512,
+        "textureBytes": 2796204,
+        "artEncodedBytes": 34878
+      }
+    },
+    {
+      "label": "1280\u00d7720 conversation keeps text, controls and panels readable",
+      "pass": true,
+      "fatal": false,
+      "actual": {
+        "pass": true,
+        "viewport": [
+          1280,
+          720
+        ],
+        "scale": 1,
+        "surfaces": [
+          {
+            "selector": ".village-dialogue-speech",
+            "left": 28,
+            "top": 484,
+            "right": 778,
+            "bottom": 694,
+            "width": 750,
+            "height": 210
+          },
+          {
+            "selector": ".village-dialogue-response",
+            "left": 802,
+            "top": 134,
+            "right": 1252,
+            "bottom": 640,
+            "width": 450,
+            "height": 506
+          },
+          {
+            "selector": ".village-dialogue-back",
+            "left": 1160,
+            "top": 650,
+            "right": 1252,
+            "bottom": 694,
+            "width": 92,
+            "height": 44
+          }
+        ],
+        "clipped": [],
+        "tinyTargets": [],
+        "small": [],
+        "overflow": [
+          {
+            "selector": ".village-dialogue-body",
+            "amount": 0
+          },
+          {
+            "selector": ".village-dialogue-replies",
+            "amount": 0
+          }
+        ],
+        "overlap": 0
+      }
+    },
+    {
+      "label": "1280\u00d7720 conversation retains the canonical reply order and availability",
+      "pass": true,
+      "fatal": false,
+      "actual": {
+        "name": "Rowan Rattlewood",
+        "intent": "greeting",
+        "input": "dualsense",
+        "unchanged": true,
+        "semantic": [
+          {
+            "id": "chat",
+            "disabled": false,
+            "label": "Have a chat"
+          },
+          {
+            "id": "quest:continue:rowan-1",
+            "disabled": false,
+            "label": "Loose Boards"
+          },
+          {
+            "id": "stories",
+            "disabled": false,
+            "label": "Other stories \u00b7 4"
+          },
+          {
+            "id": "farm-gifts",
+            "disabled": false,
+            "label": "Bring a discovery home"
+          },
+          {
+            "id": "companion",
+            "disabled": false,
+            "label": "Come exploring with me"
+          },
+          {
+            "id": "gift",
+            "disabled": true,
+            "label": "Give a present"
+          },
+          {
+            "id": "about",
+            "disabled": false,
+            "label": "More about Rowan"
+          },
+          {
+            "id": "leave",
+            "disabled": false,
+            "label": "See you soon"
+          }
+        ],
+        "primaryStories": 1,
+        "otherStories": 1
+      }
+    },
+    {
+      "label": "Desktop selected reply preserves opaque gold and readable contrast",
+      "pass": true,
+      "fatal": false,
+      "actual": {
+        "pass": true,
+        "minimumContrast": 5.919165016885216,
+        "backgroundImage": "linear-gradient(110deg, rgb(255, 223, 170), rgb(239, 200, 137))",
+        "backgroundColour": "rgba(0, 0, 0, 0)",
+        "ink": "rgb(51, 35, 49)",
+        "choice": "farm-gifts"
+      }
+    },
+    {
+      "label": "390\u00d7844 conversation keeps text, controls and panels readable",
+      "pass": true,
+      "fatal": false,
+      "actual": {
+        "pass": true,
+        "viewport": [
+          390,
+          844
+        ],
+        "scale": 1,
+        "surfaces": [
+          {
+            "selector": ".village-dialogue-speech",
+            "left": 10,
+            "top": 222.40625,
+            "right": 380,
+            "bottom": 432.40625,
+            "width": 370,
+            "height": 210
+          },
+          {
+            "selector": ".village-dialogue-response",
+            "left": 58.859375,
+            "top": 441.40625,
+            "right": 380,
+            "bottom": 779,
+            "width": 321.140625,
+            "height": 337.59375
+          },
+          {
+            "selector": ".village-dialogue-back",
+            "left": 288,
+            "top": 788,
+            "right": 380,
+            "bottom": 832,
+            "width": 92,
+            "height": 44
+          }
+        ],
+        "clipped": [],
+        "tinyTargets": [],
+        "small": [],
+        "overflow": [
+          {
+            "selector": ".village-dialogue-body",
+            "amount": 0
+          },
+          {
+            "selector": ".village-dialogue-replies",
+            "amount": 0
+          }
+        ],
+        "overlap": 0
+      }
+    },
+    {
+      "label": "390\u00d7844 conversation retains the canonical reply order and availability",
+      "pass": true,
+      "fatal": false,
+      "actual": {
+        "name": "Rowan Rattlewood",
+        "intent": "greeting",
+        "input": "touch",
+        "unchanged": true,
+        "semantic": [
+          {
+            "id": "chat",
+            "disabled": false,
+            "label": "Have a chat"
+          },
+          {
+            "id": "quest:continue:rowan-1",
+            "disabled": false,
+            "label": "Loose Boards"
+          },
+          {
+            "id": "stories",
+            "disabled": false,
+            "label": "Other stories \u00b7 4"
+          },
+          {
+            "id": "farm-gifts",
+            "disabled": false,
+            "label": "Bring a discovery home"
+          },
+          {
+            "id": "companion",
+            "disabled": false,
+            "label": "Come exploring with me"
+          },
+          {
+            "id": "gift",
+            "disabled": true,
+            "label": "Give a present"
+          },
+          {
+            "id": "about",
+            "disabled": false,
+            "label": "More about Rowan"
+          },
+          {
+            "id": "leave",
+            "disabled": false,
+            "label": "See you soon"
+          }
+        ],
+        "primaryStories": 1,
+        "otherStories": 1
+      }
+    },
+    {
+      "label": "844\u00d7390 conversation keeps text, controls and panels readable",
+      "pass": true,
+      "fatal": false,
+      "actual": {
+        "pass": true,
+        "viewport": [
+          844,
+          390
+        ],
+        "scale": 1,
+        "surfaces": [
+          {
+            "selector": ".village-dialogue-speech",
+            "left": 16,
+            "top": 173,
+            "right": 485.171875,
+            "bottom": 378,
+            "width": 469.171875,
+            "height": 205
+          },
+          {
+            "selector": ".village-dialogue-response",
+            "left": 503.171875,
+            "top": 68,
+            "right": 828,
+            "bottom": 327,
+            "width": 324.828125,
+            "height": 259
+          },
+          {
+            "selector": ".village-dialogue-back",
+            "left": 736,
+            "top": 334,
+            "right": 828,
+            "bottom": 378,
+            "width": 92,
+            "height": 44
+          }
+        ],
+        "clipped": [],
+        "tinyTargets": [],
+        "small": [],
+        "overflow": [
+          {
+            "selector": ".village-dialogue-body",
+            "amount": 0
+          },
+          {
+            "selector": ".village-dialogue-replies",
+            "amount": 0
+          }
+        ],
+        "overlap": 0
+      }
+    },
+    {
+      "label": "844\u00d7390 conversation retains the canonical reply order and availability",
+      "pass": true,
+      "fatal": false,
+      "actual": {
+        "name": "Rowan Rattlewood",
+        "intent": "greeting",
+        "input": "touch",
+        "unchanged": true,
+        "semantic": [
+          {
+            "id": "chat",
+            "disabled": false,
+            "label": "Have a chat"
+          },
+          {
+            "id": "quest:continue:rowan-1",
+            "disabled": false,
+            "label": "Loose Boards"
+          },
+          {
+            "id": "stories",
+            "disabled": false,
+            "label": "Other stories \u00b7 4"
+          },
+          {
+            "id": "farm-gifts",
+            "disabled": false,
+            "label": "Bring a discovery home"
+          },
+          {
+            "id": "companion",
+            "disabled": false,
+            "label": "Come exploring with me"
+          },
+          {
+            "id": "gift",
+            "disabled": true,
+            "label": "Give a present"
+          },
+          {
+            "id": "about",
+            "disabled": false,
+            "label": "More about Rowan"
+          },
+          {
+            "id": "leave",
+            "disabled": false,
+            "label": "See you soon"
+          }
+        ],
+        "primaryStories": 1,
+        "otherStories": 1
+      }
+    },
+    {
+      "label": "720\u00d7900 conversation keeps text, controls and panels readable",
+      "pass": true,
+      "fatal": false,
+      "actual": {
+        "pass": true,
+        "viewport": [
+          720,
+          900
+        ],
+        "scale": 1,
+        "surfaces": [
+          {
+            "selector": ".village-dialogue-speech",
+            "left": 28,
+            "top": 649,
+            "right": 390.375,
+            "bottom": 874,
+            "width": 362.375,
+            "height": 225
+          },
+          {
+            "selector": ".village-dialogue-response",
+            "left": 408.375,
+            "top": 314,
+            "right": 691.984375,
+            "bottom": 820,
+            "width": 283.609375,
+            "height": 506
+          },
+          {
+            "selector": ".village-dialogue-back",
+            "left": 599.984375,
+            "top": 830,
+            "right": 691.984375,
+            "bottom": 874,
+            "width": 92,
+            "height": 44
+          }
+        ],
+        "clipped": [],
+        "tinyTargets": [],
+        "small": [],
+        "overflow": [
+          {
+            "selector": ".village-dialogue-body",
+            "amount": 0
+          },
+          {
+            "selector": ".village-dialogue-replies",
+            "amount": 0
+          }
+        ],
+        "overlap": 0
+      }
+    },
+    {
+      "label": "720\u00d7900 conversation retains the canonical reply order and availability",
+      "pass": true,
+      "fatal": false,
+      "actual": {
+        "name": "Rowan Rattlewood",
+        "intent": "greeting",
+        "input": "touch",
+        "unchanged": true,
+        "semantic": [
+          {
+            "id": "chat",
+            "disabled": false,
+            "label": "Have a chat"
+          },
+          {
+            "id": "quest:continue:rowan-1",
+            "disabled": false,
+            "label": "Loose Boards"
+          },
+          {
+            "id": "stories",
+            "disabled": false,
+            "label": "Other stories \u00b7 4"
+          },
+          {
+            "id": "farm-gifts",
+            "disabled": false,
+            "label": "Bring a discovery home"
+          },
+          {
+            "id": "companion",
+            "disabled": false,
+            "label": "Come exploring with me"
+          },
+          {
+            "id": "gift",
+            "disabled": true,
+            "label": "Give a present"
+          },
+          {
+            "id": "about",
+            "disabled": false,
+            "label": "More about Rowan"
+          },
+          {
+            "id": "leave",
+            "disabled": false,
+            "label": "See you soon"
+          }
+        ],
+        "primaryStories": 1,
+        "otherStories": 1
+      }
+    },
+    {
+      "label": "Other stories activates the real Rowan journal without resource, reward or quest side effects",
+      "pass": true,
+      "fatal": true,
+      "actual": {
+        "actualDOMActivation": true,
+        "panel": "journal",
+        "panelId": "rowan",
+        "unchangedResourcesAndClaims": true,
+        "beforeSha256": "78850d28010b41a23b781eb4c7fb6f7ab041aaee93c60c081bb67ee8d26169d5",
+        "afterSha256": "78850d28010b41a23b781eb4c7fb6f7ab041aaee93c60c081bb67ee8d26169d5"
+      }
+    },
+    {
+      "label": "Closing the passive story journal releases actual village control",
+      "pass": true,
+      "fatal": true
+    },
+    {
+      "label": "TV conversation preserves its canonical greeting choices",
+      "pass": true,
+      "fatal": false,
+      "actual": {
+        "name": "Rowan Rattlewood",
+        "intent": "greeting",
+        "input": "dualsense",
+        "unchanged": true,
+        "semantic": [
+          {
+            "id": "chat",
+            "disabled": false,
+            "label": "Have a chat"
+          },
+          {
+            "id": "quest:continue:rowan-1",
+            "disabled": false,
+            "label": "Loose Boards"
+          },
+          {
+            "id": "stories",
+            "disabled": false,
+            "label": "Other stories \u00b7 4"
+          },
+          {
+            "id": "farm-gifts",
+            "disabled": false,
+            "label": "Bring a discovery home"
+          },
+          {
+            "id": "companion",
+            "disabled": false,
+            "label": "Come exploring with me"
+          },
+          {
+            "id": "gift",
+            "disabled": true,
+            "label": "Give a present"
+          },
+          {
+            "id": "about",
+            "disabled": false,
+            "label": "More about Rowan"
+          },
+          {
+            "id": "leave",
+            "disabled": false,
+            "label": "See you soon"
+          }
+        ],
+        "primaryStories": 1,
+        "otherStories": 1
+      }
+    },
+    {
+      "label": "TV conversation text and controls stay legible and contained",
+      "pass": true,
+      "fatal": false,
+      "actual": {
+        "pass": true,
+        "viewport": [
+          1920,
+          1080
+        ],
+        "scale": 1.5369999408721924,
+        "surfaces": [
+          {
+            "selector": ".village-dialogue-speech",
+            "left": 43.03125,
+            "top": 717.28125,
+            "right": 1148.4375,
+            "bottom": 1040.046875,
+            "width": 1105.40625,
+            "height": 322.765625
+          },
+          {
+            "selector": ".village-dialogue-response",
+            "left": 1185.3125,
+            "top": 179.328125,
+            "right": 1876.953125,
+            "bottom": 957.0625,
+            "width": 691.640625,
+            "height": 777.734375
+          },
+          {
+            "selector": ".village-dialogue-back",
+            "left": 1735.5625,
+            "top": 972.421875,
+            "right": 1876.953125,
+            "bottom": 1040.046875,
+            "width": 141.390625,
+            "height": 67.625
+          }
+        ],
+        "clipped": [],
+        "tinyTargets": [],
+        "small": [],
+        "overflow": [
+          {
+            "selector": ".village-dialogue-body",
+            "amount": 0
+          },
+          {
+            "selector": ".village-dialogue-replies",
+            "amount": 0
+          }
+        ],
+        "overlap": 0
+      }
+    },
+    {
+      "label": "The selected TV reply keeps opaque gold and readable label and note contrast",
+      "pass": true,
+      "fatal": false,
+      "actual": {
+        "pass": true,
+        "minimumContrast": 5.919165016885216,
+        "backgroundImage": "linear-gradient(110deg, rgb(255, 223, 170), rgb(239, 200, 137))",
+        "backgroundColour": "rgba(255, 226, 176, 0.11)",
+        "ink": "rgb(51, 35, 49)",
+        "choice": "farm-gifts"
+      }
+    },
+    {
+      "label": "Other stories activates the real Rowan journal without resource, reward or quest side effects",
+      "pass": true,
+      "fatal": true,
+      "actual": {
+        "actualDOMActivation": true,
+        "panel": "journal",
+        "panelId": "rowan",
+        "unchangedResourcesAndClaims": true,
+        "beforeSha256": "78850d28010b41a23b781eb4c7fb6f7ab041aaee93c60c081bb67ee8d26169d5",
+        "afterSha256": "78850d28010b41a23b781eb4c7fb6f7ab041aaee93c60c081bb67ee8d26169d5"
+      }
+    },
+    {
+      "label": "Closing the passive story journal releases actual village control",
+      "pass": true,
+      "fatal": true
+    },
+    {
+      "label": "TV air uses its reduced bounded workload",
+      "pass": true,
+      "fatal": true,
+      "actual": {
+        "budget": "tv",
+        "shafts": 3,
+        "fireflies": 16,
+        "instances": 19,
+        "triangles": 38,
+        "drawCalls": 2,
+        "lights": 0,
+        "textures": 0,
+        "time": 7.9164999999999885,
+        "worldUnits": true,
+        "gpuMotion": true
+      }
+    },
+    {
+      "label": "Normal rendering completes without page, console, shader or external-request errors",
+      "pass": true,
+      "fatal": true,
+      "actual": {
+        "count": 94,
+        "failed": []
+      }
+    }
+  ],
+  "errors": [],
+  "consoleErrors": [],
+  "externalRequests": [],
+  "screenshots": [
+    "conversation-desktop.png",
+    "conversation-phone.png",
+    "conversation-landscape.png",
+    "conversation-fold.png",
+    "conversation-tv.png"
+  ],
+  "views": [
+    {
+      "id": "tv",
+      "position": {
+        "x": 68.69999999999999,
+        "z": 29.1
+      },
+      "who": "natalie",
+      "atmosphere": {
+        "district": "green",
+        "phase": "dusk",
+        "worldUnits": true,
+        "cycleSeconds": 2700,
+        "addedLights": 0,
+        "addedPasses": 0
+      },
+      "fidelity": {
+        "sky": {
+          "cloudOctaves": 4,
+          "cloudWarpSamples": 1,
+          "cloudHashes": 20,
+          "silhouetteLayers": 3,
+          "addedMeshes": 0,
+          "addedDrawCalls": 0,
+          "addedLights": 0,
+          "addedTextures": 1,
+          "addedPasses": 0,
+          "maxLinearChannel": 0.68,
+          "maxTimeStep": 0.25,
+          "artSamples": 2,
+          "maxArtLongSide": 1024,
+          "artLongitudeRepeats": 2,
+          "time": 7.9164999999999885,
+          "artReady": true,
+          "artWidth": 1024,
+          "artHeight": 512,
+          "textureBytes": 2796204,
+          "artEncodedBytes": 34878
+        },
+        "air": {
+          "budget": "tv",
+          "shafts": 3,
+          "fireflies": 16,
+          "instances": 19,
+          "triangles": 38,
+          "drawCalls": 2,
+          "lights": 0,
+          "textures": 0,
+          "time": 7.9164999999999885,
+          "worldUnits": true,
+          "gpuMotion": true
+        },
+        "lighting": {
+          "moon": 0.84,
+          "sky": 0.9
+        }
+      },
+      "contact": {
+        "capacity": 32,
+        "count": 13,
+        "drawCalls": 1,
+        "triangles": 26,
+        "lights": 0,
+        "textures": 0,
+        "uploads": 61
+      },
+      "lights": 8,
+      "meshes": 1886,
+      "instances": 387819,
+      "memory": {
+        "geometries": 295,
+        "textures": 77
+      },
+      "programs": 94,
+      "lastRenderPass": {
+        "frame": 1516,
+        "calls": 1,
+        "triangles": 1,
+        "points": 0,
+        "lines": 0
+      }
+    }
+  ],
+  "programs": {
+    "count": 94,
+    "failed": []
+  },
+  "passed": true,
+  "visualFailures": []
+}

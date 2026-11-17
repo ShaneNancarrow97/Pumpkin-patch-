@@ -1,0 +1,65 @@
+{
+  "generator": "image_gen",
+  "referenceIdentity": "identity-reference.png",
+  "referenceViews": "*-reference.png from the shipped base directional source; technical crops, no new painting",
+  "accepted": {
+    "front": {
+      "file": "front.png",
+      "prompt": "front-prompt.txt",
+      "sha256": "1c601030d1fcead6a99ec020fdf9b5feb6666c7608713a69d7e20747a63e2ded"
+    },
+    "frontRight": {
+      "file": "frontRight.png",
+      "prompt": "frontRight-prompt.txt",
+      "sha256": "a61fdcfffcc2ecf7aef030a5f93119f9b858ec82c93fbfe8afb1c0a9d5981dc4"
+    },
+    "right": {
+      "file": "right-repair.png",
+      "prompt": "right-repair-prompt.txt",
+      "sha256": "509affcad9186bb9b99228047e0503fc74c07c99f89afdd6ccdbc885378ba346"
+    },
+    "backRight": {
+      "file": "backRight.png",
+      "prompt": "backRight-prompt.txt",
+      "sha256": "a04e5c735e4e2919a134b31a0be49d3fcaf209d0a72d2a75a675aa8131e48931"
+    },
+    "back": {
+      "file": "back.png",
+      "prompt": "back-prompt.txt",
+      "sha256": "b83e4d66b36fc6bd64cfc54c919b1e26a04b380f79b1847e0c3ce7a988b03050"
+    },
+    "backLeft": {
+      "file": "backLeft.png",
+      "prompt": "backLeft-prompt.txt",
+      "sha256": "db60e862e8ff0a122ec9ddbe5b2dbb1d2e29846daadf99db81322a860e33eafc"
+    },
+    "left": {
+      "file": "left.png",
+      "prompt": "left-prompt.txt",
+      "sha256": "f3c58500a30dcb6acc17aad167a445e57ec7ba20920163fbb0b8dd94bfd28af1"
+    },
+    "frontLeft": {
+      "file": "frontLeft.png",
+      "prompt": "frontLeft-prompt.txt",
+      "sha256": "b744b121fbcdf89eb60152fcb39acb6ac3953ba9e70d6bacafa7772418edba13"
+    }
+  },
+  "repairs": {
+    "right": {
+      "originalCandidate": "right.png",
+      "corrected": "right-repair.png",
+      "reason": "Foreground knee passing and counter-arm swing needed explicit correction."
+    }
+  },
+  "technicalOutputs": [
+    "crops.json",
+    "packing.json",
+    "natalie-base-gait-source.png",
+    "preview-atlas.webp",
+    "preview.html",
+    "*-review.gif",
+    "*-review.jpg",
+    "foot-landmarks.json"
+  ],
+  "paintingEdits": "All new poses and corrections are image_gen output. Python only measures/crops/resamples/aligns and creates review artifacts."
+}

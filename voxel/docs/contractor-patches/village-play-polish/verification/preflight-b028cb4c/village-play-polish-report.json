@@ -1,0 +1,131 @@
+{
+  "mode": "preflight",
+  "date": "2026-11-08T20:12:25.639Z",
+  "html": "/workspace/Pumpkin-Patch-Village-Play-Polish-preflight.html",
+  "sha256": "b028cb4c24d1625be77f1136b19a898a66a52980b2c860fa846a165930b21b1e",
+  "bytes": 58245582,
+  "sourceCommit": "ff6b5803686c449b902d405037f8958d03e3e2d8",
+  "checks": [],
+  "errors": [
+    {
+      "section": "console",
+      "message": "Error: <path> attribute d: Expected number, \"m20 132-2v10m-2 0h4\"."
+    },
+    {
+      "section": "console",
+      "message": "Error: <path> attribute d: Expected number, \"m20 132-2v10m-2 0h4\"."
+    },
+    {
+      "section": "console",
+      "message": "Error: <path> attribute d: Expected number, \"m20 132-2v10m-2 0h4\"."
+    },
+    {
+      "section": "console",
+      "message": "Error: <path> attribute d: Expected number, \"m20 132-2v10m-2 0h4\"."
+    },
+    {
+      "section": "console",
+      "message": "Error: <path> attribute d: Expected number, \"m20 132-2v10m-2 0h4\"."
+    },
+    {
+      "section": "console",
+      "message": "Error: <path> attribute d: Expected number, \"m20 132-2v10m-2 0h4\"."
+    },
+    {
+      "section": "runner",
+      "message": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-tab=\"village\"]:visible').first()\u001b[22m\n\n    at click (/workspace/village-play-polish/voxel/tools/village-play-polish-qa.mjs:28:55)\n    at openVillage (/workspace/village-play-polish/voxel/tools/village-play-polish-qa.mjs:38:469)\n    at /workspace/village-play-polish/voxel/async file:/workspace/village-play-polish/voxel/tools/village-play-polish-qa.mjs:64:279"
+    }
+  ],
+  "externalRequests": [],
+  "screenshots": [],
+  "layouts": [],
+  "scope": "Exact standalone HTML bytes served unchanged over loopback, headless Chromium software WebGL. Explicit level20, finished-tour/gathering quest fixture; milestones were not earned in play. Functional sections hold only renderer/composer draw calls while real controller/model/view ticks run in accelerated .05s steps. Draws are restored for normal-renderer photographs and shader checks. Standard Gamepad API input is mocked; viewports emulate phone/Fold/TV and do not certify physical Bluetooth, TV or device performance.",
+  "workingTree": " M assets/terrain/grass-tile.webp\n M build.mjs\n M src/content/village-gateway.js\n M src/content/village-quests.js\n M src/content/village.js\n M src/farm-village-gate.js\n M src/grass-detail.js\n M src/main.js\n M src/player-control.js\n M src/rules/village-resident-life.js\n M src/scene.js\n M src/ui/audio.js\n M src/ui/build-catalogue.css\n M src/ui/glyphs.js\n M src/ui/home-sheets.js\n M src/ui/menu-memory.js\n M src/ui/pad-cursor.js\n M src/ui/play-controls.css\n M src/ui/play-controls.js\n M src/ui/village-chapters.css\n M src/ui/village-chapters.js\n M src/ui/village-controls.css\n M src/ui/village-controls.js\n M src/ui/village-conversation.js\n M src/ui/village-decorate.js\n M src/village-game.js\n M src/village-grass.js\n M src/village-life.js\n M src/village-models.js\n M src/village-sprite-actors.js\n M src/village-view.js\n M src/village-world.js\n M src/world.js\n M test/audio-player.test.mjs\n M test/narration-surfaces.test.mjs\n M test/village-chapters.test.mjs\n M test/village-game.test.mjs\n M test/village-node-sites.test.mjs\n M test/village-resident-life.test.mjs\n?? assets/home-category-concepts/\n?? assets/home-category-icons/\n?? assets/terrain-concepts/v2/\n?? assets/village-ui-concepts/\n?? assets/village-ui-icons/\n?? docs/contractor-patches/village-play-polish/\n?? src/content/home-category-icon-meta.js\n?? src/content/village-ui-icon-meta.js\n?? src/follow-camera.js\n?? src/rules/village-wanderers.js\n?? src/sprite-rim.js\n?? src/ui/build-controls-polish.css\n?? src/ui/dualsense-icons.js\n?? src/ui/home-category-icon-markup.js\n?? src/ui/home-category-icons.js\n?? src/ui/play-input-boundary.js\n?? src/ui/village-action-prompt.js\n?? src/ui/village-conversation.css\n?? src/ui/village-farm-reminder.js\n?? src/ui/village-map.js\n?? src/ui/village-polish.css\n?? src/ui/village-ui-icon-markup.js\n?? src/ui/village-ui-icons.js\n?? src/village-proximity.js\n?? src/village-visibility.js\n?? src/village-wanderers.js\n?? test/dualsense-icons.test.mjs\n?? test/farm-village-gateway.test.mjs\n?? test/follow-camera.test.mjs\n?? test/play-input-boundary.test.mjs\n?? test/village-action-prompt.test.mjs\n?? test/village-farm-reminder.test.mjs\n?? test/village-map.test.mjs\n?? test/village-proximity.test.mjs\n?? test/village-readability.test.mjs\n?? test/village-ui-icons.test.mjs\n?? test/village-wanderer-lifecycle.test.mjs\n?? test/village-wanderers.test.mjs\n?? tools/bake-home-category-icons.py\n?? tools/bake-village-grass-tile.py\n?? tools/bake-village-ui-icons.py\n?? tools/pad-cursor-dom-qa.mjs\n?? tools/village-play-polish-qa.mjs\n",
+  "sourceHashes": {
+    "src/main.js": {
+      "bytes": 79664,
+      "sha256": "5feaf046e63fb4088def68b468107d2a18eacde12bd9355e3f28a34200cc16ec"
+    },
+    "src/scene.js": {
+      "bytes": 94160,
+      "sha256": "597311a5a0f428ce113a6ebb1759c9a712a93b67f4d74863a8381ccc2a1afd0f"
+    },
+    "src/player-control.js": {
+      "bytes": 27447,
+      "sha256": "9205679c7ef2c0eddb7fd826773886fc426f1954fe479ca16092b1f2789acd60"
+    },
+    "src/village-game.js": {
+      "bytes": 38999,
+      "sha256": "26b9f04142a292ee7879e7194f4c24a38b28554d3021fbba56f22c8dad0a8a83"
+    },
+    "src/village-view.js": {
+      "bytes": 32499,
+      "sha256": "76e18249086f6a78a0833ba42ad8434ac2076b3eab14b3a3144ab1d1af845d12"
+    },
+    "src/village-world.js": {
+      "bytes": 87445,
+      "sha256": "bcac6db35e10c1b94c32788ff2d761c8f24ef1be67271a7c1d5587eebea00de3"
+    },
+    "src/village-grass.js": {
+      "bytes": 7193,
+      "sha256": "aa39ea4a3a40f6425852ac86bb80285addb0190c31377ce4fb910121636d881d"
+    },
+    "src/village-visibility.js": {
+      "bytes": 1711,
+      "sha256": "1baaf9b7d1275d4d4c1acc503d549a7169f144b006c36a273b3604177c4a6770"
+    },
+    "src/village-proximity.js": {
+      "bytes": 3437,
+      "sha256": "b398a24f33e14e221e601512bc77c534fe6e075e22cf60f1a00ad8ed71e84f5d"
+    },
+    "src/village-wanderers.js": {
+      "bytes": 4033,
+      "sha256": "e677531d1f9acf7cdb2afd8e0e0b5c92113a1a87a0010dfcaa504192333e2bc5"
+    },
+    "src/sprite-rim.js": {
+      "bytes": 1416,
+      "sha256": "532cda9e0ae0f1d543b4072452551b57a14682d3104e5d40624e8cd18639001d"
+    },
+    "src/ui/village-controls.js": {
+      "bytes": 20213,
+      "sha256": "a5b2d84ae2503f3377be74827dbdcd22f9d02d1e53b27cac96c3663e11f6548f"
+    },
+    "src/ui/village-controls.css": {
+      "bytes": 11075,
+      "sha256": "0ec2ebfbd41fb7d3c8d735a35d0d388c056f13607a22092f135b6ea029c5d3cc"
+    },
+    "src/ui/village-map.js": {
+      "bytes": 12061,
+      "sha256": "0bf23fc68eb625ae4be45554e614ec0d8c1f1567015c8175a2ce495283c1fd70"
+    },
+    "src/ui/village-chapters.js": {
+      "bytes": 22322,
+      "sha256": "df1b5370dba7b9800c3fb61fbad81c269dff72032929dff33d568665195cabc7"
+    },
+    "src/ui/village-conversation.js": {
+      "bytes": 8361,
+      "sha256": "c449a1d3694512a99bf58a0d02e48b2fd0085ad8438eccc7a6225f0fa7f19a27"
+    },
+    "src/ui/village-conversation.css": {
+      "bytes": 6395,
+      "sha256": "9dfcc9564b5e37b3bb39a42b62a735f2570213b21d222e712d4d165d4bc391ea"
+    },
+    "src/ui/pad-cursor.js": {
+      "bytes": 9376,
+      "sha256": "e94e45e88ae2ed03d3a0bde24c876f6c3b35008124d37029dada4db628ac18b5"
+    },
+    "src/ui/home-sheets.js": {
+      "bytes": 60570,
+      "sha256": "cb7972bd95ed8ba5a60e70e378a4bbbca6256a3f3f2137425bc1a300e216ce1a"
+    },
+    "assets/terrain/grass-tile.webp": {
+      "bytes": 101386,
+      "sha256": "ccc2158587d4a03d1e7f51e811b6655fdc7f07b1a3cd2f46341bf5d67f95d2a0"
+    },
+    "assets/village-ui-icons/village-ui.webp": {
+      "bytes": 185926,
+      "sha256": "30a3161c98941584c485fded006d80a98722f20c86945045e9b67cba82277347"
+    }
+  },
+  "passed": false
+}

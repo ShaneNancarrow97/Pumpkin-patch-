@@ -1,0 +1,33 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Hollow-Hayride.html",
+  "sha256": "724c935ee6e95970d52e16ca6c56293113ab1b0b94637a36df2d1732c8d2598b",
+  "checks": [
+    {
+      "ok": true,
+      "label": "final phone: scrollable management fits with 44px targets",
+      "data": {
+        "width": 390,
+        "height": 844,
+        "horizontalOverflow": false,
+        "clipped": [],
+        "small": [],
+        "scrollable": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "final phone-landscape: scrollable management fits with 44px targets",
+      "data": {
+        "width": 844,
+        "height": 390,
+        "horizontalOverflow": false,
+        "clipped": [],
+        "small": [],
+        "scrollable": true
+      }
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "limitations": []
+}

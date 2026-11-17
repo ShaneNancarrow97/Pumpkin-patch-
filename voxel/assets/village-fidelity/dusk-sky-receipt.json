@@ -1,0 +1,10 @@
+{
+  "width": 1024,
+  "height": 512,
+  "encodedBytes": 34878,
+  "baseRgbaBytes": 2097152,
+  "estimatedMipRgbaBytes": 2796204,
+  "sourceSha256": "b2632c4ce54488fcb6a3152736a0b45b894b433fec93c301e1b8f801200a504c",
+  "sha256": "c8bba551b3d9fb2336ca7aeb2478126060dd45e05f0dcb99cb34f30ba88fa22e",
+  "processing": "Aspect-preserving Lanczos resize and WebP encoding. Original painting retained; no repainting."
+}

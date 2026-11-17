@@ -1,0 +1,13 @@
+✔ test/village-atmosphere.test.mjs (276.489184ms)
+✔ test/village-chapters.test.mjs (129.86995ms)
+✔ test/village-navigation.test.mjs (188.921753ms)
+✔ test/village-progression.test.mjs (126.776175ms)
+✔ test/village-resident-life.test.mjs (274.651525ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1007.265986

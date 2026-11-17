@@ -1,0 +1,1485 @@
+{
+  "cell": [
+    320,
+    360
+  ],
+  "anchor": [
+    160,
+    340
+  ],
+  "height": 320,
+  "frames": [
+    {
+      "direction": "front",
+      "phase": 0,
+      "file": "natalie/front.png",
+      "sourcePhase": 0,
+      "sourceSha256": "1c601030d1fcead6a99ec020fdf9b5feb6666c7608713a69d7e20747a63e2ded",
+      "sourceBounds": [
+        130,
+        14,
+        319,
+        435
+      ],
+      "torsoX": 222.5,
+      "scale": 0.7619047619047619,
+      "offset": [
+        90,
+        19
+      ],
+      "size": [
+        144,
+        321
+      ]
+    },
+    {
+      "direction": "front",
+      "phase": 1,
+      "file": "natalie/front.png",
+      "sourcePhase": 1,
+      "sourceSha256": "1c601030d1fcead6a99ec020fdf9b5feb6666c7608713a69d7e20747a63e2ded",
+      "sourceBounds": [
+        130,
+        16,
+        320,
+        435
+      ],
+      "torsoX": 222.5,
+      "scale": 0.7619047619047619,
+      "offset": [
+        90,
+        21
+      ],
+      "size": [
+        145,
+        319
+      ]
+    },
+    {
+      "direction": "front",
+      "phase": 2,
+      "file": "natalie/front.png",
+      "sourcePhase": 2,
+      "sourceSha256": "1c601030d1fcead6a99ec020fdf9b5feb6666c7608713a69d7e20747a63e2ded",
+      "sourceBounds": [
+        130,
+        15,
+        323,
+        435
+      ],
+      "torsoX": 225.0,
+      "scale": 0.7619047619047619,
+      "offset": [
+        88,
+        20
+      ],
+      "size": [
+        147,
+        320
+      ]
+    },
+    {
+      "direction": "front",
+      "phase": 3,
+      "file": "natalie/front.png",
+      "sourcePhase": 3,
+      "sourceSha256": "1c601030d1fcead6a99ec020fdf9b5feb6666c7608713a69d7e20747a63e2ded",
+      "sourceBounds": [
+        125,
+        14,
+        316,
+        435
+      ],
+      "torsoX": 224.5,
+      "scale": 0.7619047619047619,
+      "offset": [
+        84,
+        19
+      ],
+      "size": [
+        146,
+        321
+      ]
+    },
+    {
+      "direction": "front",
+      "phase": 4,
+      "file": "natalie/front.png",
+      "sourcePhase": 4,
+      "sourceSha256": "1c601030d1fcead6a99ec020fdf9b5feb6666c7608713a69d7e20747a63e2ded",
+      "sourceBounds": [
+        121,
+        15,
+        316,
+        434
+      ],
+      "torsoX": 222.5,
+      "scale": 0.7619047619047619,
+      "offset": [
+        83,
+        21
+      ],
+      "size": [
+        149,
+        319
+      ]
+    },
+    {
+      "direction": "front",
+      "phase": 5,
+      "file": "natalie/front.png",
+      "sourcePhase": 5,
+      "sourceSha256": "1c601030d1fcead6a99ec020fdf9b5feb6666c7608713a69d7e20747a63e2ded",
+      "sourceBounds": [
+        124,
+        15,
+        316,
+        434
+      ],
+      "torsoX": 222.75,
+      "scale": 0.7619047619047619,
+      "offset": [
+        85,
+        21
+      ],
+      "size": [
+        146,
+        319
+      ]
+    },
+    {
+      "direction": "front",
+      "phase": 6,
+      "file": "natalie/front.png",
+      "sourcePhase": 6,
+      "sourceSha256": "1c601030d1fcead6a99ec020fdf9b5feb6666c7608713a69d7e20747a63e2ded",
+      "sourceBounds": [
+        126,
+        16,
+        317,
+        434
+      ],
+      "torsoX": 223.5,
+      "scale": 0.7619047619047619,
+      "offset": [
+        86,
+        22
+      ],
+      "size": [
+        146,
+        318
+      ]
+    },
+    {
+      "direction": "front",
+      "phase": 7,
+      "file": "natalie/front.png",
+      "sourcePhase": 7,
+      "sourceSha256": "1c601030d1fcead6a99ec020fdf9b5feb6666c7608713a69d7e20747a63e2ded",
+      "sourceBounds": [
+        132,
+        16,
+        323,
+        432
+      ],
+      "torsoX": 224.5,
+      "scale": 0.7619047619047619,
+      "offset": [
+        90,
+        23
+      ],
+      "size": [
+        146,
+        317
+      ]
+    },
+    {
+      "direction": "frontRight",
+      "phase": 0,
+      "file": "natalie/frontRight.png",
+      "sourcePhase": 0,
+      "sourceSha256": "a61fdcfffcc2ecf7aef030a5f93119f9b858ec82c93fbfe8afb1c0a9d5981dc4",
+      "sourceBounds": [
+        86,
+        10,
+        364,
+        433
+      ],
+      "torsoX": 222.0,
+      "scale": 0.7547169811320755,
+      "offset": [
+        57,
+        21
+      ],
+      "size": [
+        210,
+        319
+      ]
+    },
+    {
+      "direction": "frontRight",
+      "phase": 1,
+      "file": "natalie/frontRight.png",
+      "sourcePhase": 1,
+      "sourceSha256": "a61fdcfffcc2ecf7aef030a5f93119f9b858ec82c93fbfe8afb1c0a9d5981dc4",
+      "sourceBounds": [
+        106,
+        12,
+        302,
+        434
+      ],
+      "torsoX": 227.5,
+      "scale": 0.7547169811320755,
+      "offset": [
+        68,
+        22
+      ],
+      "size": [
+        148,
+        318
+      ]
+    },
+    {
+      "direction": "frontRight",
+      "phase": 2,
+      "file": "natalie/frontRight.png",
+      "sourcePhase": 2,
+      "sourceSha256": "a61fdcfffcc2ecf7aef030a5f93119f9b858ec82c93fbfe8afb1c0a9d5981dc4",
+      "sourceBounds": [
+        146,
+        12,
+        309,
+        432
+      ],
+      "torsoX": 224.5,
+      "scale": 0.7547169811320755,
+      "offset": [
+        101,
+        23
+      ],
+      "size": [
+        123,
+        317
+      ]
+    },
+    {
+      "direction": "frontRight",
+      "phase": 3,
+      "file": "natalie/frontRight.png",
+      "sourcePhase": 3,
+      "sourceSha256": "a61fdcfffcc2ecf7aef030a5f93119f9b858ec82c93fbfe8afb1c0a9d5981dc4",
+      "sourceBounds": [
+        111,
+        12,
+        361,
+        428
+      ],
+      "torsoX": 220.0,
+      "scale": 0.7547169811320755,
+      "offset": [
+        78,
+        26
+      ],
+      "size": [
+        189,
+        314
+      ]
+    },
+    {
+      "direction": "frontRight",
+      "phase": 4,
+      "file": "natalie/frontRight.png",
+      "sourcePhase": 4,
+      "sourceSha256": "a61fdcfffcc2ecf7aef030a5f93119f9b858ec82c93fbfe8afb1c0a9d5981dc4",
+      "sourceBounds": [
+        82,
+        12,
+        362,
+        437
+      ],
+      "torsoX": 221.0,
+      "scale": 0.7547169811320755,
+      "offset": [
+        55,
+        19
+      ],
+      "size": [
+        211,
+        321
+      ]
+    },
+    {
+      "direction": "frontRight",
+      "phase": 5,
+      "file": "natalie/frontRight.png",
+      "sourcePhase": 5,
+      "sourceSha256": "a61fdcfffcc2ecf7aef030a5f93119f9b858ec82c93fbfe8afb1c0a9d5981dc4",
+      "sourceBounds": [
+        105,
+        13,
+        315,
+        437
+      ],
+      "torsoX": 222.5,
+      "scale": 0.7547169811320755,
+      "offset": [
+        71,
+        20
+      ],
+      "size": [
+        158,
+        320
+      ]
+    },
+    {
+      "direction": "frontRight",
+      "phase": 6,
+      "file": "natalie/frontRight.png",
+      "sourcePhase": 6,
+      "sourceSha256": "a61fdcfffcc2ecf7aef030a5f93119f9b858ec82c93fbfe8afb1c0a9d5981dc4",
+      "sourceBounds": [
+        125,
+        13,
+        302,
+        439
+      ],
+      "torsoX": 225.25,
+      "scale": 0.7547169811320755,
+      "offset": [
+        84,
+        18
+      ],
+      "size": [
+        134,
+        322
+      ]
+    },
+    {
+      "direction": "frontRight",
+      "phase": 7,
+      "file": "natalie/frontRight.png",
+      "sourcePhase": 7,
+      "sourceSha256": "a61fdcfffcc2ecf7aef030a5f93119f9b858ec82c93fbfe8afb1c0a9d5981dc4",
+      "sourceBounds": [
+        87,
+        13,
+        380,
+        433
+      ],
+      "torsoX": 222.5,
+      "scale": 0.7547169811320755,
+      "offset": [
+        58,
+        23
+      ],
+      "size": [
+        221,
+        317
+      ]
+    },
+    {
+      "direction": "right",
+      "phase": 0,
+      "file": "natalie/right-repair.png",
+      "sourcePhase": 0,
+      "sourceSha256": "509affcad9186bb9b99228047e0503fc74c07c99f89afdd6ccdbc885378ba346",
+      "sourceBounds": [
+        72,
+        10,
+        374,
+        428
+      ],
+      "torsoX": 213.0,
+      "scale": 0.7683073229291717,
+      "offset": [
+        52,
+        19
+      ],
+      "size": [
+        232,
+        321
+      ]
+    },
+    {
+      "direction": "right",
+      "phase": 1,
+      "file": "natalie/right-repair.png",
+      "sourcePhase": 1,
+      "sourceSha256": "509affcad9186bb9b99228047e0503fc74c07c99f89afdd6ccdbc885378ba346",
+      "sourceBounds": [
+        105,
+        18,
+        317,
+        429
+      ],
+      "torsoX": 216.5,
+      "scale": 0.7683073229291717,
+      "offset": [
+        74,
+        24
+      ],
+      "size": [
+        163,
+        316
+      ]
+    },
+    {
+      "direction": "right",
+      "phase": 2,
+      "file": "natalie/right-repair.png",
+      "sourcePhase": 2,
+      "sourceSha256": "509affcad9186bb9b99228047e0503fc74c07c99f89afdd6ccdbc885378ba346",
+      "sourceBounds": [
+        150,
+        10,
+        318,
+        429
+      ],
+      "torsoX": 229.25,
+      "scale": 0.7683073229291717,
+      "offset": [
+        99,
+        18
+      ],
+      "size": [
+        129,
+        322
+      ]
+    },
+    {
+      "direction": "right",
+      "phase": 3,
+      "file": "natalie/right-repair.png",
+      "sourcePhase": 3,
+      "sourceSha256": "509affcad9186bb9b99228047e0503fc74c07c99f89afdd6ccdbc885378ba346",
+      "sourceBounds": [
+        94,
+        12,
+        379,
+        426
+      ],
+      "torsoX": 215.75,
+      "scale": 0.7683073229291717,
+      "offset": [
+        66,
+        22
+      ],
+      "size": [
+        219,
+        318
+      ]
+    },
+    {
+      "direction": "right",
+      "phase": 4,
+      "file": "natalie/right-repair.png",
+      "sourcePhase": 4,
+      "sourceSha256": "509affcad9186bb9b99228047e0503fc74c07c99f89afdd6ccdbc885378ba346",
+      "sourceBounds": [
+        67,
+        15,
+        371,
+        430
+      ],
+      "torsoX": 212.5,
+      "scale": 0.7683073229291717,
+      "offset": [
+        48,
+        21
+      ],
+      "size": [
+        234,
+        319
+      ]
+    },
+    {
+      "direction": "right",
+      "phase": 5,
+      "file": "natalie/right-repair.png",
+      "sourcePhase": 5,
+      "sourceSha256": "509affcad9186bb9b99228047e0503fc74c07c99f89afdd6ccdbc885378ba346",
+      "sourceBounds": [
+        103,
+        23,
+        321,
+        430
+      ],
+      "torsoX": 215.0,
+      "scale": 0.7683073229291717,
+      "offset": [
+        74,
+        27
+      ],
+      "size": [
+        167,
+        313
+      ]
+    },
+    {
+      "direction": "right",
+      "phase": 6,
+      "file": "natalie/right-repair.png",
+      "sourcePhase": 6,
+      "sourceSha256": "509affcad9186bb9b99228047e0503fc74c07c99f89afdd6ccdbc885378ba346",
+      "sourceBounds": [
+        125,
+        14,
+        312,
+        431
+      ],
+      "torsoX": 220.75,
+      "scale": 0.7683073229291717,
+      "offset": [
+        86,
+        20
+      ],
+      "size": [
+        144,
+        320
+      ]
+    },
+    {
+      "direction": "right",
+      "phase": 7,
+      "file": "natalie/right-repair.png",
+      "sourcePhase": 7,
+      "sourceSha256": "509affcad9186bb9b99228047e0503fc74c07c99f89afdd6ccdbc885378ba346",
+      "sourceBounds": [
+        90,
+        15,
+        378,
+        427
+      ],
+      "torsoX": 218.0,
+      "scale": 0.7683073229291717,
+      "offset": [
+        62,
+        23
+      ],
+      "size": [
+        221,
+        317
+      ]
+    },
+    {
+      "direction": "backRight",
+      "phase": 0,
+      "file": "natalie/backRight.png",
+      "sourcePhase": 0,
+      "sourceSha256": "a04e5c735e4e2919a134b31a0be49d3fcaf209d0a72d2a75a675aa8131e48931",
+      "sourceBounds": [
+        99,
+        12,
+        360,
+        439
+      ],
+      "torsoX": 220.5,
+      "scale": 0.7547169811320755,
+      "offset": [
+        68,
+        18
+      ],
+      "size": [
+        197,
+        322
+      ]
+    },
+    {
+      "direction": "backRight",
+      "phase": 1,
+      "file": "natalie/backRight.png",
+      "sourcePhase": 1,
+      "sourceSha256": "a04e5c735e4e2919a134b31a0be49d3fcaf209d0a72d2a75a675aa8131e48931",
+      "sourceBounds": [
+        112,
+        12,
+        342,
+        434
+      ],
+      "torsoX": 222.0,
+      "scale": 0.7547169811320755,
+      "offset": [
+        77,
+        22
+      ],
+      "size": [
+        174,
+        318
+      ]
+    },
+    {
+      "direction": "backRight",
+      "phase": 2,
+      "file": "natalie/backRight.png",
+      "sourcePhase": 2,
+      "sourceSha256": "a04e5c735e4e2919a134b31a0be49d3fcaf209d0a72d2a75a675aa8131e48931",
+      "sourceBounds": [
+        144,
+        12,
+        329,
+        432
+      ],
+      "torsoX": 224.5,
+      "scale": 0.7547169811320755,
+      "offset": [
+        99,
+        23
+      ],
+      "size": [
+        140,
+        317
+      ]
+    },
+    {
+      "direction": "backRight",
+      "phase": 3,
+      "file": "natalie/backRight.png",
+      "sourcePhase": 3,
+      "sourceSha256": "a04e5c735e4e2919a134b31a0be49d3fcaf209d0a72d2a75a675aa8131e48931",
+      "sourceBounds": [
+        99,
+        12,
+        371,
+        432
+      ],
+      "torsoX": 220.0,
+      "scale": 0.7547169811320755,
+      "offset": [
+        69,
+        23
+      ],
+      "size": [
+        205,
+        317
+      ]
+    },
+    {
+      "direction": "backRight",
+      "phase": 4,
+      "file": "natalie/backRight.png",
+      "sourcePhase": 4,
+      "sourceSha256": "a04e5c735e4e2919a134b31a0be49d3fcaf209d0a72d2a75a675aa8131e48931",
+      "sourceBounds": [
+        77,
+        12,
+        364,
+        433
+      ],
+      "torsoX": 217.25,
+      "scale": 0.7547169811320755,
+      "offset": [
+        54,
+        22
+      ],
+      "size": [
+        217,
+        318
+      ]
+    },
+    {
+      "direction": "backRight",
+      "phase": 5,
+      "file": "natalie/backRight.png",
+      "sourcePhase": 5,
+      "sourceSha256": "a04e5c735e4e2919a134b31a0be49d3fcaf209d0a72d2a75a675aa8131e48931",
+      "sourceBounds": [
+        95,
+        13,
+        334,
+        433
+      ],
+      "torsoX": 220.5,
+      "scale": 0.7547169811320755,
+      "offset": [
+        65,
+        23
+      ],
+      "size": [
+        180,
+        317
+      ]
+    },
+    {
+      "direction": "backRight",
+      "phase": 6,
+      "file": "natalie/backRight.png",
+      "sourcePhase": 6,
+      "sourceSha256": "a04e5c735e4e2919a134b31a0be49d3fcaf209d0a72d2a75a675aa8131e48931",
+      "sourceBounds": [
+        105,
+        13,
+        338,
+        433
+      ],
+      "torsoX": 223.5,
+      "scale": 0.7547169811320755,
+      "offset": [
+        71,
+        23
+      ],
+      "size": [
+        176,
+        317
+      ]
+    },
+    {
+      "direction": "backRight",
+      "phase": 7,
+      "file": "natalie/backRight.png",
+      "sourcePhase": 7,
+      "sourceSha256": "a04e5c735e4e2919a134b31a0be49d3fcaf209d0a72d2a75a675aa8131e48931",
+      "sourceBounds": [
+        94,
+        13,
+        373,
+        430
+      ],
+      "torsoX": 223.0,
+      "scale": 0.7547169811320755,
+      "offset": [
+        63,
+        25
+      ],
+      "size": [
+        211,
+        315
+      ]
+    },
+    {
+      "direction": "back",
+      "phase": 0,
+      "file": "natalie/back.png",
+      "sourcePhase": 0,
+      "sourceSha256": "b83e4d66b36fc6bd64cfc54c919b1e26a04b380f79b1847e0c3ce7a988b03050",
+      "sourceBounds": [
+        117,
+        11,
+        317,
+        435
+      ],
+      "torsoX": 221.75,
+      "scale": 0.757396449704142,
+      "offset": [
+        81,
+        19
+      ],
+      "size": [
+        151,
+        321
+      ]
+    },
+    {
+      "direction": "back",
+      "phase": 1,
+      "file": "natalie/back.png",
+      "sourcePhase": 1,
+      "sourceSha256": "b83e4d66b36fc6bd64cfc54c919b1e26a04b380f79b1847e0c3ce7a988b03050",
+      "sourceBounds": [
+        115,
+        11,
+        316,
+        425
+      ],
+      "torsoX": 222.0,
+      "scale": 0.757396449704142,
+      "offset": [
+        79,
+        26
+      ],
+      "size": [
+        152,
+        314
+      ]
+    },
+    {
+      "direction": "back",
+      "phase": 2,
+      "file": "natalie/back.png",
+      "sourcePhase": 2,
+      "sourceSha256": "b83e4d66b36fc6bd64cfc54c919b1e26a04b380f79b1847e0c3ce7a988b03050",
+      "sourceBounds": [
+        115,
+        11,
+        314,
+        435
+      ],
+      "torsoX": 224.0,
+      "scale": 0.757396449704142,
+      "offset": [
+        77,
+        19
+      ],
+      "size": [
+        151,
+        321
+      ]
+    },
+    {
+      "direction": "back",
+      "phase": 3,
+      "file": "natalie/back.png",
+      "sourcePhase": 3,
+      "sourceSha256": "b83e4d66b36fc6bd64cfc54c919b1e26a04b380f79b1847e0c3ce7a988b03050",
+      "sourceBounds": [
+        108,
+        11,
+        313,
+        433
+      ],
+      "torsoX": 223.5,
+      "scale": 0.757396449704142,
+      "offset": [
+        73,
+        20
+      ],
+      "size": [
+        155,
+        320
+      ]
+    },
+    {
+      "direction": "back",
+      "phase": 4,
+      "file": "natalie/back.png",
+      "sourcePhase": 4,
+      "sourceSha256": "b83e4d66b36fc6bd64cfc54c919b1e26a04b380f79b1847e0c3ce7a988b03050",
+      "sourceBounds": [
+        107,
+        11,
+        315,
+        432
+      ],
+      "torsoX": 223.5,
+      "scale": 0.757396449704142,
+      "offset": [
+        72,
+        21
+      ],
+      "size": [
+        158,
+        319
+      ]
+    },
+    {
+      "direction": "back",
+      "phase": 5,
+      "file": "natalie/back.png",
+      "sourcePhase": 5,
+      "sourceSha256": "b83e4d66b36fc6bd64cfc54c919b1e26a04b380f79b1847e0c3ce7a988b03050",
+      "sourceBounds": [
+        110,
+        11,
+        318,
+        431
+      ],
+      "torsoX": 224.0,
+      "scale": 0.757396449704142,
+      "offset": [
+        74,
+        22
+      ],
+      "size": [
+        158,
+        318
+      ]
+    },
+    {
+      "direction": "back",
+      "phase": 6,
+      "file": "natalie/back.png",
+      "sourcePhase": 6,
+      "sourceSha256": "b83e4d66b36fc6bd64cfc54c919b1e26a04b380f79b1847e0c3ce7a988b03050",
+      "sourceBounds": [
+        113,
+        11,
+        319,
+        432
+      ],
+      "torsoX": 226.5,
+      "scale": 0.757396449704142,
+      "offset": [
+        74,
+        21
+      ],
+      "size": [
+        156,
+        319
+      ]
+    },
+    {
+      "direction": "back",
+      "phase": 7,
+      "file": "natalie/back.png",
+      "sourcePhase": 7,
+      "sourceSha256": "b83e4d66b36fc6bd64cfc54c919b1e26a04b380f79b1847e0c3ce7a988b03050",
+      "sourceBounds": [
+        112,
+        11,
+        317,
+        433
+      ],
+      "torsoX": 222.5,
+      "scale": 0.757396449704142,
+      "offset": [
+        76,
+        20
+      ],
+      "size": [
+        155,
+        320
+      ]
+    },
+    {
+      "direction": "backLeft",
+      "phase": 0,
+      "file": "natalie/backLeft.png",
+      "sourcePhase": 0,
+      "sourceSha256": "db60e862e8ff0a122ec9ddbe5b2dbb1d2e29846daadf99db81322a860e33eafc",
+      "sourceBounds": [
+        76,
+        10,
+        362,
+        433
+      ],
+      "torsoX": 237.0,
+      "scale": 0.7565011820330969,
+      "offset": [
+        38,
+        20
+      ],
+      "size": [
+        216,
+        320
+      ]
+    },
+    {
+      "direction": "backLeft",
+      "phase": 1,
+      "file": "natalie/backLeft.png",
+      "sourcePhase": 1,
+      "sourceSha256": "db60e862e8ff0a122ec9ddbe5b2dbb1d2e29846daadf99db81322a860e33eafc",
+      "sourceBounds": [
+        128,
+        14,
+        339,
+        427
+      ],
+      "torsoX": 239.5,
+      "scale": 0.7565011820330969,
+      "offset": [
+        76,
+        28
+      ],
+      "size": [
+        160,
+        312
+      ]
+    },
+    {
+      "direction": "backLeft",
+      "phase": 2,
+      "file": "natalie/backLeft.png",
+      "sourcePhase": 2,
+      "sourceSha256": "db60e862e8ff0a122ec9ddbe5b2dbb1d2e29846daadf99db81322a860e33eafc",
+      "sourceBounds": [
+        138,
+        15,
+        317,
+        429
+      ],
+      "torsoX": 231.0,
+      "scale": 0.7565011820330969,
+      "offset": [
+        90,
+        27
+      ],
+      "size": [
+        135,
+        313
+      ]
+    },
+    {
+      "direction": "backLeft",
+      "phase": 3,
+      "file": "natalie/backLeft.png",
+      "sourcePhase": 3,
+      "sourceSha256": "db60e862e8ff0a122ec9ddbe5b2dbb1d2e29846daadf99db81322a860e33eafc",
+      "sourceBounds": [
+        120,
+        15,
+        335,
+        435
+      ],
+      "torsoX": 232.0,
+      "scale": 0.7565011820330969,
+      "offset": [
+        75,
+        22
+      ],
+      "size": [
+        163,
+        318
+      ]
+    },
+    {
+      "direction": "backLeft",
+      "phase": 4,
+      "file": "natalie/backLeft.png",
+      "sourcePhase": 4,
+      "sourceSha256": "db60e862e8ff0a122ec9ddbe5b2dbb1d2e29846daadf99db81322a860e33eafc",
+      "sourceBounds": [
+        100,
+        16,
+        338,
+        439
+      ],
+      "torsoX": 232.5,
+      "scale": 0.7565011820330969,
+      "offset": [
+        60,
+        20
+      ],
+      "size": [
+        180,
+        320
+      ]
+    },
+    {
+      "direction": "backLeft",
+      "phase": 5,
+      "file": "natalie/backLeft.png",
+      "sourcePhase": 5,
+      "sourceSha256": "db60e862e8ff0a122ec9ddbe5b2dbb1d2e29846daadf99db81322a860e33eafc",
+      "sourceBounds": [
+        124,
+        17,
+        334,
+        425
+      ],
+      "torsoX": 235.0,
+      "scale": 0.7565011820330969,
+      "offset": [
+        76,
+        31
+      ],
+      "size": [
+        159,
+        309
+      ]
+    },
+    {
+      "direction": "backLeft",
+      "phase": 6,
+      "file": "natalie/backLeft.png",
+      "sourcePhase": 6,
+      "sourceSha256": "db60e862e8ff0a122ec9ddbe5b2dbb1d2e29846daadf99db81322a860e33eafc",
+      "sourceBounds": [
+        137,
+        15,
+        322,
+        435
+      ],
+      "torsoX": 233.0,
+      "scale": 0.7565011820330969,
+      "offset": [
+        87,
+        22
+      ],
+      "size": [
+        140,
+        318
+      ]
+    },
+    {
+      "direction": "backLeft",
+      "phase": 7,
+      "file": "natalie/backLeft.png",
+      "sourcePhase": 7,
+      "sourceSha256": "db60e862e8ff0a122ec9ddbe5b2dbb1d2e29846daadf99db81322a860e33eafc",
+      "sourceBounds": [
+        80,
+        17,
+        372,
+        437
+      ],
+      "torsoX": 240.0,
+      "scale": 0.7565011820330969,
+      "offset": [
+        39,
+        22
+      ],
+      "size": [
+        221,
+        318
+      ]
+    },
+    {
+      "direction": "left",
+      "phase": 0,
+      "file": "natalie/left.png",
+      "sourcePhase": 0,
+      "sourceSha256": "f3c58500a30dcb6acc17aad167a445e57ec7ba20920163fbb0b8dd94bfd28af1",
+      "sourceBounds": [
+        65,
+        12,
+        380,
+        438
+      ],
+      "torsoX": 234.25,
+      "scale": 0.7538280329799765,
+      "offset": [
+        32,
+        19
+      ],
+      "size": [
+        237,
+        321
+      ]
+    },
+    {
+      "direction": "left",
+      "phase": 1,
+      "file": "natalie/left.png",
+      "sourcePhase": 1,
+      "sourceSha256": "f3c58500a30dcb6acc17aad167a445e57ec7ba20920163fbb0b8dd94bfd28af1",
+      "sourceBounds": [
+        110,
+        13,
+        339,
+        439
+      ],
+      "torsoX": 236.0,
+      "scale": 0.7538280329799765,
+      "offset": [
+        65,
+        19
+      ],
+      "size": [
+        173,
+        321
+      ]
+    },
+    {
+      "direction": "left",
+      "phase": 2,
+      "file": "natalie/left.png",
+      "sourcePhase": 2,
+      "sourceSha256": "f3c58500a30dcb6acc17aad167a445e57ec7ba20920163fbb0b8dd94bfd28af1",
+      "sourceBounds": [
+        135,
+        12,
+        308,
+        439
+      ],
+      "torsoX": 237.5,
+      "scale": 0.7538280329799765,
+      "offset": [
+        83,
+        18
+      ],
+      "size": [
+        130,
+        322
+      ]
+    },
+    {
+      "direction": "left",
+      "phase": 3,
+      "file": "natalie/left.png",
+      "sourcePhase": 3,
+      "sourceSha256": "f3c58500a30dcb6acc17aad167a445e57ec7ba20920163fbb0b8dd94bfd28af1",
+      "sourceBounds": [
+        66,
+        12,
+        363,
+        438
+      ],
+      "torsoX": 239.5,
+      "scale": 0.7538280329799765,
+      "offset": [
+        29,
+        19
+      ],
+      "size": [
+        224,
+        321
+      ]
+    },
+    {
+      "direction": "left",
+      "phase": 4,
+      "file": "natalie/left.png",
+      "sourcePhase": 4,
+      "sourceSha256": "f3c58500a30dcb6acc17aad167a445e57ec7ba20920163fbb0b8dd94bfd28af1",
+      "sourceBounds": [
+        67,
+        14,
+        385,
+        437
+      ],
+      "torsoX": 235.5,
+      "scale": 0.7538280329799765,
+      "offset": [
+        33,
+        21
+      ],
+      "size": [
+        240,
+        319
+      ]
+    },
+    {
+      "direction": "left",
+      "phase": 5,
+      "file": "natalie/left.png",
+      "sourcePhase": 5,
+      "sourceSha256": "f3c58500a30dcb6acc17aad167a445e57ec7ba20920163fbb0b8dd94bfd28af1",
+      "sourceBounds": [
+        129,
+        14,
+        340,
+        437
+      ],
+      "torsoX": 237.0,
+      "scale": 0.7538280329799765,
+      "offset": [
+        79,
+        21
+      ],
+      "size": [
+        159,
+        319
+      ]
+    },
+    {
+      "direction": "left",
+      "phase": 6,
+      "file": "natalie/left.png",
+      "sourcePhase": 6,
+      "sourceSha256": "f3c58500a30dcb6acc17aad167a445e57ec7ba20920163fbb0b8dd94bfd28af1",
+      "sourceBounds": [
+        131,
+        14,
+        311,
+        437
+      ],
+      "torsoX": 237.5,
+      "scale": 0.7538280329799765,
+      "offset": [
+        80,
+        21
+      ],
+      "size": [
+        136,
+        319
+      ]
+    },
+    {
+      "direction": "left",
+      "phase": 7,
+      "file": "natalie/left.png",
+      "sourcePhase": 7,
+      "sourceSha256": "f3c58500a30dcb6acc17aad167a445e57ec7ba20920163fbb0b8dd94bfd28af1",
+      "sourceBounds": [
+        64,
+        14,
+        378,
+        437
+      ],
+      "torsoX": 239.75,
+      "scale": 0.7538280329799765,
+      "offset": [
+        28,
+        21
+      ],
+      "size": [
+        237,
+        319
+      ]
+    },
+    {
+      "direction": "frontLeft",
+      "phase": 0,
+      "file": "natalie/frontLeft.png",
+      "sourcePhase": 0,
+      "sourceSha256": "b744b121fbcdf89eb60152fcb39acb6ac3953ba9e70d6bacafa7772418edba13",
+      "sourceBounds": [
+        112,
+        14,
+        337,
+        434
+      ],
+      "torsoX": 236.0,
+      "scale": 0.7582938388625592,
+      "offset": [
+        66,
+        22
+      ],
+      "size": [
+        171,
+        318
+      ]
+    },
+    {
+      "direction": "frontLeft",
+      "phase": 1,
+      "file": "natalie/frontLeft.png",
+      "sourcePhase": 1,
+      "sourceSha256": "b744b121fbcdf89eb60152fcb39acb6ac3953ba9e70d6bacafa7772418edba13",
+      "sourceBounds": [
+        130,
+        13,
+        337,
+        428
+      ],
+      "torsoX": 231.5,
+      "scale": 0.7582938388625592,
+      "offset": [
+        83,
+        25
+      ],
+      "size": [
+        157,
+        315
+      ]
+    },
+    {
+      "direction": "frontLeft",
+      "phase": 2,
+      "file": "natalie/frontLeft.png",
+      "sourcePhase": 2,
+      "sourceSha256": "b744b121fbcdf89eb60152fcb39acb6ac3953ba9e70d6bacafa7772418edba13",
+      "sourceBounds": [
+        136,
+        13,
+        337,
+        427
+      ],
+      "torsoX": 231.0,
+      "scale": 0.7582938388625592,
+      "offset": [
+        88,
+        26
+      ],
+      "size": [
+        152,
+        314
+      ]
+    },
+    {
+      "direction": "frontLeft",
+      "phase": 3,
+      "file": "natalie/frontLeft.png",
+      "sourcePhase": 3,
+      "sourceSha256": "b744b121fbcdf89eb60152fcb39acb6ac3953ba9e70d6bacafa7772418edba13",
+      "sourceBounds": [
+        101,
+        14,
+        344,
+        419
+      ],
+      "torsoX": 238.0,
+      "scale": 0.7582938388625592,
+      "offset": [
+        56,
+        33
+      ],
+      "size": [
+        184,
+        307
+      ]
+    },
+    {
+      "direction": "frontLeft",
+      "phase": 4,
+      "file": "natalie/frontLeft.png",
+      "sourcePhase": 4,
+      "sourceSha256": "b744b121fbcdf89eb60152fcb39acb6ac3953ba9e70d6bacafa7772418edba13",
+      "sourceBounds": [
+        91,
+        15,
+        349,
+        439
+      ],
+      "torsoX": 243.0,
+      "scale": 0.7582938388625592,
+      "offset": [
+        45,
+        18
+      ],
+      "size": [
+        196,
+        322
+      ]
+    },
+    {
+      "direction": "frontLeft",
+      "phase": 5,
+      "file": "natalie/frontLeft.png",
+      "sourcePhase": 5,
+      "sourceSha256": "b744b121fbcdf89eb60152fcb39acb6ac3953ba9e70d6bacafa7772418edba13",
+      "sourceBounds": [
+        130,
+        15,
+        334,
+        435
+      ],
+      "torsoX": 241.5,
+      "scale": 0.7582938388625592,
+      "offset": [
+        75,
+        22
+      ],
+      "size": [
+        155,
+        318
+      ]
+    },
+    {
+      "direction": "frontLeft",
+      "phase": 6,
+      "file": "natalie/frontLeft.png",
+      "sourcePhase": 6,
+      "sourceSha256": "b744b121fbcdf89eb60152fcb39acb6ac3953ba9e70d6bacafa7772418edba13",
+      "sourceBounds": [
+        160,
+        15,
+        331,
+        435
+      ],
+      "torsoX": 243.0,
+      "scale": 0.7582938388625592,
+      "offset": [
+        97,
+        22
+      ],
+      "size": [
+        130,
+        318
+      ]
+    },
+    {
+      "direction": "frontLeft",
+      "phase": 7,
+      "file": "natalie/frontLeft.png",
+      "sourcePhase": 7,
+      "sourceSha256": "b744b121fbcdf89eb60152fcb39acb6ac3953ba9e70d6bacafa7772418edba13",
+      "sourceBounds": [
+        91,
+        15,
+        356,
+        436
+      ],
+      "torsoX": 244.0,
+      "scale": 0.7582938388625592,
+      "offset": [
+        44,
+        21
+      ],
+      "size": [
+        201,
+        319
+      ]
+    }
+  ]
+}

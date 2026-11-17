@@ -1,0 +1,66 @@
+/* Quiet purple paper, clear actions and one reliable place to go back. */
+#village-game{--vg-paper:#2b2135;--vg-paper-deep:#21192b;--vg-cream:#f7e8d5;--vg-secondary:#cfbdd7;--vg-amber:#edc58b}
+#village-game #vg-panel{background:radial-gradient(ellipse at 0 0,#9b73b31a,transparent 60%),linear-gradient(150deg,var(--vg-paper),var(--vg-paper-deep));border-color:#c6a1cf43;box-shadow:0 15px 50px #09050e66,inset 0 1px #f1d8ff0c;max-height:760px}
+#vg-panel>header{flex:0 0 auto;gap:10px;padding:12px 14px;background:#e0c0ec04;min-height:76px;box-sizing:border-box}
+#vg-panel .vg-panel-heading{flex:1;min-width:0}
+#vg-panel h2{font-size:22px;line-height:1.2;overflow-wrap:anywhere}
+#vg-panel-tag{display:block;margin-bottom:4px;color:#ccb2d4;line-height:1.3}
+#village-game #vg-panel :is(#vg-panel-back,#vg-panel-close){flex:0 0 44px;width:44px;min-height:44px;padding:0;border-radius:13px;background:#f0d7ff06;border-color:#c5a2cf26;font-size:25px;font-weight:400;box-shadow:none}
+#vg-panel-back[hidden]{display:none!important}
+#vg-panel-back>span{display:block;font-size:31px;line-height:1;transform:translateY(-1px)}
+#vg-panel-body{flex:1;padding:14px 16px 20px;scroll-padding:14px;scrollbar-gutter:stable;touch-action:pan-y}
+#vg-panel-body :is(button,summary){transition:background .14s,border-color .14s,box-shadow .14s;scroll-margin-block:12px}
+#vg-panel-body :is(button,summary):focus-visible{outline:2px solid #f8d49a;outline-offset:2px}
+#village-game #vg-panel-body .vg-menu-lead{font-size:13px;line-height:1.5;color:var(--vg-secondary);margin:0 0 13px}
+#village-game #vg-panel-body button.vg-neighbour{display:flex;align-items:center;gap:11px;width:100%;padding:12px;min-height:100px;border:1px solid #c8a5d22e;background:linear-gradient(120deg,#a77aba12,#d4af7805);border-radius:16px;margin:0 0 9px;color:var(--vg-cream)}
+#vg-panel-body .vg-neighbour>img{width:52px;height:70px;flex:0 0 52px;object-fit:contain;filter:drop-shadow(0 3px 4px #13091e55)}
+#vg-panel-body .vg-neighbour>span{min-width:0;flex:1}
+#vg-panel-body .vg-neighbour b{font-size:15px;line-height:1.3;font-weight:600}
+#vg-panel-body .vg-neighbour small{font-size:12px;line-height:1.4;color:#ceb7d7;margin-top:4px}
+#vg-panel-body .vg-neighbour-place{display:block;font-size:12px;line-height:1.4;color:#e1c897;margin-top:5px}
+#vg-panel-body .vg-neighbour>em{flex:0 0 auto;font-style:normal;font-size:12px;font-weight:600;color:#f0cb94}
+.vg-resident-summary{display:flex;align-items:center;gap:14px;padding:0 0 14px;margin-bottom:12px;border-bottom:1px solid #c3a1cf24}
+.vg-resident-summary>img{width:64px;height:88px;object-fit:contain;flex:0 0 64px}
+.vg-resident-summary>div{min-width:0;flex:1}.vg-resident-summary b{font-size:14px;color:#f2e1d0;font-weight:500}
+#vg-panel-body .vg-resident-summary small{margin:5px 0 9px}
+#vg-panel-body .vg-resident-summary meter{display:block;height:6px;width:100%}
+.vg-resident-actions{display:flex;gap:8px}.vg-resident-actions button{flex:1}
+#vg-panel-body .vg-resident-task{padding:15px 0}
+#vg-panel-body .vg-resident-task h3{font-size:16px;line-height:1.4;margin-block:5px 9px}
+#vg-panel-body .vg-resident-task>p{font-size:13px;line-height:1.5}
+#vg-panel-body .vg-resident-task>button{margin-bottom:0}
+#vg-panel-body details>summary{min-height:44px}
+#vg-panel-body .vg-choice-list button{background:#b68fc115;border-color:#ba95cb30;color:#f4e4d4;text-align:left;font-weight:500}
+#village-game.has-panel .vg-objective{visibility:hidden}
+#village-game .vg-nav-button[aria-current=page]{box-shadow:inset 0 1px #f6dc9c12}
+@media(prefers-reduced-motion:no-preference){#vg-panel:not([hidden]){animation:vg-menu-arrive .17s ease-out}@keyframes vg-menu-arrive{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}}
+@media(max-width:540px){
+  #village-game .vg-heading button>.village-ui-icon{display:inline-block!important}
+  #village-game .vg-heading #vg-home>span:not(.village-ui-icon){display:none}
+  #village-game #vg-home{width:44px;padding:8px;justify-content:center}
+  #village-game #vg-panel{left:max(9px,env(safe-area-inset-left));right:max(9px,env(safe-area-inset-right));top:max(75px,calc(env(safe-area-inset-top) + 65px));bottom:calc(max(10px,env(safe-area-inset-bottom)) + 72px);width:auto;max-width:none;max-height:none;border-radius:22px}
+  #vg-panel>header{padding:11px 12px;min-height:73px;gap:8px}#vg-panel h2{font-size:21px}#vg-panel-body{padding:12px 13px 20px}
+  #vg-panel-body .vg-neighbour>img{width:46px;height:62px;flex-basis:46px}#village-game #vg-panel-body button.vg-neighbour{padding:11px;gap:9px}
+}
+@media(max-height:500px) and (orientation:landscape){
+  #village-game #vg-panel{top:max(9px,env(safe-area-inset-top));bottom:max(9px,env(safe-area-inset-bottom));left:auto;right:max(10px,env(safe-area-inset-right));width:min(460px,57vw);max-width:none;max-height:none}
+  #vg-panel>header{min-height:65px;padding:9px 12px}#vg-panel h2{font-size:20px}#vg-panel-body{padding:11px 13px 18px}
+}
+.tv-mode #village-game #vg-panel{width:min(540px,calc(100vw / var(--vg-ui-zoom,1) - 32px));max-height:calc(100dvh / var(--vg-ui-zoom,1) - 148px)}
+@media(max-height:500px) and (orientation:landscape){.tv-mode #village-game #vg-panel{width:min(540px,calc(61vw / var(--vg-ui-zoom,1)));bottom:64px;max-height:calc(100dvh / var(--vg-ui-zoom,1) - 80px)}}
+@media(prefers-reduced-motion:reduce){#vg-panel,#vg-panel-body *{animation:none!important;transition:none!important}}
+
+/* The farm keeps the same short labels while its village shortcut gains art. */
+#dock .village-shortcut-art{width:29px;height:29px;object-fit:contain;display:block;flex:none;pointer-events:none;filter:drop-shadow(0 2px 3px #08040c45)}
+#open-levels{min-width:46px;padding:0 2px;gap:0;justify-content:center}
+#level-rank-art{position:relative;display:grid;place-items:center;width:42px;height:42px;flex:0 0 42px;border-radius:50%;background:conic-gradient(#e6bf83 var(--progress,0%),#a781b529 0)}
+#level-rank-art::before{content:"";position:absolute;inset:1.5px;border-radius:50%;background:var(--panel,#211e29)}
+#level-rank-art .level-badge{position:relative;z-index:1}
+#open-levels:hover #level-rank-art{filter:brightness(1.12)}
+#open-levels{position:relative}
+#level-attention{position:absolute;right:-3px;top:0;width:17px;height:17px;color:#ffd17a;filter:drop-shadow(0 1px 2px #1b112b);pointer-events:none;z-index:2}
+#level-attention[hidden]{display:none}
+#open-levels.needs-attention #level-rank-art{box-shadow:0 0 0 1px #edbd7180}
+@media(max-height:500px) and (orientation:landscape){#dock .village-shortcut-art{width:24px;height:24px}}
+/* The ready action is amber; its PS5 symbol needs dark ink against that fill. */
+.vg-pad-legend .vg-legend-action.is-ready{--ps5-ink:#352332;--ps5-accent:#352332;--ps5-frame:#352332}

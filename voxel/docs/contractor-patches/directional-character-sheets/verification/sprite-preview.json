@@ -1,0 +1,32 @@
+{
+  "artifact": "Pumpkin-Patch-Directional-Sprite-Preview.html",
+  "checks": [
+    {
+      "pass": true,
+      "label": "All eleven embedded WebP atlases decode"
+    },
+    {
+      "pass": true,
+      "label": "Back direction and frame four scrub while paused",
+      "detail": {
+        "direction": "4",
+        "step": "4",
+        "paused": true,
+        "nonempty": true,
+        "contacts": true,
+        "fits": true
+      }
+    },
+    {
+      "pass": true,
+      "label": "All full contact sheets embedded for download"
+    },
+    {
+      "pass": true,
+      "label": "390px portrait has no horizontal overflow"
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "passed": true
+}

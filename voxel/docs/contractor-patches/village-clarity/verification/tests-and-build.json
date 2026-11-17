@@ -1,0 +1,44 @@
+{
+  "runtime_source_head": "dac0685",
+  "html": {
+    "sha256": "4583bcc6840f2e4e721327bdb9c09f94dedae07c1e2d29f0596852ff9ff2fd40",
+    "bytes": 60512598
+  },
+  "full_tests": {
+    "command": "npm test",
+    "passed": 1269,
+    "failed": 0,
+    "skipped": 0,
+    "duration_ms": 416628.8138,
+    "log_sha256": "4ea8101ca40da00c7437fc45bcd469597c920be1c085a22f804c1e16a198d37c"
+  },
+  "browser_preflight": {
+    "receipt": "browser-preflight.json",
+    "checks": 15,
+    "note": "Normal-render full village flow on the immediately preceding runtime; final runtime only removes the map helper resync that could disturb cave residents. That correction has a focused regression and final exact-byte map checks."
+  },
+  "final_map": {
+    "receipt": "browser-final-map-dpr2.json",
+    "checks": 6,
+    "dpr": 2,
+    "normal_renderer": true
+  },
+  "ui_fixture": {
+    "receipt": "ui-clarity-report.json",
+    "viewports": 8,
+    "glyph_states": 15,
+    "enter_contrast": 12.77
+  },
+  "limitations": [
+    "SwiftShader is software rendering, not physical Fold or TV performance.",
+    "The unchanged compatibility smoke holds draws for logic verification; the village map and route tests render normally.",
+    "Build retains lead warnings about unavailable bespoke Baron/Granny interior exports and their existing fallback."
+  ],
+  "compatibility": {
+    "command": "MOTHLIGHT_EXPECTED_SHA=4583bcc6840f2e4e721327bdb9c09f94dedae07c1e2d29f0596852ff9ff2fd40 node tools/mothlight-standard-smoke.mjs /tmp/Pumpkin-Patch-Village-Clarity.html",
+    "checks": 54,
+    "failed": 0,
+    "draws_held": true,
+    "log_sha256": "9dbcd906748704ac68581d710764a81c432d59f5357564025a2bf25852662d35"
+  }
+}

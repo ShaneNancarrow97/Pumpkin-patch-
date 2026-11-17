@@ -1,0 +1,26 @@
+{
+  "tests": 1186,
+  "passed": 1186,
+  "failed": 0,
+  "htmlSHA256": "e7eafdc05388175f4f0da1fe0110909389ecc0457bf45e9d445651666647b39d",
+  "zipSHA256": "22d44bba682669ecd9485c2c58d23839d8ab111b8b0175c118e756b7076e554f",
+  "saveVersion": 19,
+  "earnedLevelsPreserved": true,
+  "gatedLevels": [
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+  ]
+}

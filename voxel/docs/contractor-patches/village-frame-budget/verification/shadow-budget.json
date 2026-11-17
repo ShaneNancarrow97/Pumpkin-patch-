@@ -1,0 +1,44 @@
+{
+  "scope": "Pure accepted-frame shadow scheduling fixture, no GPU timing or device FPS. Movement, travel and renderer depth allocations can correctly force additional refreshes.",
+  "cases": [
+    {
+      "sourceTicksPerFrame": 1,
+      "acceptedFrames": 60,
+      "previousRefreshes": 30,
+      "after": {
+        "frames": 60,
+        "requests": 30,
+        "refreshes": 30,
+        "deferred": 0,
+        "forced": 1,
+        "invalidations": 0
+      }
+    },
+    {
+      "sourceTicksPerFrame": 3,
+      "acceptedFrames": 60,
+      "previousRefreshes": 60,
+      "after": {
+        "frames": 60,
+        "requests": 60,
+        "refreshes": 30,
+        "deferred": 30,
+        "forced": 1,
+        "invalidations": 0
+      }
+    },
+    {
+      "sourceTicksPerFrame": 7,
+      "acceptedFrames": 60,
+      "previousRefreshes": 60,
+      "after": {
+        "frames": 60,
+        "requests": 60,
+        "refreshes": 30,
+        "deferred": 30,
+        "forced": 1,
+        "invalidations": 0
+      }
+    }
+  ]
+}

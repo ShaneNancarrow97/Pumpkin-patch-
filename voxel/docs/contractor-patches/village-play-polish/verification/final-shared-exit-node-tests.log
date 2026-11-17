@@ -1,0 +1,40 @@
+✔ level five unlocks permission to buy; levelling does not give a free truck (1.973943ms)
+✔ an ingredient order quotes its real fee, charges once, and rejects malformed or unaffordable requests (0.612038ms)
+✔ delivery uses game time, pauses, crosses all three phases and credits a parcel exactly once (0.25977ms)
+✔ the second paid order waits its turn and a full receiving bay never discards ingredients (0.327361ms)
+✔ only a not-yet-dispatched order can be cancelled, with the delivery fee retained (0.311337ms)
+✔ cooking consumes pantry ingredients and only unreserved pumpkins atomically (1.263887ms)
+✔ using a pumpkin keeps fresh batches consistent without taking another shopper's fresh hold (0.414813ms)
+✔ a held old pumpkin is not mistaken for the old ingredient when only fresh stock is free (0.366941ms)
+✔ cancelling a started job does not return ingredients; a completed full-store batch waits safely (0.477687ms)
+✔ the truck avoids a level-five dead end; the second station needs a real range in an unlocked kitchen (0.448123ms)
+✔ research, food shelf selection and price boundaries honour ownership and level gates (0.35296ms)
+✔ capacity upgrades cost coins and stop at their final tier; speed affects only new batches (1.003827ms)
+✔ the hired chef uses real inputs, respects pause and storage, and never orders for free (0.356435ms)
+✔ restore sanitises IDs, duplicate deliveries/jobs and transient food holds without crediting anything twice (1.076576ms)
+✔ in-flight deliveries and paid jobs survive reload; new/default saves get no invented stock (0.466069ms)
+✔ all eight recipes use positive finite costs/times/yields and remain within the published level range (0.177606ms)
+✔ corrupt restored inventories cannot exceed total capacity and invalid station names cannot mutate jobs (0.258137ms)
+✔ model migration persists paid cooking progress and clears only transient customer food holds (77.618346ms)
+✔ village travel shares the existing guest exit before and after the service land opens (2.05826ms)
+✔ only the public exit corridor extends the farm across every expansion and service combination (19.461944ms)
+✔ the small roadside marker and exact cobble continuation follow purchased land without a portal (19.32597ms)
+✔ real controller teleports and clicked walks retain exit endpoints beyond the old yard bounds (44.364143ms)
+✔ direct-control feet stay inside the room, including their radius (1.381844ms)
+✔ a long movement cannot tunnel through thin furniture (0.172509ms)
+✔ diagonal movement slides along furniture instead of freezing (0.178989ms)
+✔ turned furniture uses its actual orientation (0.17356ms)
+✔ the owner stays inside the front fence, however far the field has grown (0.510607ms)
+✔ east of the yard only the truck's paving opens, until the meadow is bought (0.532299ms)
+✔ the cocoa kiosk is walked round once it stands in the meadow (0.22646ms)
+✔ the wilds lie outside the farm, grow back when it grows, and stay within budget (169.109378ms)
+✔ nothing in the wilds hides the farm from its camera, and the roads run level into them (71.701642ms)
+✔ the shared village exit keeps a narrow clear sightline without removing wilds floor (74.653011ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1043.728785

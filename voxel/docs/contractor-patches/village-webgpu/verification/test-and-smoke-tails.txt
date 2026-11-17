@@ -1,0 +1,25 @@
+ℹ suites 0
+ℹ pass 1483
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 508978.634291
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2
+npm notice To update run: npm install -g npm@12.2.2
+npm notice
+
+ok   phone: furniture wheel offers More controls
+ok   phone: flip the piece and finish
+ok   phone: furniture wheel offers More controls
+ok   phone: a candelabrum stands on the tea table
+ok   phone: customers come into the shop
+ok   phone: back to the patch
+ok   phone: buy and wear a costume
+ok   phone: full storage disables picking and keeps a ripe crop instead of paying overflow money
+ok   phone: one tap on a price buys it
+ok   phone: paid barn expansion permits harvesting again
+ok   phone: all five new visitors render and advance through walking frames
+ok   phone: no page errors

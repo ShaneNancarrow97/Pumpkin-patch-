@@ -1,0 +1,13 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+page.goto: net::ERR_BLOCKED_BY_ADMINISTRATOR at file:///workspace/Pumpkin-Patch-Voiced-Mothlight.html
+Call log:
+[2m  - navigating to "file:///workspace/Pumpkin-Patch-Voiced-Mothlight.html", waiting until "load"[22m
+
+    at /workspace/mothlight-voices/voxel/smoke.mjs:36:14 {
+  name: 'Error'
+}
+
+Node.js v24.19.0

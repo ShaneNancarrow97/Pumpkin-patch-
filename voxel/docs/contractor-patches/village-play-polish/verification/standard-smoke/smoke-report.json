@@ -1,0 +1,38 @@
+{
+  "html": "/workspace/Pumpkin-Patch-Village-Play-Polish.html",
+  "sha256": "bc7d34a08760e36b9e1004a48dae2b63d74b576dcce6622de648c3d3b60cd79e",
+  "date": "2026-11-08T20:31:28.062Z",
+  "bytes": 58258944,
+  "exitCode": 0,
+  "passed": true,
+  "checks": 54,
+  "failures": 0,
+  "scope": "Standard desktop/phone smoke against exact unchanged standalone HTML bytes served on loopback. SMOKE_LITE=1 disables glow/shadows/music; SMOKE_HOLD_DRAWS=1 replaces only renderer/composer draw calls after ready. Real RAF, frame pacing, scene/model/UI/controller logic remain active. Not a hardware-performance or visual-rendering certification.",
+  "profile": {
+    "SMOKE_LITE": true,
+    "SMOKE_HOLD_DRAWS": true,
+    "screenshots": false,
+    "viewports": [
+      [
+        1280,
+        800
+      ],
+      [
+        390,
+        844
+      ]
+    ]
+  },
+  "qaOnlyChanges": [
+    "Full-barn case waits for disabled Harvest and checks ripe crop/stock retention rather than clicking an unavailable control.",
+    "Opt-in SMOKE_HOLD_DRAWS after body ready; the default smoke behavior is unchanged when unset."
+  ],
+  "runner": {
+    "file": "smoke.mjs",
+    "sha256": "2c0e80afeed6a29ee541fe3e22df6920a10cb05d8649b3b6fa81553b1927de33"
+  },
+  "normalRenderingEvidence": [
+    "../final-7514ee49/README.md",
+    "../final-bc7d34a0/README.md"
+  ]
+}

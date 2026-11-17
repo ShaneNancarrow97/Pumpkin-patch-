@@ -1,0 +1,4 @@
+/* Native garden models stay in the world; their generated inventory sprites
+   share one transparent atlas and never add geometry or animation overhead. */
+.estate-art.garden-sprite { display: block; width: 84px; height: 84px; flex: 0 0 84px; background-image: var(--garden-icon-atlas); background-size: 400% 700%; background-position: var(--garden-x) var(--garden-y); background-repeat: no-repeat; border: 0; border-radius: 12px; }
+@media(max-width:460px) { .estate-art.garden-sprite { width: 64px; height: 64px; flex-basis: 64px; } }

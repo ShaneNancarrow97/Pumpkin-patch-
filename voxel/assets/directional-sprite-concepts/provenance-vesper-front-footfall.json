@@ -1,0 +1,17 @@
+{
+  "id": "vesper",
+  "initialAtlas": "vesper-before-front-repair.png",
+  "initialAtlasSha256": "23ec154c002cf7f0ad5addd8d1d399195ba0209cfc9919262662afbdc1efbcad",
+  "frontStrip": "vesper-front-repair.png",
+  "frontStripGenerated": "exec-b9752d09-232d-4811-b768-ade05ab76fe4.png",
+  "frontStripSha256": "66e3bbd2192535026b18cece830a5978b98c1782143add0a06187dd5fa03af5e",
+  "sharedStripScale": 0.43636363636363634,
+  "sourceGridColumns": 8,
+  "sourceGridRows": 1,
+  "outputRow": 0,
+  "visibleHeight": 144,
+  "outputFootBaseline": 153,
+  "perFrameOverrides": [],
+  "method": "Crop authored frames, uniform Lanczos scale shared across strip, foot-anchor alignment; only row0 replaced. No redraw, reflection or motion interpolation.",
+  "review": "Opposite contact boots at0/4; opposite lifted passing knees2/6. Diagonal/profile/rear source rows untouched."
+}

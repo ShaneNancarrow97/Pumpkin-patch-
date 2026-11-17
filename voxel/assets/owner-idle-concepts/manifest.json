@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "method": "Reuse the previously authored empty-handed front standing poses from the final cells of the base action sheet. Static pose; idle slots repeat that drawing. No newly generated or manufactured walking/idle artwork.",
+  "characters": [
+    {
+      "id": "shane",
+      "source": "assets/player-directions-base.webp",
+      "sourceSha256": "9b9d2bb34460e7c988ce89b532fa36547f8e7f4deb2e8a1f8759cb6fb8e1610b",
+      "sourceCell": [
+        840,
+        680,
+        280,
+        340
+      ],
+      "sourceBounds": [
+        60,
+        10,
+        220,
+        330
+      ],
+      "scale": 0.990625,
+      "packedBodyPixels": 317,
+      "original": "assets/hd-shane.webp",
+      "originalSha256": "f075ae439d55ba7161239435ae15c88e9541f666151a27ccfacd4d0acde424d3",
+      "output": "assets/hd-shane-empty-idle.webp",
+      "outputSha256": "cddc935ad5c2001c0ee72709a2112d2bcf2ce967f5b788039900e084c876ab4c",
+      "outputBytes": 650012,
+      "frames": 4,
+      "walkPixelsUnchanged": true
+    },
+    {
+      "id": "natalie",
+      "source": "assets/player-directions-base.webp",
+      "sourceSha256": "9b9d2bb34460e7c988ce89b532fa36547f8e7f4deb2e8a1f8759cb6fb8e1610b",
+      "sourceCell": [
+        840,
+        1700,
+        280,
+        340
+      ],
+      "sourceBounds": [
+        51,
+        15,
+        228,
+        330
+      ],
+      "scale": 1.0095238095238095,
+      "packedBodyPixels": 318,
+      "original": "assets/hd-natalie.webp",
+      "originalSha256": "7acdf4d56345beb8e7bcef809027cedf4cd5ba702a8ee1043a6e90ef025ab5fc",
+      "output": "assets/hd-natalie-empty-idle.webp",
+      "outputSha256": "57c139643fa52fdfc160a36cfd7dbd1af7cb7d5a4b4f09c8bd28bb43b9e494b9",
+      "outputBytes": 612374,
+      "frames": 4,
+      "walkPixelsUnchanged": true
+    }
+  ]
+}

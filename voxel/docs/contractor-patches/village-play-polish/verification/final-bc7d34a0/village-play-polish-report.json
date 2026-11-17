@@ -1,0 +1,1417 @@
+{
+  "mode": "css-delta",
+  "date": "2026-11-08T20:26:27.197Z",
+  "html": "/workspace/Pumpkin-Patch-Village-Play-Polish.html",
+  "sha256": "bc7d34a08760e36b9e1004a48dae2b63d74b576dcce6622de648c3d3b60cd79e",
+  "bytes": 58258944,
+  "sourceCommit": "a1965f00630a78366e555c8c9066921bdde9e0db",
+  "checks": [
+    {
+      "pass": true,
+      "label": "Exact CSS-delta HTML boots to ready state"
+    },
+    {
+      "pass": true,
+      "label": "House legend fits desktop",
+      "detail": {
+        "innerWidth": 1280,
+        "innerHeight": 800,
+        "scrollWidth": 1280,
+        "x": 319.765625,
+        "y": 730,
+        "w": 640.46875,
+        "h": 54,
+        "display": "flex",
+        "visible": true,
+        "children": [
+          {
+            "text": "LSMove",
+            "x": 423.296875,
+            "y": 739,
+            "w": 76.40625,
+            "h": 36,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "DPADStep",
+            "x": 509.703125,
+            "y": 739,
+            "w": 69.984375,
+            "h": 36,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "L1R1Turn",
+            "x": 589.6875,
+            "y": 739,
+            "w": 100.46875,
+            "h": 36,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "CROSSDone",
+            "x": 700.15625,
+            "y": 739,
+            "w": 75.609375,
+            "h": 36,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "SQUAREUndo",
+            "x": 785.765625,
+            "y": 739,
+            "w": 76.265625,
+            "h": 36,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "TRIANGLEMore",
+            "x": 872.03125,
+            "y": 739,
+            "w": 75.203125,
+            "h": 36,
+            "display": "flex",
+            "visible": true
+          }
+        ],
+        "font": 13
+      }
+    },
+    {
+      "pass": true,
+      "label": "House desktop action legend stays on one row",
+      "detail": {
+        "rows": [
+          189
+        ],
+        "innerWidth": 1280,
+        "innerHeight": 800,
+        "scrollWidth": 1280,
+        "x": 319.765625,
+        "y": 730,
+        "w": 640.46875,
+        "h": 54,
+        "display": "flex",
+        "visible": true,
+        "children": [
+          {
+            "text": "LSMove",
+            "x": 423.296875,
+            "y": 739,
+            "w": 76.40625,
+            "h": 36,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "DPADStep",
+            "x": 509.703125,
+            "y": 739,
+            "w": 69.984375,
+            "h": 36,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "L1R1Turn",
+            "x": 589.6875,
+            "y": 739,
+            "w": 100.46875,
+            "h": 36,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "CROSSDone",
+            "x": 700.15625,
+            "y": 739,
+            "w": 75.609375,
+            "h": 36,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "SQUAREUndo",
+            "x": 785.765625,
+            "y": 739,
+            "w": 76.265625,
+            "h": 36,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "TRIANGLEMore",
+            "x": 872.03125,
+            "y": 739,
+            "w": 75.203125,
+            "h": 36,
+            "display": "flex",
+            "visible": true
+          }
+        ],
+        "font": 13
+      }
+    },
+    {
+      "pass": true,
+      "label": "House legend fits phone",
+      "detail": {
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "scrollWidth": 390,
+        "x": 12,
+        "y": 743,
+        "w": 366,
+        "h": 85,
+        "display": "flex",
+        "visible": true,
+        "children": [
+          {
+            "text": "LSMove",
+            "x": 122.75,
+            "y": 751,
+            "w": 66.828125,
+            "h": 32,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "DPADStep",
+            "x": 194.578125,
+            "y": 751,
+            "w": 60.921875,
+            "h": 32,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "L1R1Turn",
+            "x": 260.5,
+            "y": 751,
+            "w": 88.28125,
+            "h": 32,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "CROSSDone",
+            "x": 90.734375,
+            "y": 788,
+            "w": 66.09375,
+            "h": 32,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "SQUAREUndo",
+            "x": 161.828125,
+            "y": 788,
+            "w": 66.703125,
+            "h": 32,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "TRIANGLEMore",
+            "x": 233.53125,
+            "y": 788,
+            "w": 65.71875,
+            "h": 32,
+            "display": "flex",
+            "visible": true
+          }
+        ],
+        "font": 12
+      }
+    },
+    {
+      "pass": true,
+      "label": "House legend fits unfolded",
+      "detail": {
+        "innerWidth": 864,
+        "innerHeight": 756,
+        "scrollWidth": 864,
+        "x": 111.765625,
+        "y": 686,
+        "w": 640.46875,
+        "h": 54,
+        "display": "flex",
+        "visible": true,
+        "children": [
+          {
+            "text": "LSMove",
+            "x": 215.296875,
+            "y": 695,
+            "w": 76.40625,
+            "h": 36,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "DPADStep",
+            "x": 301.703125,
+            "y": 695,
+            "w": 69.984375,
+            "h": 36,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "L1R1Turn",
+            "x": 381.6875,
+            "y": 695,
+            "w": 100.46875,
+            "h": 36,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "CROSSDone",
+            "x": 492.15625,
+            "y": 695,
+            "w": 75.609375,
+            "h": 36,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "SQUAREUndo",
+            "x": 577.765625,
+            "y": 695,
+            "w": 76.265625,
+            "h": 36,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "TRIANGLEMore",
+            "x": 664.03125,
+            "y": 695,
+            "w": 75.203125,
+            "h": 36,
+            "display": "flex",
+            "visible": true
+          }
+        ],
+        "font": 13
+      }
+    },
+    {
+      "pass": true,
+      "label": "House legend fits tv",
+      "detail": {
+        "innerWidth": 1920,
+        "innerHeight": 1080,
+        "scrollWidth": 1920,
+        "x": 639.765625,
+        "y": 1010,
+        "w": 640.46875,
+        "h": 54,
+        "display": "flex",
+        "visible": true,
+        "children": [
+          {
+            "text": "LSMove",
+            "x": 743.296875,
+            "y": 1019,
+            "w": 76.40625,
+            "h": 36,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "DPADStep",
+            "x": 829.703125,
+            "y": 1019,
+            "w": 69.984375,
+            "h": 36,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "L1R1Turn",
+            "x": 909.6875,
+            "y": 1019,
+            "w": 100.46875,
+            "h": 36,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "CROSSDone",
+            "x": 1020.15625,
+            "y": 1019,
+            "w": 75.609375,
+            "h": 36,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "SQUAREUndo",
+            "x": 1105.765625,
+            "y": 1019,
+            "w": 76.265625,
+            "h": 36,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "TRIANGLEMore",
+            "x": 1192.03125,
+            "y": 1019,
+            "w": 75.203125,
+            "h": 36,
+            "display": "flex",
+            "visible": true
+          }
+        ],
+        "font": 13
+      }
+    },
+    {
+      "pass": true,
+      "label": "House tv action legend stays on one row",
+      "detail": {
+        "rows": [
+          259
+        ],
+        "innerWidth": 1920,
+        "innerHeight": 1080,
+        "scrollWidth": 1920,
+        "x": 639.765625,
+        "y": 1010,
+        "w": 640.46875,
+        "h": 54,
+        "display": "flex",
+        "visible": true,
+        "children": [
+          {
+            "text": "LSMove",
+            "x": 743.296875,
+            "y": 1019,
+            "w": 76.40625,
+            "h": 36,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "DPADStep",
+            "x": 829.703125,
+            "y": 1019,
+            "w": 69.984375,
+            "h": 36,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "L1R1Turn",
+            "x": 909.6875,
+            "y": 1019,
+            "w": 100.46875,
+            "h": 36,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "CROSSDone",
+            "x": 1020.15625,
+            "y": 1019,
+            "w": 75.609375,
+            "h": 36,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "SQUAREUndo",
+            "x": 1105.765625,
+            "y": 1019,
+            "w": 76.265625,
+            "h": 36,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "TRIANGLEMore",
+            "x": 1192.03125,
+            "y": 1019,
+            "w": 75.203125,
+            "h": 36,
+            "display": "flex",
+            "visible": true
+          }
+        ],
+        "font": 13
+      }
+    },
+    {
+      "pass": true,
+      "label": "Village placement panel fits desktop",
+      "detail": {
+        "innerWidth": 1280,
+        "innerHeight": 800,
+        "scrollWidth": 1280,
+        "x": 874,
+        "y": 577.71875,
+        "w": 390,
+        "h": 206.28125,
+        "display": "block",
+        "visible": true,
+        "children": [
+          {
+            "text": "PLACE A PIECECopper lantern×",
+            "x": 875,
+            "y": 578.71875,
+            "w": 388,
+            "h": 69.09375,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "Clear spot — ready to place.",
+            "x": 888,
+            "y": 655.8125,
+            "w": 362,
+            "h": 16.1875,
+            "display": "block",
+            "visible": true
+          },
+          {
+            "text": "↶ 15°0°15° ↷Place here",
+            "x": 1158,
+            "y": 593.71875,
+            "w": 40,
+            "h": 29.390625,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "CROSSPlaceLSDPADMoveL1R1RotateCIRCLECancelSQUAREStore",
+            "x": 888,
+            "y": 682,
+            "w": 362,
+            "h": 89,
+            "display": "flex",
+            "visible": true
+          }
+        ],
+        "font": 14
+      }
+    },
+    {
+      "pass": true,
+      "label": "Village desktop build hints stay inside viewport",
+      "detail": [
+        {
+          "text": "CROSSPlace",
+          "x": 888,
+          "y": 693,
+          "w": 74.390625,
+          "h": 36,
+          "visible": true
+        },
+        {
+          "text": "LSDPADMove",
+          "x": 968.390625,
+          "y": 693,
+          "w": 100.828125,
+          "h": 36,
+          "visible": true
+        },
+        {
+          "text": "L1R1Rotate",
+          "x": 1075.21875,
+          "y": 693,
+          "w": 106.546875,
+          "h": 36,
+          "visible": true
+        },
+        {
+          "text": "CIRCLECancel",
+          "x": 888,
+          "y": 735,
+          "w": 82.09375,
+          "h": 36,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "Village placement panel fits phone",
+      "detail": {
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "scrollWidth": 390,
+        "x": 10,
+        "y": 627.71875,
+        "w": 370,
+        "h": 206.28125,
+        "display": "block",
+        "visible": true,
+        "children": [
+          {
+            "text": "PLACE A PIECECopper lantern×",
+            "x": 11,
+            "y": 628.71875,
+            "w": 368,
+            "h": 69.09375,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "Clear spot — ready to place.",
+            "x": 24,
+            "y": 705.8125,
+            "w": 342,
+            "h": 16.1875,
+            "display": "block",
+            "visible": true
+          },
+          {
+            "text": "↶ 15°0°15° ↷Place here",
+            "x": 274,
+            "y": 643.71875,
+            "w": 40,
+            "h": 29.390625,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "CROSSPlaceLSDPADMoveL1R1RotateCIRCLECancelSQUAREStore",
+            "x": 24,
+            "y": 732,
+            "w": 342,
+            "h": 89,
+            "display": "flex",
+            "visible": true
+          }
+        ],
+        "font": 14
+      }
+    },
+    {
+      "pass": true,
+      "label": "Village phone build hints stay inside viewport",
+      "detail": [
+        {
+          "text": "CROSSPlace",
+          "x": 24,
+          "y": 743,
+          "w": 74.390625,
+          "h": 36,
+          "visible": true
+        },
+        {
+          "text": "LSDPADMove",
+          "x": 104.390625,
+          "y": 743,
+          "w": 100.828125,
+          "h": 36,
+          "visible": true
+        },
+        {
+          "text": "L1R1Rotate",
+          "x": 211.21875,
+          "y": 743,
+          "w": 106.546875,
+          "h": 36,
+          "visible": true
+        },
+        {
+          "text": "CIRCLECancel",
+          "x": 24,
+          "y": 785,
+          "w": 82.09375,
+          "h": 36,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "Village placement panel fits unfolded",
+      "detail": {
+        "innerWidth": 864,
+        "innerHeight": 756,
+        "scrollWidth": 864,
+        "x": 458,
+        "y": 533.71875,
+        "w": 390,
+        "h": 206.28125,
+        "display": "block",
+        "visible": true,
+        "children": [
+          {
+            "text": "PLACE A PIECECopper lantern×",
+            "x": 459,
+            "y": 534.71875,
+            "w": 388,
+            "h": 69.09375,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "Clear spot — ready to place.",
+            "x": 472,
+            "y": 611.8125,
+            "w": 362,
+            "h": 16.1875,
+            "display": "block",
+            "visible": true
+          },
+          {
+            "text": "↶ 15°0°15° ↷Place here",
+            "x": 742,
+            "y": 549.71875,
+            "w": 40,
+            "h": 29.390625,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "CROSSPlaceLSDPADMoveL1R1RotateCIRCLECancelSQUAREStore",
+            "x": 472,
+            "y": 638,
+            "w": 362,
+            "h": 89,
+            "display": "flex",
+            "visible": true
+          }
+        ],
+        "font": 14
+      }
+    },
+    {
+      "pass": true,
+      "label": "Village unfolded build hints stay inside viewport",
+      "detail": [
+        {
+          "text": "CROSSPlace",
+          "x": 472,
+          "y": 649,
+          "w": 74.390625,
+          "h": 36,
+          "visible": true
+        },
+        {
+          "text": "LSDPADMove",
+          "x": 552.390625,
+          "y": 649,
+          "w": 100.828125,
+          "h": 36,
+          "visible": true
+        },
+        {
+          "text": "L1R1Rotate",
+          "x": 659.21875,
+          "y": 649,
+          "w": 106.546875,
+          "h": 36,
+          "visible": true
+        },
+        {
+          "text": "CIRCLECancel",
+          "x": 472,
+          "y": 691,
+          "w": 82.09375,
+          "h": 36,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "Village placement panel fits tv",
+      "detail": {
+        "innerWidth": 1920,
+        "innerHeight": 1080,
+        "scrollWidth": 1920,
+        "x": 1514,
+        "y": 857.71875,
+        "w": 390,
+        "h": 206.28125,
+        "display": "block",
+        "visible": true,
+        "children": [
+          {
+            "text": "PLACE A PIECECopper lantern×",
+            "x": 1515,
+            "y": 858.71875,
+            "w": 388,
+            "h": 69.09375,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "Clear spot — ready to place.",
+            "x": 1528,
+            "y": 935.8125,
+            "w": 362,
+            "h": 16.1875,
+            "display": "block",
+            "visible": true
+          },
+          {
+            "text": "↶ 15°0°15° ↷Place here",
+            "x": 1798,
+            "y": 873.71875,
+            "w": 40,
+            "h": 29.390625,
+            "display": "flex",
+            "visible": true
+          },
+          {
+            "text": "CROSSPlaceLSDPADMoveL1R1RotateCIRCLECancelSQUAREStore",
+            "x": 1528,
+            "y": 962,
+            "w": 362,
+            "h": 89,
+            "display": "flex",
+            "visible": true
+          }
+        ],
+        "font": 14
+      }
+    },
+    {
+      "pass": true,
+      "label": "Village tv build hints stay inside viewport",
+      "detail": [
+        {
+          "text": "CROSSPlace",
+          "x": 1528,
+          "y": 973,
+          "w": 74.390625,
+          "h": 36,
+          "visible": true
+        },
+        {
+          "text": "LSDPADMove",
+          "x": 1608.390625,
+          "y": 973,
+          "w": 100.828125,
+          "h": 36,
+          "visible": true
+        },
+        {
+          "text": "L1R1Rotate",
+          "x": 1715.21875,
+          "y": 973,
+          "w": 106.546875,
+          "h": 36,
+          "visible": true
+        },
+        {
+          "text": "CIRCLECancel",
+          "x": 1528,
+          "y": 1015,
+          "w": 82.09375,
+          "h": 36,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "Final CSS-delta scenes compile and render with normal materials"
+    },
+    {
+      "pass": true,
+      "label": "Standalone CSS-delta HTML makes no external asset requests",
+      "detail": []
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "screenshots": [],
+  "layouts": [
+    {
+      "context": "house",
+      "name": "desktop",
+      "innerWidth": 1280,
+      "innerHeight": 800,
+      "scrollWidth": 1280,
+      "x": 319.765625,
+      "y": 730,
+      "w": 640.46875,
+      "h": 54,
+      "display": "flex",
+      "visible": true,
+      "children": [
+        {
+          "text": "LSMove",
+          "x": 423.296875,
+          "y": 739,
+          "w": 76.40625,
+          "h": 36,
+          "display": "flex",
+          "visible": true
+        },
+        {
+          "text": "DPADStep",
+          "x": 509.703125,
+          "y": 739,
+          "w": 69.984375,
+          "h": 36,
+          "display": "flex",
+          "visible": true
+        },
+        {
+          "text": "L1R1Turn",
+          "x": 589.6875,
+          "y": 739,
+          "w": 100.46875,
+          "h": 36,
+          "display": "flex",
+          "visible": true
+        },
+        {
+          "text": "CROSSDone",
+          "x": 700.15625,
+          "y": 739,
+          "w": 75.609375,
+          "h": 36,
+          "display": "flex",
+          "visible": true
+        },
+        {
+          "text": "SQUAREUndo",
+          "x": 785.765625,
+          "y": 739,
+          "w": 76.265625,
+          "h": 36,
+          "display": "flex",
+          "visible": true
+        },
+        {
+          "text": "TRIANGLEMore",
+          "x": 872.03125,
+          "y": 739,
+          "w": 75.203125,
+          "h": 36,
+          "display": "flex",
+          "visible": true
+        }
+      ],
+      "font": 13
+    },
+    {
+      "context": "house",
+      "name": "phone",
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "scrollWidth": 390,
+      "x": 12,
+      "y": 743,
+      "w": 366,
+      "h": 85,
+      "display": "flex",
+      "visible": true,
+      "children": [
+        {
+          "text": "LSMove",
+          "x": 122.75,
+          "y": 751,
+          "w": 66.828125,
+          "h": 32,
+          "display": "flex",
+          "visible": true
+        },
+        {
+          "text": "DPADStep",
+          "x": 194.578125,
+          "y": 751,
+          "w": 60.921875,
+          "h": 32,
+          "display": "flex",
+          "visible": true
+        },
+        {
+          "text": "L1R1Turn",
+          "x": 260.5,
+          "y": 751,
+          "w": 88.28125,
+          "h": 32,
+          "display": "flex",
+          "visible": true
+        },
+        {
+          "text": "CROSSDone",
+          "x": 90.734375,
+          "y": 788,
+          "w": 66.09375,
+          "h": 32,
+          "display": "flex",
+          "visible": true
+        },
+        {
+          "text": "SQUAREUndo",
+          "x": 161.828125,
+          "y": 788,
+          "w": 66.703125,
+          "h": 32,
+          "display": "flex",
+          "visible": true
+        },
+        {
+          "text": "TRIANGLEMore",
+          "x": 233.53125,
+          "y": 788,
+          "w": 65.71875,
+          "h": 32,
+          "display": "flex",
+          "visible": true
+        }
+      ],
+      "font": 12
+    },
+    {
+      "context": "house",
+      "name": "unfolded",
+      "innerWidth": 864,
+      "innerHeight": 756,
+      "scrollWidth": 864,
+      "x": 111.765625,
+      "y": 686,
+      "w": 640.46875,
+      "h": 54,
+      "display": "flex",
+      "visible": true,
+      "children": [
+        {
+          "text": "LSMove",
+          "x": 215.296875,
+          "y": 695,
+          "w": 76.40625,
+          "h": 36,
+          "display": "flex",
+          "visible": true
+        },
+        {
+          "text": "DPADStep",
+          "x": 301.703125,
+          "y": 695,
+          "w": 69.984375,
+          "h": 36,
+          "display": "flex",
+          "visible": true
+        },
+        {
+          "text": "L1R1Turn",
+          "x": 381.6875,
+          "y": 695,
+          "w": 100.46875,
+          "h": 36,
+          "display": "flex",
+          "visible": true
+        },
+        {
+          "text": "CROSSDone",
+          "x": 492.15625,
+          "y": 695,
+          "w": 75.609375,
+          "h": 36,
+          "display": "flex",
+          "visible": true
+        },
+        {
+          "text": "SQUAREUndo",
+          "x": 577.765625,
+          "y": 695,
+          "w": 76.265625,
+          "h": 36,
+          "display": "flex",
+          "visible": true
+        },
+        {
+          "text": "TRIANGLEMore",
+          "x": 664.03125,
+          "y": 695,
+          "w": 75.203125,
+          "h": 36,
+          "display": "flex",
+          "visible": true
+        }
+      ],
+      "font": 13
+    },
+    {
+      "context": "house",
+      "name": "tv",
+      "innerWidth": 1920,
+      "innerHeight": 1080,
+      "scrollWidth": 1920,
+      "x": 639.765625,
+      "y": 1010,
+      "w": 640.46875,
+      "h": 54,
+      "display": "flex",
+      "visible": true,
+      "children": [
+        {
+          "text": "LSMove",
+          "x": 743.296875,
+          "y": 1019,
+          "w": 76.40625,
+          "h": 36,
+          "display": "flex",
+          "visible": true
+        },
+        {
+          "text": "DPADStep",
+          "x": 829.703125,
+          "y": 1019,
+          "w": 69.984375,
+          "h": 36,
+          "display": "flex",
+          "visible": true
+        },
+        {
+          "text": "L1R1Turn",
+          "x": 909.6875,
+          "y": 1019,
+          "w": 100.46875,
+          "h": 36,
+          "display": "flex",
+          "visible": true
+        },
+        {
+          "text": "CROSSDone",
+          "x": 1020.15625,
+          "y": 1019,
+          "w": 75.609375,
+          "h": 36,
+          "display": "flex",
+          "visible": true
+        },
+        {
+          "text": "SQUAREUndo",
+          "x": 1105.765625,
+          "y": 1019,
+          "w": 76.265625,
+          "h": 36,
+          "display": "flex",
+          "visible": true
+        },
+        {
+          "text": "TRIANGLEMore",
+          "x": 1192.03125,
+          "y": 1019,
+          "w": 75.203125,
+          "h": 36,
+          "display": "flex",
+          "visible": true
+        }
+      ],
+      "font": 13
+    },
+    {
+      "context": "village",
+      "name": "desktop",
+      "innerWidth": 1280,
+      "innerHeight": 800,
+      "scrollWidth": 1280,
+      "x": 874,
+      "y": 577.71875,
+      "w": 390,
+      "h": 206.28125,
+      "display": "block",
+      "visible": true,
+      "children": [
+        {
+          "text": "PLACE A PIECECopper lantern×",
+          "x": 875,
+          "y": 578.71875,
+          "w": 388,
+          "h": 69.09375,
+          "display": "flex",
+          "visible": true
+        },
+        {
+          "text": "Clear spot — ready to place.",
+          "x": 888,
+          "y": 655.8125,
+          "w": 362,
+          "h": 16.1875,
+          "display": "block",
+          "visible": true
+        },
+        {
+          "text": "↶ 15°0°15° ↷Place here",
+          "x": 1158,
+          "y": 593.71875,
+          "w": 40,
+          "h": 29.390625,
+          "display": "flex",
+          "visible": true
+        },
+        {
+          "text": "CROSSPlaceLSDPADMoveL1R1RotateCIRCLECancelSQUAREStore",
+          "x": 888,
+          "y": 682,
+          "w": 362,
+          "h": 89,
+          "display": "flex",
+          "visible": true
+        }
+      ],
+      "font": 14
+    },
+    {
+      "context": "village",
+      "name": "phone",
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "scrollWidth": 390,
+      "x": 10,
+      "y": 627.71875,
+      "w": 370,
+      "h": 206.28125,
+      "display": "block",
+      "visible": true,
+      "children": [
+        {
+          "text": "PLACE A PIECECopper lantern×",
+          "x": 11,
+          "y": 628.71875,
+          "w": 368,
+          "h": 69.09375,
+          "display": "flex",
+          "visible": true
+        },
+        {
+          "text": "Clear spot — ready to place.",
+          "x": 24,
+          "y": 705.8125,
+          "w": 342,
+          "h": 16.1875,
+          "display": "block",
+          "visible": true
+        },
+        {
+          "text": "↶ 15°0°15° ↷Place here",
+          "x": 274,
+          "y": 643.71875,
+          "w": 40,
+          "h": 29.390625,
+          "display": "flex",
+          "visible": true
+        },
+        {
+          "text": "CROSSPlaceLSDPADMoveL1R1RotateCIRCLECancelSQUAREStore",
+          "x": 24,
+          "y": 732,
+          "w": 342,
+          "h": 89,
+          "display": "flex",
+          "visible": true
+        }
+      ],
+      "font": 14
+    },
+    {
+      "context": "village",
+      "name": "unfolded",
+      "innerWidth": 864,
+      "innerHeight": 756,
+      "scrollWidth": 864,
+      "x": 458,
+      "y": 533.71875,
+      "w": 390,
+      "h": 206.28125,
+      "display": "block",
+      "visible": true,
+      "children": [
+        {
+          "text": "PLACE A PIECECopper lantern×",
+          "x": 459,
+          "y": 534.71875,
+          "w": 388,
+          "h": 69.09375,
+          "display": "flex",
+          "visible": true
+        },
+        {
+          "text": "Clear spot — ready to place.",
+          "x": 472,
+          "y": 611.8125,
+          "w": 362,
+          "h": 16.1875,
+          "display": "block",
+          "visible": true
+        },
+        {
+          "text": "↶ 15°0°15° ↷Place here",
+          "x": 742,
+          "y": 549.71875,
+          "w": 40,
+          "h": 29.390625,
+          "display": "flex",
+          "visible": true
+        },
+        {
+          "text": "CROSSPlaceLSDPADMoveL1R1RotateCIRCLECancelSQUAREStore",
+          "x": 472,
+          "y": 638,
+          "w": 362,
+          "h": 89,
+          "display": "flex",
+          "visible": true
+        }
+      ],
+      "font": 14
+    },
+    {
+      "context": "village",
+      "name": "tv",
+      "innerWidth": 1920,
+      "innerHeight": 1080,
+      "scrollWidth": 1920,
+      "x": 1514,
+      "y": 857.71875,
+      "w": 390,
+      "h": 206.28125,
+      "display": "block",
+      "visible": true,
+      "children": [
+        {
+          "text": "PLACE A PIECECopper lantern×",
+          "x": 1515,
+          "y": 858.71875,
+          "w": 388,
+          "h": 69.09375,
+          "display": "flex",
+          "visible": true
+        },
+        {
+          "text": "Clear spot — ready to place.",
+          "x": 1528,
+          "y": 935.8125,
+          "w": 362,
+          "h": 16.1875,
+          "display": "block",
+          "visible": true
+        },
+        {
+          "text": "↶ 15°0°15° ↷Place here",
+          "x": 1798,
+          "y": 873.71875,
+          "w": 40,
+          "h": 29.390625,
+          "display": "flex",
+          "visible": true
+        },
+        {
+          "text": "CROSSPlaceLSDPADMoveL1R1RotateCIRCLECancelSQUAREStore",
+          "x": 1528,
+          "y": 962,
+          "w": 362,
+          "h": 89,
+          "display": "flex",
+          "visible": true
+        }
+      ],
+      "font": 14
+    }
+  ],
+  "scope": "Exact new standalone HTML bytes, independent reboot plus targeted house/village Build legend geometry and shader checks after CSS-only width:max-content change. Gameplay evidence is inherited only for unchanged JS from the explicitly identified 7514ee49 run. No runtime CSS injection.",
+  "workingTree": "?? docs/contractor-patches/village-play-polish/verification/\n?? tools/pad-cursor-dom-qa.mjs\n?? tools/village-play-polish-css-delta-qa.mjs\n?? tools/village-play-polish-qa.mjs\n",
+  "sourceHashes": {
+    "src/main.js": {
+      "bytes": 79664,
+      "sha256": "5feaf046e63fb4088def68b468107d2a18eacde12bd9355e3f28a34200cc16ec"
+    },
+    "src/scene.js": {
+      "bytes": 94160,
+      "sha256": "597311a5a0f428ce113a6ebb1759c9a712a93b67f4d74863a8381ccc2a1afd0f"
+    },
+    "src/player-control.js": {
+      "bytes": 27447,
+      "sha256": "9205679c7ef2c0eddb7fd826773886fc426f1954fe479ca16092b1f2789acd60"
+    },
+    "src/village-game.js": {
+      "bytes": 39090,
+      "sha256": "1ce8190dc0b7e83b029a6ec36e2657913ce323dcf37c0558b470c4b25935d53c"
+    },
+    "src/village-view.js": {
+      "bytes": 32499,
+      "sha256": "76e18249086f6a78a0833ba42ad8434ac2076b3eab14b3a3144ab1d1af845d12"
+    },
+    "src/village-world.js": {
+      "bytes": 87445,
+      "sha256": "bcac6db35e10c1b94c32788ff2d761c8f24ef1be67271a7c1d5587eebea00de3"
+    },
+    "src/village-grass.js": {
+      "bytes": 7193,
+      "sha256": "aa39ea4a3a40f6425852ac86bb80285addb0190c31377ce4fb910121636d881d"
+    },
+    "src/village-visibility.js": {
+      "bytes": 1711,
+      "sha256": "1baaf9b7d1275d4d4c1acc503d549a7169f144b006c36a273b3604177c4a6770"
+    },
+    "src/village-proximity.js": {
+      "bytes": 3437,
+      "sha256": "b398a24f33e14e221e601512bc77c534fe6e075e22cf60f1a00ad8ed71e84f5d"
+    },
+    "src/village-wanderers.js": {
+      "bytes": 4033,
+      "sha256": "e677531d1f9acf7cdb2afd8e0e0b5c92113a1a87a0010dfcaa504192333e2bc5"
+    },
+    "src/sprite-rim.js": {
+      "bytes": 1416,
+      "sha256": "532cda9e0ae0f1d543b4072452551b57a14682d3104e5d40624e8cd18639001d"
+    },
+    "src/ui/village-controls.js": {
+      "bytes": 20213,
+      "sha256": "a5b2d84ae2503f3377be74827dbdcd22f9d02d1e53b27cac96c3663e11f6548f"
+    },
+    "src/ui/village-controls.css": {
+      "bytes": 11075,
+      "sha256": "0ec2ebfbd41fb7d3c8d735a35d0d388c056f13607a22092f135b6ea029c5d3cc"
+    },
+    "src/ui/village-map.js": {
+      "bytes": 12061,
+      "sha256": "0bf23fc68eb625ae4be45554e614ec0d8c1f1567015c8175a2ce495283c1fd70"
+    },
+    "src/ui/village-chapters.js": {
+      "bytes": 22322,
+      "sha256": "df1b5370dba7b9800c3fb61fbad81c269dff72032929dff33d568665195cabc7"
+    },
+    "src/ui/village-conversation.js": {
+      "bytes": 8361,
+      "sha256": "c449a1d3694512a99bf58a0d02e48b2fd0085ad8438eccc7a6225f0fa7f19a27"
+    },
+    "src/ui/village-conversation.css": {
+      "bytes": 6395,
+      "sha256": "9dfcc9564b5e37b3bb39a42b62a735f2570213b21d222e712d4d165d4bc391ea"
+    },
+    "src/ui/pad-cursor.js": {
+      "bytes": 9376,
+      "sha256": "e94e45e88ae2ed03d3a0bde24c876f6c3b35008124d37029dada4db628ac18b5"
+    },
+    "src/ui/home-sheets.js": {
+      "bytes": 60570,
+      "sha256": "cb7972bd95ed8ba5a60e70e378a4bbbca6256a3f3f2137425bc1a300e216ce1a"
+    },
+    "assets/terrain/grass-tile.webp": {
+      "bytes": 101386,
+      "sha256": "ccc2158587d4a03d1e7f51e811b6655fdc7f07b1a3cd2f46341bf5d67f95d2a0"
+    },
+    "assets/village-ui-icons/village-ui.webp": {
+      "bytes": 185926,
+      "sha256": "30a3161c98941584c485fded006d80a98722f20c86945045e9b67cba82277347"
+    }
+  },
+  "inheritedGameplayEvidence": {
+    "sha256": "7514ee4994efecc707b13510e9273cd6e5ab53984774126bf041544b6386351a",
+    "checks": 57,
+    "passed": 57,
+    "report": "../final-7514ee49/village-play-polish-report.json"
+  },
+  "passed": true
+}

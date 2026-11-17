@@ -1,0 +1,34 @@
+
+Exception occurred while executing 'install':
+java.lang.NullPointerException: Attempt to invoke virtual method 'java.util.List android.os.storage.StorageManager.getVolumes()' on a null object reference
+	at com.android.internal.content.PackageHelper.resolveInstallVolume(PackageHelper.java:200)
+	at com.android.internal.content.PackageHelper.resolveInstallVolume(PackageHelper.java:150)
+	at com.android.internal.content.PackageHelper.resolveInstallVolume(PackageHelper.java:165)
+	at com.android.server.pm.PackageInstallerService.createSessionInternal(PackageInstallerService.java:651)
+	at com.android.server.pm.PackageInstallerService.createSession(PackageInstallerService.java:489)
+	at com.android.server.pm.PackageManagerShellCommand.doCreateSession(PackageManagerShellCommand.java:3087)
+	at com.android.server.pm.PackageManagerShellCommand.doRunInstall(PackageManagerShellCommand.java:1286)
+	at com.android.server.pm.PackageManagerShellCommand.runInstall(PackageManagerShellCommand.java:1248)
+	at com.android.server.pm.PackageManagerShellCommand.onCommand(PackageManagerShellCommand.java:184)
+	at android.os.BasicShellCommandHandler.exec(BasicShellCommandHandler.java:98)
+	at android.os.ShellCommand.exec(ShellCommand.java:44)
+	at com.android.server.pm.PackageManagerService.onShellCommand(PackageManagerService.java:21646)
+	at android.os.Binder.shellCommand(Binder.java:929)
+	at android.os.Binder.onTransact(Binder.java:813)
+	at android.content.pm.IPackageManager$Stub.onTransact(IPackageManager.java:4603)
+	at com.android.server.pm.PackageManagerService.onTransact(PackageManagerService.java:4305)
+	at android.os.Binder.execTransactInternal(Binder.java:1159)
+	at android.os.Binder.execTransact(Binder.java:1123)
+Current WebView Update Service state
+  Fallback logic enabled: false
+  Multiprocess enabled: true
+  Current WebView package is null
+  Minimum targetSdkVersion: 30
+  Minimum WebView version code: -1
+  Number of relros started: 0
+  Number of relros finished: 0
+  WebView package dirty: false
+  Any WebView package installed: false
+  Preferred WebView package (name, version): (com.android.webview, 83.0.4103.120)
+  WebView packages:
+    Valid package com.android.webview (versionName: 83.0.4103.120, versionCode: 410412056, targetSdkVersion: 30) is  installed/enabled for all users

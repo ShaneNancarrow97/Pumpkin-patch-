@@ -1,0 +1,39 @@
+VILLAGE ready
+PASS Actual controller route reaches Elowen for the real greeting
+PASS A genuine nearby meeting opens real chat, quest, gift, about and leave choices
+PASS Every actual greeting choice has its explicit painted icon
+PASS fold speech ribbon and all44px choice controls fit the viewport
+PASS fold real DualSense action focus is highlighted and background HUD is hidden
+PASS fold dialogue faces the owner sprite to its camera and frames the actual resident feet
+PASS fold real camera keeps both characters clear of the actual bottom UI
+SHOT 01-fold-neighbour-greeting
+PASS tv speech ribbon and all44px choice controls fit the viewport
+PASS tv real DualSense action focus is highlighted and background HUD is hidden
+PASS tv dialogue faces the owner sprite to its camera and frames the actual resident feet
+PASS tv real camera keeps both characters clear of the actual bottom UI
+SHOT 02-tv-neighbour-greeting
+PASS phone speech ribbon and all44px choice controls fit the viewport
+PASS phone real DualSense action focus is highlighted and background HUD is hidden
+PASS landscape speech ribbon and all44px choice controls fit the viewport
+PASS landscape real DualSense action focus is highlighted and background HUD is hidden
+PASS phone long lines and choices scroll independently while Back stays reachable
+PASS landscape long lines and choices scroll independently while Back stays reachable
+PASS Double-selecting the same greeting action opens one actual daily chat
+PASS The actual daily answer grants its chat callback once
+PASS Closing chat restores exploration without carrying a held stick into walking
+PASS Real Give a present opens the correct resident inventory fold
+PASS Gift inventory contains actual owned supplies
+PASS Real About choice opens this neighbour’s friendship profile
+PASS Real Leave restores the exact exploration camera position and quaternion
+PASS A new stick hold after neutral during return remains suppressed past camera release
+PASS Neutral then fresh stick intent resumes normal collision-controlled walking
+PASS Daily chat correctly shows its real cooldown after answering
+PASS The actual offered Blackroot choice starts its quest once
+PASS The tracked Blackroot chapter provides an actual Find fungus action
+PASS Actual controller route reaches Blackroot blight-green-05
+SHOT 05-fold-refined-blackroot
+PASS Refined voxel fungus still disappears after the actual two-second root-out
+PASS Refined fungus preserves its one-shot bounded spore clearing effect
+PASS Final menus have no page/shader errors
+PASS Final offline game uses no external assets
+{"passed":true,"checks":34,"errors":0,"sha256":"a154d6b74b0343145f2e66b6b94051ace738393d3869c2ddf086446f9e08f38e"}

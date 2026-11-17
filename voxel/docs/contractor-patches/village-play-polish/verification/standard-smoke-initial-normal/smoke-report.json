@@ -1,0 +1,18 @@
+{
+  "html": "/workspace/Pumpkin-Patch-Village-Play-Polish.html",
+  "sha256": "bc7d34a08760e36b9e1004a48dae2b63d74b576dcce6622de648c3d3b60cd79e",
+  "date": "2026-11-08T20:30:04.956Z",
+  "bytes": 58258944,
+  "exitCode": 1,
+  "passed": false,
+  "checks": 10,
+  "failures": 0,
+  "scope": "Partial standard smoke against exact unchanged standalone HTML over loopback, with the full-barn assertion corrected to respect the disabled control. Normal lightweight software-WebGL draws; intentionally interrupted, not a completed pass.",
+  "interrupted": true,
+  "reason": "Stopped the owned test process after 10 passing checks because software rendering slowed ordinary UI actions; parent requested an explicit held-draw regression profile. The resulting target-closed stack is from intentional termination, not an observed product failure.",
+  "profile": {
+    "SMOKE_LITE": true,
+    "SMOKE_HOLD_DRAWS": false,
+    "screenshots": false
+  }
+}

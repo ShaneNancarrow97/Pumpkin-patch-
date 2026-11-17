@@ -1,0 +1,461 @@
+{
+  "html": "Pumpkin-Patch-Mothlight.html",
+  "date": "2026-11-08T06:43:26.041Z",
+  "sha256": "1dc758ae753244335539f4a57a19d2cbe31932a0f5874914591e064b4f82102f",
+  "bytes": 41306095,
+  "scope": "Real game HTML in Chromium/SwiftShader. The level-three save starts with £500 earned savings and a prior home visit. No progress or purse edits after travel. Conversations, quest acceptance, handovers and purchases use visible UI; gathering uses the same world-pick callback as a tap. Viewport emulation is not physical Fold/controller certification.",
+  "fixture": {
+    "earned": 3200,
+    "coins": 500,
+    "level": 3,
+    "priorHomeVisits": 1
+  },
+  "checks": [
+    {
+      "pass": true,
+      "label": "level four requires the invitation even at its earned threshold"
+    },
+    {
+      "pass": true,
+      "label": "declared level-three save boots in the real farm"
+    },
+    {
+      "pass": true,
+      "label": "More contains a visible Mothlight journey"
+    },
+    {
+      "pass": true,
+      "label": "More enters the actual village and accepts Elowen's invitation"
+    },
+    {
+      "pass": true,
+      "label": "the first visit starts Elowen's tour"
+    },
+    {
+      "pass": true,
+      "label": "farm favour cards stay off the village playfield"
+    },
+    {
+      "pass": true,
+      "label": "Skip tour completes the tour step through its visible control"
+    },
+    {
+      "pass": true,
+      "label": "the home-goal action returns to the saved village quest"
+    },
+    {
+      "pass": true,
+      "label": "Rowan invitation: conversation reaches Done",
+      "detail": [
+        [
+          "KindIt's lovely to meet you, Rowan.",
+          "CuriousWhat do you make here?",
+          "PlayfulAre you the welcome committee?"
+        ]
+      ]
+    },
+    {
+      "pass": true,
+      "label": "Rowan's finished introduction advances the invitation"
+    },
+    {
+      "pass": true,
+      "label": "Elowen invitation: conversation reaches Done",
+      "detail": [
+        [
+          "KindIt feels like it's been waiting for someone.",
+          "CuriousWhy is so much of it empty?",
+          "PlayfulIt needs more pumpkins."
+        ]
+      ]
+    },
+    {
+      "pass": true,
+      "label": "meeting both neighbours unlocks gathering through the real invitation"
+    },
+    {
+      "pass": true,
+      "label": "invitation pays its once-only £150 reward",
+      "detail": 650
+    },
+    {
+      "pass": true,
+      "label": "completed invitation satisfies the level-four home requirement"
+    },
+    {
+      "pass": true,
+      "label": "rowan-1: conversation reaches Done",
+      "detail": [
+        [
+          "KindLeave it with me.",
+          "CuriousWhere's the best timber?",
+          "PlayfulWill I get my name on it?"
+        ]
+      ]
+    },
+    {
+      "pass": true,
+      "label": "logs and stone gathering advances Loose Boards to its delivery"
+    },
+    {
+      "pass": true,
+      "label": "a freshly gathered node cannot pay out twice"
+    },
+    {
+      "pass": true,
+      "label": "Rowan consumes the materials, repairs the bench and pays £60",
+      "detail": 710
+    },
+    {
+      "pass": true,
+      "label": "rowan-stall: conversation reaches Done",
+      "detail": [
+        [
+          "KindLet's get you trading again.",
+          "CuriousWhat would you sell?",
+          "PlayfulDo you take pumpkins as payment?"
+        ]
+      ]
+    },
+    {
+      "pass": true,
+      "label": "stall repair consumes six logs, two stone and three fibre",
+      "detail": {
+        "before": {
+          "logs": 12,
+          "stone": 2,
+          "fibre": 3,
+          "herbs": 0,
+          "hardwood": 0,
+          "moth-silk": 0,
+          "iron": 0,
+          "clay": 0,
+          "moonstone": 0,
+          "emberbloom": 0,
+          "star-amber": 0
+        },
+        "after": {
+          "logs": 6,
+          "stone": 0,
+          "fibre": 0,
+          "herbs": 0,
+          "hardwood": 0,
+          "moth-silk": 0,
+          "iron": 0,
+          "clay": 0,
+          "moonstone": 0,
+          "emberbloom": 0,
+          "star-amber": 0
+        },
+        "step": 2
+      }
+    },
+    {
+      "pass": true,
+      "label": "the real £200 handover opens Rowan's stall",
+      "detail": 510
+    },
+    {
+      "pass": true,
+      "label": "one visible price click buys a stool and deducts its exact price",
+      "detail": {
+        "price": 60,
+        "coins": 450
+      }
+    },
+    {
+      "pass": true,
+      "label": "actual-game interior velvet-bat opens"
+    },
+    {
+      "pass": true,
+      "label": "actual-game interior elowen-library opens"
+    },
+    {
+      "pass": true,
+      "label": "actual-game interior rowan-workshop opens"
+    },
+    {
+      "pass": true,
+      "label": "desktop: no horizontal overflow"
+    },
+    {
+      "pass": true,
+      "label": "desktop: controls meet 44px targets",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "desktop: controls stay at least 12px",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "desktop-journal: no horizontal overflow"
+    },
+    {
+      "pass": true,
+      "label": "desktop-journal: controls meet 44px targets",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "desktop-journal: controls stay at least 12px",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "phone: no horizontal overflow"
+    },
+    {
+      "pass": true,
+      "label": "phone: controls meet 44px targets",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "phone: controls stay at least 12px",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "phone-journal: no horizontal overflow"
+    },
+    {
+      "pass": true,
+      "label": "phone-journal: controls meet 44px targets",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "phone-journal: controls stay at least 12px",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "landscape: no horizontal overflow"
+    },
+    {
+      "pass": true,
+      "label": "landscape: controls meet 44px targets",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "landscape: controls stay at least 12px",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "landscape-journal: no horizontal overflow"
+    },
+    {
+      "pass": true,
+      "label": "landscape-journal: controls meet 44px targets",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "landscape-journal: controls stay at least 12px",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "fold: no horizontal overflow"
+    },
+    {
+      "pass": true,
+      "label": "fold: controls meet 44px targets",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "fold: controls stay at least 12px",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "fold-journal: no horizontal overflow"
+    },
+    {
+      "pass": true,
+      "label": "fold-journal: controls meet 44px targets",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "fold-journal: controls stay at least 12px",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "Farm returns from Mothlight through its visible control"
+    },
+    {
+      "pass": true,
+      "label": "village travel preserves the fixture's house, garden, wardrobe, stock and helping hands"
+    },
+    {
+      "pass": true,
+      "label": "reload preserves coins, completed quests, gathering, owned stool, purchase counts and reward claims"
+    },
+    {
+      "pass": true,
+      "label": "revisiting Mothlight keeps the finished tour and does not repay its rewards"
+    },
+    {
+      "pass": true,
+      "label": "actual-game journey makes no external asset or font requests",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "actual-game village flow has no page or console errors",
+      "detail": []
+    }
+  ],
+  "screenshots": [
+    "game-desktop-first-tour.png",
+    "game-desktop-rowan-introduction.png",
+    "game-desktop-rowan-stall.png",
+    "game-inside-velvet-bat.png",
+    "game-inside-elowen-library.png",
+    "game-inside-rowan-workshop.png",
+    "game-desktop-green.png",
+    "game-desktop-journal.png",
+    "game-phone-green.png",
+    "game-phone-journal.png",
+    "game-landscape-green.png",
+    "game-landscape-journal.png",
+    "game-fold-green.png",
+    "game-fold-journal.png",
+    "game-returned-farm.png"
+  ],
+  "metrics": [
+    {
+      "name": "desktop",
+      "viewport": [
+        1280,
+        800
+      ],
+      "overflow": false,
+      "smallTargets": [],
+      "smallText": []
+    },
+    {
+      "name": "desktop-journal",
+      "viewport": [
+        1280,
+        800
+      ],
+      "overflow": false,
+      "smallTargets": [],
+      "smallText": []
+    },
+    {
+      "name": "phone",
+      "viewport": [
+        390,
+        844
+      ],
+      "overflow": false,
+      "smallTargets": [],
+      "smallText": []
+    },
+    {
+      "name": "phone-journal",
+      "viewport": [
+        390,
+        844
+      ],
+      "overflow": false,
+      "smallTargets": [],
+      "smallText": []
+    },
+    {
+      "name": "landscape",
+      "viewport": [
+        844,
+        390
+      ],
+      "overflow": false,
+      "smallTargets": [],
+      "smallText": []
+    },
+    {
+      "name": "landscape-journal",
+      "viewport": [
+        844,
+        390
+      ],
+      "overflow": false,
+      "smallTargets": [],
+      "smallText": []
+    },
+    {
+      "name": "fold",
+      "viewport": [
+        900,
+        840
+      ],
+      "overflow": false,
+      "smallTargets": [],
+      "smallText": []
+    },
+    {
+      "name": "fold-journal",
+      "viewport": [
+        900,
+        840
+      ],
+      "overflow": false,
+      "smallTargets": [],
+      "smallText": []
+    }
+  ],
+  "conversations": [
+    {
+      "label": "Rowan invitation",
+      "choices": [
+        [
+          "KindIt's lovely to meet you, Rowan.",
+          "CuriousWhat do you make here?",
+          "PlayfulAre you the welcome committee?"
+        ]
+      ]
+    },
+    {
+      "label": "Elowen invitation",
+      "choices": [
+        [
+          "KindIt feels like it's been waiting for someone.",
+          "CuriousWhy is so much of it empty?",
+          "PlayfulIt needs more pumpkins."
+        ]
+      ]
+    },
+    {
+      "label": "rowan-1",
+      "choices": [
+        [
+          "KindLeave it with me.",
+          "CuriousWhere's the best timber?",
+          "PlayfulWill I get my name on it?"
+        ]
+      ]
+    },
+    {
+      "label": "rowan-stall",
+      "choices": [
+        [
+          "KindLet's get you trading again.",
+          "CuriousWhat would you sell?",
+          "PlayfulDo you take pumpkins as payment?"
+        ]
+      ]
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "passed": true
+}

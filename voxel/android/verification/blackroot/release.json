@@ -1,0 +1,31 @@
+{
+  "date": "2026-11-09T01:03:57.656659+00:00",
+  "publicFilename": "Pumpkin-Patch-Village-Blackroot.apk",
+  "apk": {
+    "file": "Pumpkin-Patch-Village-Play-Polish.apk",
+    "bytes": 42413038,
+    "sha256": "6865cf90dcc0cea68213f6ab45cc6c5d5e312dbead38dd1c2188cec84e963b0a"
+  },
+  "sourceHtml": {
+    "filename": "Pumpkin-Patch-Village-Blackroot.html",
+    "bytes": 58984404,
+    "sha256": "e98d2ffc583051836aa21f33eccb04559ea413b4e4ebec31bd4cc8cd529abaaf"
+  },
+  "versionCode": 26110802,
+  "versionName": "2026.11.08.2",
+  "gamePublishedFirst": {
+    "artifactCommit": "5b4a79e1df6ff68e8cdf20ac136facd987db829d",
+    "publicAllFilesVerified": true,
+    "receipt": "../../../docs/contractor-patches/village-menu-refinement/verification/blackroot-public-game-downloads.json"
+  },
+  "nativeChecks": {
+    "signature": true,
+    "zipalign": true,
+    "zipCrc": true,
+    "mediaHashes": true,
+    "mediaStoredWithoutRecompression": true
+  },
+  "nativeShellTests": 11,
+  "extractorTests": 6,
+  "hardwareTesting": "Not installed/launched on physical Fold7/TV/PS5 Bluetooth. Existing emulator storage/framework/provider failure remains unverified; no new hardware claim."
+}

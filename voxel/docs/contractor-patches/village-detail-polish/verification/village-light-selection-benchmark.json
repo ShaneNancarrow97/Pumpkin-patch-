@@ -1,0 +1,37 @@
+{
+  "scope": "Synthetic CPU lamp selection only, not GPU or device FPS",
+  "lampCount": 72,
+  "poolSize": 8,
+  "scenarios": {
+    "stationary": {
+      "frames": 600,
+      "sameSelectionEveryFrame": true,
+      "before": {
+        "distanceCalculations": 412800,
+        "medianMs": 0.0135
+      },
+      "after": {
+        "selections": 1,
+        "cacheHits": 599,
+        "distanceChecks": 72,
+        "candidates": 72,
+        "medianMs": 0.0002
+      }
+    },
+    "moving": {
+      "frames": 600,
+      "sameSelectionEveryFrame": true,
+      "before": {
+        "distanceCalculations": 421410,
+        "medianMs": 0.0156
+      },
+      "after": {
+        "selections": 600,
+        "cacheHits": 0,
+        "distanceChecks": 43200,
+        "candidates": 72,
+        "medianMs": 0.0018
+      }
+    }
+  }
+}

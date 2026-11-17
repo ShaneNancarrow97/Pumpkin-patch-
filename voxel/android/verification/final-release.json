@@ -1,0 +1,123 @@
+{
+  "applicationId": "com.shanenatalie.pumpkinpatch.voxel",
+  "versionCode": 26110801,
+  "minSdk": 26,
+  "targetSdk": 35,
+  "sourceHtml": {
+    "filename": "Pumpkin-Patch-Village-Play-Polish.html",
+    "bytes": 58259782,
+    "sha256": "9314af490ecceb32d030b6ac57772927a15013790f910146ff27ccaf0d54ce17"
+  },
+  "extractedHtml": {
+    "path": "index.html",
+    "bytes": 4174189,
+    "sha256": "631931d433a6fde8ede6ace66b26a29e02213a48906c1b555bd644beec84f06e"
+  },
+  "packagedHtml": {
+    "bytes": 4174274,
+    "sha256": "321e95387a72122932cb3c5764e790614f0f7e7600f8a1a830cfddac6cf978aa"
+  },
+  "shell": {
+    "bytes": 12351,
+    "sha256": "a54e6c8a07be244da9475f558927a066a059c935f180faa33545550ee382dc46"
+  },
+  "assetStatistics": {
+    "dataUriReferences": 274,
+    "uniqueMediaAssets": 273,
+    "mimeReferenceCounts": {
+      "audio/mpeg": 164,
+      "font/woff": 1,
+      "font/woff2": 2,
+      "image/png": 22,
+      "image/webp": 85
+    },
+    "uniqueDecodedMediaBytes": 40531747,
+    "parseByteReduction": 54085593,
+    "parseByteReductionPercent": 92.8352,
+    "remainingTargetBase64Uris": 0
+  },
+  "apk": {
+    "file": "Pumpkin-Patch-Village-Play-Polish.apk",
+    "bytes": 42068590,
+    "sha256": "bd2876295b40747880a287ff13db558154c06a80c999827372297b237b1c323c"
+  },
+  "checks": {
+    "signature": true,
+    "zipalign": true,
+    "zipCrc": true,
+    "mediaHashes": true,
+    "mediaStoredWithoutRecompression": true
+  },
+  "signing": "Persistent local test signing key and random password are outside source; retain them for in-place app updates.",
+  "runtime": "Android System WebView/WebGL2, not a native3D rewrite; real hardware/performance verification is separate.",
+  "checkedAt": "2026-11-08T21:05:12.491002+00:00",
+  "sourceGameCommit": "8bf4d53b530fd835c20f4515e76913b376b295c9",
+  "browserArtifactCommit": "42946eceb72922388a4b3bcd6cf9bd70ac0c27cc",
+  "nativeChecks": {
+    "extractorUnitTests": 6,
+    "shellVmTests": 10,
+    "javaCompile": true,
+    "signature": true,
+    "zipalign": true,
+    "zipCrc": true,
+    "allMediaHashes": true,
+    "narrationRelativeUrlCompatibility": true
+  },
+  "hardwareScope": {
+    "apkInstallTest": "Blocked by emulator storage/package service before game code ran",
+    "webViewProvider": "Emulator current provider null, preferred83.0.4103.120; modern System WebView required",
+    "physicalFoldTvBluetooth": false,
+    "performanceBenchmark": false,
+    "details": "emulator-report.json"
+  },
+  "nativeSourceFiles": {
+    ".gitignore": {
+      "bytes": 88,
+      "sha256": "581721929f7c831297ea55d671cf607ebc062500ddeef3262f30b7271aea484d"
+    },
+    "AndroidManifest.xml": {
+      "bytes": 1419,
+      "sha256": "b91a3e57c25ee7094dd319cef6176c211c2f5219f61cbb3a31f3cd072893754d"
+    },
+    "README.md": {
+      "bytes": 6913,
+      "sha256": "66669ab9459fc3fa8e1f45ec2cd37b16a9f4902d77d6429dc5457b15afe25995"
+    },
+    "assets/android-shell.js": {
+      "bytes": 12351,
+      "sha256": "a54e6c8a07be244da9475f558927a066a059c935f180faa33545550ee382dc46"
+    },
+    "res/drawable/pumpkin.png": {
+      "bytes": 58406,
+      "sha256": "3dbcd8b65bc821536c68e146bbc6f14f95b59f866506fd4c3d7ced3a077b4d94"
+    },
+    "res/values/styles.xml": {
+      "bytes": 508,
+      "sha256": "7317965d2111215e79e31ed09e4dac828656e15e570495b7b4ae2717704cfb52"
+    },
+    "res/values-v35/styles.xml": {
+      "bytes": 574,
+      "sha256": "9e38aa9645332107342d45be84e64c2ec57a34f656ed1d56eecc8c3441aa3a8d"
+    },
+    "src/com/shanenatalie/pumpkinpatch/voxel/MainActivity.java": {
+      "bytes": 18963,
+      "sha256": "ef7a4edf3a8c45f963a119484fd819c332832aa840d1019918859fc5359a7ba0"
+    },
+    "test/extract_assets_test.py": {
+      "bytes": 5029,
+      "sha256": "5a54203db1ae72a454f79b467612fbd1371534af4d1dbc72cdbaa52666cc4eaf"
+    },
+    "test/native-shell.test.mjs": {
+      "bytes": 11552,
+      "sha256": "611b6424e749f52d5f403d3c8330acf2e2ed0f881961d1f3c2cfdf8fc03e197e"
+    },
+    "tools/build-apk.py": {
+      "bytes": 5624,
+      "sha256": "b24419a8b06035c7a58c252dcefa92ecb0a0e3435a82eb08696acb3e4805f90c"
+    },
+    "tools/extract-assets.py": {
+      "bytes": 7316,
+      "sha256": "9f463423d7c0ff58b70233185044f15f2856512bfd897f284657bd991a8ddac1"
+    }
+  }
+}

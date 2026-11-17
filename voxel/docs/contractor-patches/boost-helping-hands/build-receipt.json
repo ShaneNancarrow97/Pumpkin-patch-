@@ -1,0 +1,10 @@
+{
+  "base": "f2f96f8351dea4cf6072862b1e3e0b14d6a318dc",
+  "implementation_commit": "2b50fa37a58b8c87132b290fc2bfc0af79f852c6",
+  "html": "Pumpkin-Patch-Boost-and-Helping-Hands.html",
+  "html_bytes": 37852671,
+  "html_sha256": "bd6a053533a1a5c2c01489085f012140746e6340c7e70d4da40f8062bdf1ba64",
+  "zip": "Pumpkin-Patch-Boost-and-Helping-Hands.zip",
+  "zip_bytes": 27342412,
+  "zip_sha256": "842a82fc5fb63e72a96cb777cf6f12de80523578250122bd12c2424bfc3d1f67"
+}

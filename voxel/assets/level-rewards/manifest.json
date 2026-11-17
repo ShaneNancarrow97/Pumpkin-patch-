@@ -1,0 +1,280 @@
+{
+  "generatedBy": "tools/bake-level-reward-icons.py",
+  "source": "assets/level-rewards/source.png",
+  "sourceSha256": "1662d0e4ebf931cb695c689d156c84be37fd8749bd08f9eaa5105391d01a998f",
+  "sourceSize": [
+    1448,
+    1086
+  ],
+  "grid": {
+    "columns": 4,
+    "rows": 3,
+    "cell": 128,
+    "inset": 10
+  },
+  "items": [
+    {
+      "id": "rank-seed",
+      "column": 0,
+      "row": 0,
+      "sourceBounds": [
+        0,
+        0,
+        362,
+        362
+      ],
+      "contentBounds": [
+        24,
+        33,
+        339,
+        340
+      ],
+      "renderSize": [
+        108,
+        105
+      ],
+      "numberY": 46
+    },
+    {
+      "id": "rank-lantern",
+      "column": 1,
+      "row": 0,
+      "sourceBounds": [
+        362,
+        0,
+        724,
+        362
+      ],
+      "contentBounds": [
+        20,
+        17,
+        338,
+        344
+      ],
+      "renderSize": [
+        105,
+        108
+      ],
+      "numberY": 44
+    },
+    {
+      "id": "rank-moon",
+      "column": 2,
+      "row": 0,
+      "sourceBounds": [
+        724,
+        0,
+        1086,
+        362
+      ],
+      "contentBounds": [
+        16,
+        35,
+        332,
+        345
+      ],
+      "renderSize": [
+        108,
+        106
+      ],
+      "numberY": 50
+    },
+    {
+      "id": "rank-moth",
+      "column": 3,
+      "row": 0,
+      "sourceBounds": [
+        1086,
+        0,
+        1448,
+        362
+      ],
+      "contentBounds": [
+        18,
+        19,
+        342,
+        342
+      ],
+      "renderSize": [
+        108,
+        108
+      ],
+      "numberY": 52
+    },
+    {
+      "id": "rank-manor",
+      "column": 0,
+      "row": 1,
+      "sourceBounds": [
+        0,
+        362,
+        362,
+        724
+      ],
+      "contentBounds": [
+        32,
+        9,
+        330,
+        345
+      ],
+      "renderSize": [
+        96,
+        108
+      ],
+      "numberY": 59
+    },
+    {
+      "id": "rank-eclipse",
+      "column": 1,
+      "row": 1,
+      "sourceBounds": [
+        362,
+        362,
+        724,
+        724
+      ],
+      "contentBounds": [
+        20,
+        12,
+        330,
+        342
+      ],
+      "renderSize": [
+        101,
+        108
+      ],
+      "numberY": 50
+    },
+    {
+      "id": "coins",
+      "column": 2,
+      "row": 1,
+      "sourceBounds": [
+        724,
+        362,
+        1086,
+        724
+      ],
+      "contentBounds": [
+        18,
+        60,
+        320,
+        325
+      ],
+      "renderSize": [
+        108,
+        95
+      ]
+    },
+    {
+      "id": "upgrade",
+      "column": 3,
+      "row": 1,
+      "sourceBounds": [
+        1086,
+        362,
+        1448,
+        724
+      ],
+      "contentBounds": [
+        25,
+        21,
+        327,
+        328
+      ],
+      "renderSize": [
+        106,
+        108
+      ]
+    },
+    {
+      "id": "decor",
+      "column": 0,
+      "row": 2,
+      "sourceBounds": [
+        0,
+        724,
+        362,
+        1086
+      ],
+      "contentBounds": [
+        28,
+        12,
+        362,
+        346
+      ],
+      "renderSize": [
+        108,
+        108
+      ]
+    },
+    {
+      "id": "costume",
+      "column": 1,
+      "row": 2,
+      "sourceBounds": [
+        362,
+        724,
+        724,
+        1086
+      ],
+      "contentBounds": [
+        0,
+        28,
+        362,
+        324
+      ],
+      "renderSize": [
+        108,
+        88
+      ]
+    },
+    {
+      "id": "recipe",
+      "column": 2,
+      "row": 2,
+      "sourceBounds": [
+        724,
+        724,
+        1086,
+        1086
+      ],
+      "contentBounds": [
+        0,
+        51,
+        342,
+        328
+      ],
+      "renderSize": [
+        108,
+        87
+      ]
+    },
+    {
+      "id": "area",
+      "column": 3,
+      "row": 2,
+      "sourceBounds": [
+        1086,
+        724,
+        1448,
+        1086
+      ],
+      "contentBounds": [
+        9,
+        15,
+        344,
+        345
+      ],
+      "renderSize": [
+        108,
+        106
+      ]
+    }
+  ],
+  "runtime": {
+    "file": "level-rewards.webp",
+    "bytes": 192520,
+    "sha256": "96a5b42fc3cc98f2ce40a984a78060e8ef686f3a3e8aa0a2f3ecdfdeff211013"
+  }
+}

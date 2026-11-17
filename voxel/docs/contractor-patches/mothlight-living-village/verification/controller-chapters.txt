@@ -1,0 +1,11 @@
+✔ test/village-chapters.test.mjs (145.240371ms)
+✔ test/village-controls.test.mjs (71.782669ms)
+✔ test/village-game.test.mjs (529.978729ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 757.035092

@@ -1,0 +1,13 @@
+{
+  "runtimeCommit": "5046b4bab3f30fad978f8fc33100230b6fd0f65d",
+  "htmlSha256": "3eee0d5a4a66c86b85b6f1fc07e670915377bfbe7710da1f304db77e5f347c02",
+  "checks": 35,
+  "passed": true,
+  "scope": "Exact offline game HTML on loopback, one native village entry, genuine keyboard walking, public hall entry/exit and native game RAF/rendering. No held draws, advance(), manual tick or manual render. Stationary counter checks are conditional on exactly unchanged horizontal camera/target; changing smoothing poses are reported, with exact stationary behavior covered by Node tests. GPU acceptance reads actual canvas pixels because this software Chromium runner has a separately reproduced page-compositor defect; raw success does not certify page compositing or physical phone/TV FPS.",
+  "sampledRenderFrames": 14,
+  "renderPassHistogram": {
+    "16": 14
+  },
+  "errors": [],
+  "rawUncompressedSha256": "48253eaf61b3cc374ecda04a422538d60ca107d7c20a29e71f596a954d05f4ae"
+}

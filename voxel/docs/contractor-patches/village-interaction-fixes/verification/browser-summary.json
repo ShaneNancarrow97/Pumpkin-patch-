@@ -1,0 +1,48 @@
+{
+  "finalSha256": "c08029b91f19cb4363b39b0fbb0bbf376dd43656eb46fbaba21b33382198d8f7",
+  "finalExactArtifactPass": true,
+  "finalDeltaChecksPassed": 15,
+  "finalDeltaRuntimeErrors": 0,
+  "finalDeltaExternalRequests": 0,
+  "receipts": [
+    {
+      "report": "browser-3637c529/interaction-report.json",
+      "sha256": "3637c5291aa9d7383e43de6220fb478bf148994805c145e7fe32ce02499aa607",
+      "checks": 37,
+      "passingChecks": 36,
+      "passingReport": false,
+      "errors": 0,
+      "externalRequests": 0
+    },
+    {
+      "report": "browser-c040390b/interaction-report.json",
+      "sha256": "c040390b02ffebccd1b346048dea3889ea4b71ee3490d014a8dede8fe9a59103",
+      "checks": 19,
+      "passingChecks": 17,
+      "passingReport": false,
+      "errors": 2,
+      "externalRequests": 0
+    },
+    {
+      "report": "browser-c040390b-followup/interaction-report.json",
+      "sha256": "c040390b02ffebccd1b346048dea3889ea4b71ee3490d014a8dede8fe9a59103",
+      "checks": 18,
+      "passingChecks": 18,
+      "passingReport": true,
+      "errors": 0,
+      "externalRequests": 0
+    },
+    {
+      "report": "browser-c08029b9/interaction-report.json",
+      "sha256": "c08029b91f19cb4363b39b0fbb0bbf376dd43656eb46fbaba21b33382198d8f7",
+      "checks": 15,
+      "passingChecks": 15,
+      "passingReport": true,
+      "errors": 0,
+      "externalRequests": 0
+    }
+  ],
+  "interpretation": "Initial reports are retained truthfully. Original Fold overlap was fixed and rechecked. c040 fixture errors (wrong exposed helper, touch-only recenter while in pad mode, pad-only icon before activity) were corrected in focused follow-up. c080 changes only sticky service-nav width after c040 functional checks. Do not sum these receipts as unique cases.",
+  "physicalHardwareCertified": false,
+  "browserClosed": true
+}

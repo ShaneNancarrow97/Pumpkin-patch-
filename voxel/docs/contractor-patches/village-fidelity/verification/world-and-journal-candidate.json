@@ -1,0 +1,859 @@
+{
+  "scope": "Twenty-four successful actual world/journal checks on the declared rendering candidate. The original broad run stopped with two reported failures; these are retained below, not relabelled as a successful full run. Final exact-HTML dialogue/return runs cover the product corrections independently.",
+  "candidate_html_sha256": "acc98f1af8ccf87f3ee2d2d36e9702f6bff527db5d9f575e5ae8b8a82a4aa07e",
+  "checks": [
+    {
+      "label": "The original sky art decodes within one bounded world texture",
+      "pass": true,
+      "fatal": true,
+      "actual": {
+        "cloudOctaves": 4,
+        "cloudWarpSamples": 1,
+        "cloudHashes": 20,
+        "silhouetteLayers": 3,
+        "addedMeshes": 0,
+        "addedDrawCalls": 0,
+        "addedLights": 0,
+        "addedTextures": 1,
+        "addedPasses": 0,
+        "maxLinearChannel": 0.68,
+        "maxTimeStep": 0.25,
+        "artSamples": 2,
+        "maxArtLongSide": 1024,
+        "artLongitudeRepeats": 2,
+        "time": 0.30000000000000004,
+        "artReady": true,
+        "artWidth": 1024,
+        "artHeight": 512,
+        "textureBytes": 2796204,
+        "artEncodedBytes": 34878
+      }
+    },
+    {
+      "label": "The staged entrance is the playable Natalie village at the existing dusk phase",
+      "pass": true,
+      "fatal": true,
+      "actual": {
+        "position": {
+          "x": 87,
+          "z": -7.5
+        },
+        "who": "natalie",
+        "atmosphere": {
+          "district": "green",
+          "phase": "dusk",
+          "worldUnits": true,
+          "cycleSeconds": 2700,
+          "addedLights": 0,
+          "addedPasses": 0
+        },
+        "fidelity": {
+          "sky": {
+            "cloudOctaves": 4,
+            "cloudWarpSamples": 1,
+            "cloudHashes": 20,
+            "silhouetteLayers": 3,
+            "addedMeshes": 0,
+            "addedDrawCalls": 0,
+            "addedLights": 0,
+            "addedTextures": 1,
+            "addedPasses": 0,
+            "maxLinearChannel": 0.68,
+            "maxTimeStep": 0.25,
+            "artSamples": 2,
+            "maxArtLongSide": 1024,
+            "artLongitudeRepeats": 2,
+            "time": 3.249999999999987,
+            "artReady": true,
+            "artWidth": 1024,
+            "artHeight": 512,
+            "textureBytes": 2796204,
+            "artEncodedBytes": 34878
+          },
+          "air": {
+            "budget": "full",
+            "shafts": 6,
+            "fireflies": 32,
+            "instances": 38,
+            "triangles": 76,
+            "drawCalls": 2,
+            "lights": 0,
+            "textures": 0,
+            "time": 3.249999999999987,
+            "worldUnits": true,
+            "gpuMotion": true
+          },
+          "lighting": {
+            "moon": 0.84,
+            "sky": 0.9
+          }
+        },
+        "contact": {
+          "capacity": 32,
+          "count": 13,
+          "drawCalls": 1,
+          "triangles": 26,
+          "lights": 0,
+          "textures": 0,
+          "uploads": 18
+        },
+        "lights": 8,
+        "meshes": 1886,
+        "instances": 387535,
+        "memory": {
+          "geometries": 223,
+          "textures": 65
+        },
+        "programs": 90,
+        "lastRenderPass": {
+          "frame": 591,
+          "calls": 1,
+          "triangles": 1,
+          "points": 0,
+          "lines": 0
+        }
+      }
+    },
+    {
+      "label": "The actual ground texture keeps native arrival lawns green and roads bare",
+      "pass": true,
+      "fatal": false,
+      "actual": {
+        "pass": true,
+        "selectedMesh": "ground",
+        "candidates": [
+          {
+            "name": "ground",
+            "indexed": true,
+            "vertices": 44736,
+            "grassDetail": true,
+            "dataTexture": true,
+            "imageData": true,
+            "stairCutouts": 9
+          }
+        ],
+        "texture": {
+          "width": 1528,
+          "height": 1024,
+          "channels": 4,
+          "flipY": false,
+          "grassDetail": {
+            "worldUnits": 2.2,
+            "coverage": "base-map-alpha",
+            "sharedTexture": true
+          }
+        },
+        "samples": [
+          {
+            "id": "west-lawn",
+            "world": [
+              78,
+              -9
+            ],
+            "local": [
+              52,
+              6
+            ],
+            "triangle": [
+              5765,
+              5766,
+              6021
+            ],
+            "barycentric": [
+              0,
+              0.3333333333333333,
+              0.6666666666666667
+            ],
+            "uv": [
+              0.5228758454322815,
+              0.13255360225836438
+            ],
+            "transformedUv": [
+              0.5228758454322815,
+              0.13255360225836438
+            ],
+            "pixel": [
+              798,
+              135
+            ],
+            "rgba": [
+              108,
+              101,
+              71,
+              0
+            ],
+            "centreRgba": [
+              108,
+              101,
+              71,
+              0
+            ],
+            "neighbourhood": {
+              "size": [
+                7,
+                7
+              ],
+              "count": 49,
+              "meanRgba": [
+                87.28571428571429,
+                125.63265306122449,
+                64.40816326530613,
+                234.18367346938774
+              ],
+              "coverageFraction": 0.9183673469387755,
+              "greenFraction": 0.9183673469387755,
+              "minimumLawnGreenFraction": 0.55,
+              "maximumTrailCoverageFraction": 0.05
+            },
+            "lawn": true,
+            "pass": true
+          },
+          {
+            "id": "east-lawn",
+            "world": [
+              96,
+              -8.25
+            ],
+            "local": [
+              64,
+              5.5
+            ],
+            "triangle": [
+              5774,
+              6030,
+              6029
+            ],
+            "barycentric": [
+              0,
+              0.3333333333333333,
+              0.6666666666666667
+            ],
+            "uv": [
+              0.5542483925819397,
+              0.13450291752815247
+            ],
+            "transformedUv": [
+              0.5542483925819397,
+              0.13450291752815247
+            ],
+            "pixel": [
+              846,
+              137
+            ],
+            "rgba": [
+              72,
+              115,
+              67,
+              255
+            ],
+            "centreRgba": [
+              72,
+              115,
+              67,
+              255
+            ],
+            "neighbourhood": {
+              "size": [
+                7,
+                7
+              ],
+              "count": 49,
+              "meanRgba": [
+                86.26530612244898,
+                126.59183673469387,
+                64.40816326530613,
+                239.3877551020408
+              ],
+              "coverageFraction": 0.9387755102040817,
+              "greenFraction": 0.9387755102040817,
+              "minimumLawnGreenFraction": 0.55,
+              "maximumTrailCoverageFraction": 0.05
+            },
+            "lawn": true,
+            "pass": true
+          },
+          {
+            "id": "arrival-road",
+            "world": [
+              87,
+              -9
+            ],
+            "local": [
+              58,
+              6
+            ],
+            "triangle": [
+              5769,
+              5770,
+              6025
+            ],
+            "barycentric": [
+              0,
+              0.3333333333333333,
+              0.6666666666666667
+            ],
+            "uv": [
+              0.5385621190071106,
+              0.13255360225836438
+            ],
+            "transformedUv": [
+              0.5385621190071106,
+              0.13255360225836438
+            ],
+            "pixel": [
+              822,
+              135
+            ],
+            "rgba": [
+              109,
+              97,
+              80,
+              0
+            ],
+            "centreRgba": [
+              109,
+              97,
+              80,
+              0
+            ],
+            "neighbourhood": {
+              "size": [
+                7,
+                7
+              ],
+              "count": 49,
+              "meanRgba": [
+                109,
+                97,
+                80,
+                0
+              ],
+              "coverageFraction": 0,
+              "greenFraction": 0,
+              "minimumLawnGreenFraction": 0.55,
+              "maximumTrailCoverageFraction": 0.05
+            },
+            "lawn": false,
+            "pass": true
+          },
+          {
+            "id": "forage-path",
+            "world": [
+              78,
+              -16.5
+            ],
+            "local": [
+              52,
+              11
+            ],
+            "triangle": [
+              4997,
+              4998,
+              5253
+            ],
+            "barycentric": [
+              0.3333333333333333,
+              0.3333333333333333,
+              0.3333333333333334
+            ],
+            "uv": [
+              0.5228758454322815,
+              0.11306042969226839
+            ],
+            "transformedUv": [
+              0.5228758454322815,
+              0.11306042969226839
+            ],
+            "pixel": [
+              798,
+              115
+            ],
+            "rgba": [
+              106,
+              95,
+              79,
+              0
+            ],
+            "centreRgba": [
+              106,
+              95,
+              79,
+              0
+            ],
+            "neighbourhood": {
+              "size": [
+                7,
+                7
+              ],
+              "count": 49,
+              "meanRgba": [
+                110.34693877551021,
+                98.6734693877551,
+                81.38775510204081,
+                0
+              ],
+              "coverageFraction": 0,
+              "greenFraction": 0,
+              "minimumLawnGreenFraction": 0.55,
+              "maximumTrailCoverageFraction": 0.05
+            },
+            "lawn": false,
+            "pass": true
+          }
+        ]
+      }
+    },
+    {
+      "label": "Fidelity keeps sky on its existing draw and air within two bounded batches",
+      "pass": true,
+      "fatal": true,
+      "actual": {
+        "sky": {
+          "cloudOctaves": 4,
+          "cloudWarpSamples": 1,
+          "cloudHashes": 20,
+          "silhouetteLayers": 3,
+          "addedMeshes": 0,
+          "addedDrawCalls": 0,
+          "addedLights": 0,
+          "addedTextures": 1,
+          "addedPasses": 0,
+          "maxLinearChannel": 0.68,
+          "maxTimeStep": 0.25,
+          "artSamples": 2,
+          "maxArtLongSide": 1024,
+          "artLongitudeRepeats": 2,
+          "time": 7.433399999999941,
+          "artReady": true,
+          "artWidth": 1024,
+          "artHeight": 512,
+          "textureBytes": 2796204,
+          "artEncodedBytes": 34878
+        },
+        "air": {
+          "budget": "full",
+          "shafts": 6,
+          "fireflies": 32,
+          "instances": 38,
+          "triangles": 76,
+          "drawCalls": 2,
+          "lights": 0,
+          "textures": 0,
+          "time": 7.433399999999941,
+          "worldUnits": true,
+          "gpuMotion": true
+        },
+        "lighting": {
+          "moon": 0.84,
+          "sky": 0.9
+        }
+      }
+    },
+    {
+      "label": "New sky and air clocks hold while the game is paused",
+      "pass": true,
+      "fatal": true,
+      "actual": {
+        "held": true
+      }
+    },
+    {
+      "label": "Reduced motion holds the new visual clocks",
+      "pass": true,
+      "fatal": true,
+      "actual": {
+        "held": true
+      }
+    },
+    {
+      "label": "Atlas capture restores the exact save, camera, palette, target and fidelity state",
+      "pass": true,
+      "fatal": true
+    },
+    {
+      "label": "Active, Discover and Completed are real labelled journal tabs",
+      "pass": true,
+      "fatal": true,
+      "actual": [
+        {
+          "id": "active",
+          "selected": "true",
+          "controls": "vf-page-active",
+          "tabIndex": 0
+        },
+        {
+          "id": "discover",
+          "selected": "false",
+          "controls": "vf-page-discover",
+          "tabIndex": -1
+        },
+        {
+          "id": "completed",
+          "selected": "false",
+          "controls": "vf-page-completed",
+          "tabIndex": -1
+        }
+      ]
+    },
+    {
+      "label": "ArrowRight selects discover without exposing another journal page",
+      "pass": true,
+      "fatal": true,
+      "actual": {
+        "selected": "discover",
+        "panels": [
+          "vf-page-discover"
+        ],
+        "focused": "discover"
+      }
+    },
+    {
+      "label": "End selects completed without exposing another journal page",
+      "pass": true,
+      "fatal": true,
+      "actual": {
+        "selected": "completed",
+        "panels": [
+          "vf-page-completed"
+        ],
+        "focused": "completed"
+      }
+    },
+    {
+      "label": "Home selects active without exposing another journal page",
+      "pass": true,
+      "fatal": true,
+      "actual": {
+        "selected": "active",
+        "panels": [
+          "vf-page-active"
+        ],
+        "focused": "active"
+      }
+    },
+    {
+      "label": "One portrait-led followed task exposes its actual progress and one primary route action",
+      "pass": true,
+      "fatal": false,
+      "actual": {
+        "id": "green-research",
+        "portrait": true,
+        "guideButtons": 1,
+        "folded": true,
+        "progress": {
+          "value": 0,
+          "max": 3
+        },
+        "text": "Next objectiveRead the moth-marked page"
+      }
+    },
+    {
+      "label": "The desktop journal leaves most of the world visible",
+      "pass": true,
+      "fatal": false,
+      "actual": {
+        "width": 400,
+        "height": 542,
+        "left": 860,
+        "right": 1260,
+        "viewportWidth": 1280,
+        "viewportHeight": 720
+      }
+    },
+    {
+      "label": "Desktop journal text and controls remain legible",
+      "pass": true,
+      "fatal": false,
+      "actual": {
+        "overflow": 0,
+        "targets": [],
+        "small": [],
+        "panel": {
+          "x": 860,
+          "y": 82,
+          "right": 1260,
+          "bottom": 624,
+          "width": 400,
+          "height": 542
+        },
+        "viewport": {
+          "width": 1280,
+          "height": 720
+        }
+      }
+    },
+    {
+      "label": "Default village chrome stays compact at the edges",
+      "pass": true,
+      "fatal": false,
+      "actual": {
+        "header": {
+          "left": 20,
+          "top": 14,
+          "right": 1260,
+          "bottom": 58,
+          "width": 1240,
+          "height": 44
+        },
+        "dock": {
+          "left": 380,
+          "top": 626,
+          "right": 900,
+          "bottom": 704,
+          "width": 520,
+          "height": 78
+        },
+        "objective": {
+          "left": 20,
+          "top": 82,
+          "right": 350,
+          "bottom": 170.53125,
+          "width": 330,
+          "height": 88.53125
+        },
+        "area": 921600
+      }
+    },
+    {
+      "label": "390\u00d7844 keeps legible controls in one vertical reading flow",
+      "pass": true,
+      "fatal": false,
+      "actual": {
+        "overflow": 0,
+        "targets": [],
+        "small": [],
+        "panel": {
+          "x": 9,
+          "y": 181.640625,
+          "right": 381,
+          "bottom": 764,
+          "width": 372,
+          "height": 582.359375
+        },
+        "viewport": {
+          "width": 390,
+          "height": 844
+        }
+      }
+    },
+    {
+      "label": "844\u00d7390 keeps legible controls in one vertical reading flow",
+      "pass": true,
+      "fatal": false,
+      "actual": {
+        "overflow": 0,
+        "targets": [],
+        "small": [],
+        "panel": {
+          "x": 434,
+          "y": 10,
+          "right": 834,
+          "bottom": 380,
+          "width": 400,
+          "height": 370
+        },
+        "viewport": {
+          "width": 844,
+          "height": 390
+        }
+      }
+    },
+    {
+      "label": "720\u00d7900 keeps legible controls in one vertical reading flow",
+      "pass": true,
+      "fatal": false,
+      "actual": {
+        "overflow": 0,
+        "targets": [],
+        "small": [],
+        "panel": {
+          "x": 316.8125,
+          "y": 84,
+          "right": 708,
+          "bottom": 806,
+          "width": 391.1875,
+          "height": 722
+        },
+        "viewport": {
+          "width": 720,
+          "height": 900
+        }
+      }
+    },
+    {
+      "label": "Following a legacy story keeps the HUD and journal on its canonical objective",
+      "pass": true,
+      "fatal": true
+    },
+    {
+      "label": "The main route action closes the journal and restores walking input",
+      "pass": true,
+      "fatal": true
+    },
+    {
+      "label": "A real keyboard movement remains effective after routing and journal dismissal",
+      "pass": true,
+      "fatal": true
+    },
+    {
+      "label": "The actual-world map offers the same followed legacy objective",
+      "pass": true,
+      "fatal": true
+    },
+    {
+      "label": "Map routing releases its menu without replacing followed ownership",
+      "pass": true,
+      "fatal": true
+    },
+    {
+      "label": "Cancelling farm travel keeps the village playable",
+      "pass": true,
+      "fatal": true
+    }
+  ],
+  "original_broad_report_sha256": "b9105d7c8c98c41183f2db4aad9a759c9478d327bdfc766d7ff73de46251f3b9",
+  "superseded_failures": [
+    {
+      "label": "1280\u00d7720 conversation keeps text, controls and panels readable",
+      "pass": false,
+      "fatal": false,
+      "actual": {
+        "pass": false,
+        "viewport": [
+          1280,
+          720
+        ],
+        "scale": 1,
+        "surfaces": [
+          {
+            "selector": ".village-dialogue-speech",
+            "left": 28,
+            "top": 564,
+            "right": 778,
+            "bottom": 774,
+            "width": 750,
+            "height": 210
+          },
+          {
+            "selector": ".village-dialogue-response",
+            "left": 802,
+            "top": 64,
+            "right": 1252,
+            "bottom": 564,
+            "width": 450,
+            "height": 500
+          },
+          {
+            "selector": ".village-dialogue-back",
+            "left": 1160,
+            "top": 730,
+            "right": 1252,
+            "bottom": 774,
+            "width": 92,
+            "height": 44
+          }
+        ],
+        "clipped": [
+          {
+            "selector": ".village-dialogue-speech",
+            "left": 28,
+            "top": 564,
+            "right": 778,
+            "bottom": 774,
+            "width": 750,
+            "height": 210
+          },
+          {
+            "selector": ".village-dialogue-back",
+            "left": 1160,
+            "top": 730,
+            "right": 1252,
+            "bottom": 774,
+            "width": 92,
+            "height": 44
+          }
+        ],
+        "tinyTargets": [],
+        "small": [],
+        "overflow": [
+          {
+            "selector": ".village-dialogue-body",
+            "amount": 0
+          },
+          {
+            "selector": ".village-dialogue-replies",
+            "amount": 0
+          }
+        ],
+        "overlap": 0
+      }
+    },
+    {
+      "label": "1280\u00d7720 conversation retains the canonical reply order and availability",
+      "pass": false,
+      "fatal": true,
+      "actual": {
+        "name": "Rowan Rattlewood",
+        "intent": "greeting",
+        "input": "dualsense",
+        "unchanged": true,
+        "semantic": [
+          {
+            "id": "chat",
+            "disabled": false,
+            "label": "Have a chat"
+          },
+          {
+            "id": "quest:continue:rowan-1",
+            "disabled": false,
+            "label": "Loose Boards"
+          },
+          {
+            "id": "stories",
+            "disabled": false,
+            "label": "Other stories \u00b7 4"
+          },
+          {
+            "id": "farm-gifts",
+            "disabled": false,
+            "label": "Bring a discovery home"
+          },
+          {
+            "id": "companion",
+            "disabled": false,
+            "label": "Come exploring with me"
+          },
+          {
+            "id": "gift",
+            "disabled": true,
+            "label": "Give a present"
+          },
+          {
+            "id": "about",
+            "disabled": false,
+            "label": "More about Rowan"
+          },
+          {
+            "id": "leave",
+            "disabled": false,
+            "label": "See you soon"
+          }
+        ],
+        "primaryStories": 1,
+        "otherStories": 1,
+        "bound": false
+      }
+    }
+  ],
+  "delta": {
+    "world_candidate_source": "538e8127d04027a4ea137a2b6fe7564326ac4cf3",
+    "world_candidate_html_sha256": "acc98f1af8ccf87f3ee2d2d36e9702f6bff527db5d9f575e5ae8b8a82a4aa07e",
+    "final_runtime_source": "3e17f9e66816277213842763b173dfec50a30555",
+    "final_html_sha256": "6c71a20fd4858fbd4fb99e4aeae71e79a1350d37c138be7e0818b916208ecc63",
+    "product_delta": [
+      "src/ui/village-feedback.css",
+      "src/ui/village-conversation.css"
+    ],
+    "scope": "Final CSS fixes preserve opaque TV Return focus and bound dialogue grids on desktop/Fold/landscape/TV and short portrait. No world, camera, economy, save or quest code changed after the tested world candidate. QA-only corrections distinguish addEventListener from onclick property handlers."
+  }
+}

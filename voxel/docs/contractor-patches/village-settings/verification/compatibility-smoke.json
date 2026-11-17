@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "checks": 54,
+  "exitCode": 0,
+  "htmlSha256": "43057ebb2980cf22982859fd08f6ffa0e87a651baa9781504db1eaf2aa0a1ed4",
+  "scope": "Unmodified compatibility smoke, draw-held UI/rules only; actual rendering is verified separately."
+}

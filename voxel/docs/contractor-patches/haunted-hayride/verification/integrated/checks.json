@@ -1,0 +1,2980 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Hollow-Hayride.html",
+  "sha256": "c429348aeb0ed45e53dbd3fd75a383636fa28b38fd3b82777dd65bcc1ea57653",
+  "passed": true,
+  "checks": [
+    {
+      "ok": true,
+      "label": "model and scene QA hooks are available"
+    },
+    {
+      "ok": true,
+      "label": "the published game migrates into the hayride save version"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "navigation"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "navigation"
+    },
+    {
+      "ok": true,
+      "label": "level 7 cannot purchase the hayride"
+    },
+    {
+      "ok": true,
+      "label": "locked attraction explains the level-8 purchase gate"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "purchase"
+    },
+    {
+      "ok": true,
+      "label": "purchase spends coins once and starts with closed admissions",
+      "data": {
+        "purchased": true,
+        "tier": 1,
+        "open": false,
+        "ticketPrice": 8,
+        "invested": 7500,
+        "ticketsSold": 0,
+        "income": 0,
+        "completed": 0,
+        "missed": 0,
+        "runHome": 0,
+        "departures": 0,
+        "partyAt": null,
+        "nextVisit": 0,
+        "nextRun": 1,
+        "receipts": [],
+        "haunts": {
+          "owned": [],
+          "active": []
+        },
+        "convoy": {
+          "phase": "loading",
+          "elapsed": 0,
+          "progress": 0,
+          "loadWait": 0,
+          "runId": "hayride-run-0",
+          "manifest": []
+        },
+        "lastEvent": null
+      }
+    },
+    {
+      "ok": true,
+      "label": "purchase reveals operational controls on the same page"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "Increase ticket price"
+    },
+    {
+      "ok": true,
+      "label": "real price control increases the posted ticket"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "Reduce ticket price"
+    },
+    {
+      "ok": true,
+      "label": "real price control decreases the posted ticket"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "open"
+    },
+    {
+      "ok": true,
+      "label": "admissions open through the live management page"
+    },
+    {
+      "ok": true,
+      "label": "desktop: scrollable management fits with 44px targets",
+      "data": {
+        "width": 1280,
+        "height": 800,
+        "horizontalOverflow": false,
+        "clipped": [],
+        "small": [],
+        "scrollable": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "four identifiable visitors obtain ordinary visit plans"
+    },
+    {
+      "ok": true,
+      "label": "the actual queue and boarding approach collect no early ticket",
+      "data": {
+        "purchased": true,
+        "tier": 1,
+        "open": true,
+        "ticketPrice": 8,
+        "invested": 7500,
+        "ticketsSold": 0,
+        "income": 0,
+        "completed": 0,
+        "missed": 0,
+        "runHome": 0,
+        "departures": 0,
+        "partyAt": 0.5,
+        "nextVisit": 4,
+        "nextRun": 1,
+        "receipts": [],
+        "haunts": {
+          "owned": [],
+          "active": []
+        },
+        "convoy": {
+          "phase": "loading",
+          "elapsed": 0,
+          "progress": 0,
+          "loadWait": 0,
+          "runId": "hayride-run-0",
+          "manifest": []
+        },
+        "lastEvent": null
+      }
+    },
+    {
+      "ok": true,
+      "label": "boarding fills the wagon and records exactly four paid tickets",
+      "data": {
+        "purchased": true,
+        "tier": 1,
+        "open": true,
+        "ticketPrice": 8,
+        "invested": 7500,
+        "ticketsSold": 4,
+        "income": 32,
+        "completed": 0,
+        "missed": 0,
+        "runHome": 0,
+        "departures": 1,
+        "partyAt": 0.5,
+        "nextVisit": 4,
+        "nextRun": 1,
+        "receipts": [
+          {
+            "visitId": "hayride-3",
+            "runId": "hayride-run-0",
+            "visitor": 703,
+            "seat": 3,
+            "amount": 8,
+            "at": 6.5999999999999925
+          },
+          {
+            "visitId": "hayride-2",
+            "runId": "hayride-run-0",
+            "visitor": 702,
+            "seat": 2,
+            "amount": 8,
+            "at": 5.099999999999998
+          },
+          {
+            "visitId": "hayride-1",
+            "runId": "hayride-run-0",
+            "visitor": 701,
+            "seat": 1,
+            "amount": 8,
+            "at": 3.600000000000002
+          },
+          {
+            "visitId": "hayride-0",
+            "runId": "hayride-run-0",
+            "visitor": 700,
+            "seat": 0,
+            "amount": 8,
+            "at": 2.1000000000000005
+          }
+        ],
+        "haunts": {
+          "owned": [],
+          "active": []
+        },
+        "convoy": {
+          "phase": "circuit",
+          "elapsed": 0.5,
+          "progress": 0.005555555555555556,
+          "loadWait": 4.5,
+          "runId": "hayride-run-0",
+          "manifest": [
+            {
+              "visitId": "hayride-0",
+              "runId": "hayride-run-0",
+              "visitor": 700,
+              "seat": 0,
+              "amount": 8,
+              "at": 2.1000000000000005
+            },
+            {
+              "visitId": "hayride-1",
+              "runId": "hayride-run-0",
+              "visitor": 701,
+              "seat": 1,
+              "amount": 8,
+              "at": 3.600000000000002
+            },
+            {
+              "visitId": "hayride-2",
+              "runId": "hayride-run-0",
+              "visitor": 702,
+              "seat": 2,
+              "amount": 8,
+              "at": 5.099999999999998
+            },
+            {
+              "visitId": "hayride-3",
+              "runId": "hayride-run-0",
+              "visitor": 703,
+              "seat": 3,
+              "amount": 8,
+              "at": 6.5999999999999925
+            }
+          ]
+        },
+        "lastEvent": {
+          "kind": "departure",
+          "at": 6.5999999999999925
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "ticket revenue reconciles without retail or tip duplication"
+    },
+    {
+      "ok": true,
+      "label": "each passenger spends one ticket from their original purse"
+    },
+    {
+      "ok": true,
+      "label": "replaying the boarding action cannot charge again"
+    },
+    {
+      "ok": true,
+      "label": "a full wagon departs once",
+      "data": {
+        "phase": "circuit",
+        "elapsed": 0.5,
+        "progress": 0.005555555555555556,
+        "loadWait": 4.5,
+        "runId": "hayride-run-0",
+        "manifest": [
+          {
+            "visitId": "hayride-0",
+            "runId": "hayride-run-0",
+            "visitor": 700,
+            "seat": 0,
+            "amount": 8,
+            "at": 2.1000000000000005
+          },
+          {
+            "visitId": "hayride-1",
+            "runId": "hayride-run-0",
+            "visitor": 701,
+            "seat": 1,
+            "amount": 8,
+            "at": 3.600000000000002
+          },
+          {
+            "visitId": "hayride-2",
+            "runId": "hayride-run-0",
+            "visitor": 702,
+            "seat": 2,
+            "amount": 8,
+            "at": 5.099999999999998
+          },
+          {
+            "visitId": "hayride-3",
+            "runId": "hayride-run-0",
+            "visitor": 703,
+            "seat": 3,
+            "amount": 8,
+            "at": 6.5999999999999925
+          }
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "the paid convoy leaves the farm map during its woodland circuit"
+    },
+    {
+      "ok": true,
+      "label": "station remains visible and pickable in its focused camera",
+      "data": {
+        "x": 469.33333333333337,
+        "y": 398.3805872222947
+      }
+    },
+    {
+      "ok": true,
+      "label": "tapping the voxel station opens the small attraction card"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "navigation"
+    },
+    {
+      "ok": true,
+      "label": "the context card opens management deliberately"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "experience"
+    },
+    {
+      "ok": true,
+      "label": "the real Ride along action opens a free owner briefing"
+    },
+    {
+      "ok": true,
+      "label": "Fold ride briefing: ride controls fit with 44px targets",
+      "data": {
+        "width": 874,
+        "height": 787,
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "navigation"
+    },
+    {
+      "ok": true,
+      "label": "Start enters the wagon camera without entering another farm place",
+      "data": {
+        "active": true,
+        "title": "The Hollow Hayride",
+        "tier": 1,
+        "elapsed": 0.1,
+        "duration": 92.5,
+        "rideDuration": 90,
+        "progress": 0,
+        "paused": false,
+        "completed": false,
+        "zoneName": "Rear boarding",
+        "eventsFired": [],
+        "currentCue": null,
+        "gentle": true,
+        "lightning": true,
+        "lightningIntensity": 0,
+        "lookYaw": 0,
+        "lookPitch": 0,
+        "lookBounds": {
+          "yaw": 1.5079644737231006,
+          "pitch": 0.4487989505128276
+        },
+        "inputActive": true,
+        "camera": {
+          "x": -17,
+          "y": 2.8267295999999997,
+          "z": 35.135049599999995,
+          "yaw": 0,
+          "pitch": -0.05423013404619608
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "the owner ride hides ordinary HUD and farming controls"
+    },
+    {
+      "ok": true,
+      "label": "the boarding camera has a finite native world pose",
+      "data": {
+        "x": -17,
+        "y": 2.8267295999999997,
+        "z": 35.135049599999995,
+        "yaw": 0,
+        "pitch": -0.05423013404619608
+      }
+    },
+    {
+      "ok": true,
+      "label": "dragging the actual canvas looks around within wagon bounds",
+      "data": {
+        "active": true,
+        "title": "The Hollow Hayride",
+        "tier": 1,
+        "elapsed": 0.5167000000000117,
+        "duration": 92.5,
+        "rideDuration": 90,
+        "progress": 0,
+        "paused": false,
+        "completed": false,
+        "zoneName": "Rear boarding",
+        "eventsFired": [],
+        "currentCue": null,
+        "gentle": true,
+        "lightning": true,
+        "lightningIntensity": 0,
+        "lookYaw": -0.8054684442715903,
+        "lookPitch": 0.12356618179166443,
+        "lookBounds": {
+          "yaw": 1.5079644737231006,
+          "pitch": 0.4487989505128276
+        },
+        "inputActive": true,
+        "camera": {
+          "x": -17,
+          "y": 2.752655233084681,
+          "z": 34.79642392267283,
+          "yaw": -0.8054684442715903,
+          "pitch": 0.07378068195692111
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "farm keyboard shortcuts do not act under the ride camera"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "Pause hayride"
+    },
+    {
+      "ok": true,
+      "label": "Pause stops only the owner presentation clock"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "navigation"
+    },
+    {
+      "ok": true,
+      "label": "the continuous wagon rail reaches the manor after the patch and spider tunnel",
+      "data": {
+        "active": true,
+        "title": "The Hollow Hayride",
+        "tier": 1,
+        "elapsed": 52.900000000000006,
+        "duration": 92.5,
+        "rideDuration": 90,
+        "progress": 0.56,
+        "paused": false,
+        "completed": false,
+        "zoneName": "The bride’s manor",
+        "eventsFired": [
+          "scarecrows",
+          "spiders",
+          "bride"
+        ],
+        "currentCue": {
+          "type": "encounter",
+          "id": "hayride-bride",
+          "stop": "bride",
+          "name": "The bride’s manor",
+          "sound": "whisper",
+          "at": 51.1,
+          "intensity": 0.25
+        },
+        "gentle": true,
+        "lightning": true,
+        "lightningIntensity": 0,
+        "lookYaw": 0,
+        "lookPitch": 0,
+        "lookBounds": {
+          "yaw": 1.5079644737231006,
+          "pitch": 0.4487989505128276
+        },
+        "inputActive": true,
+        "camera": {
+          "x": -46.97490794509611,
+          "y": 2.13,
+          "z": 15.280917034595399,
+          "yaw": 3.1000437612966536,
+          "pitch": 0
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "tab interruption pauses the owner ride"
+    },
+    {
+      "ok": true,
+      "label": "returning to the tab waits for explicit Resume"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "navigation"
+    },
+    {
+      "ok": true,
+      "label": "the full owner circuit finishes all five scare scenes once",
+      "data": {
+        "active": true,
+        "title": "The Hollow Hayride",
+        "tier": 1,
+        "elapsed": 92.5,
+        "duration": 92.5,
+        "rideDuration": 90,
+        "progress": 1,
+        "paused": false,
+        "completed": true,
+        "zoneName": "Zombie prison bus",
+        "eventsFired": [
+          "scarecrows",
+          "spiders",
+          "bride",
+          "pursuit",
+          "bus"
+        ],
+        "currentCue": null,
+        "gentle": true,
+        "lightning": true,
+        "lightningIntensity": 0,
+        "lookYaw": 0,
+        "lookPitch": 0,
+        "lookBounds": {
+          "yaw": 1.5079644737231006,
+          "pitch": 0.4487989505128276
+        },
+        "inputActive": false,
+        "camera": {
+          "x": -17,
+          "y": 2.13,
+          "z": 31.949999999999996,
+          "yaw": 0,
+          "pitch": 0
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "a completed experience emits no duplicate scenes"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "navigation"
+    },
+    {
+      "ok": true,
+      "label": "Replay starts a fresh presentation without another paid visit"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "Pause hayride"
+    },
+    {
+      "ok": true,
+      "label": "portrait paused ride: ride controls fit with 44px targets",
+      "data": {
+        "width": 390,
+        "height": 844,
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape paused ride: ride controls fit with 44px targets",
+      "data": {
+        "width": 844,
+        "height": 390,
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "navigation"
+    },
+    {
+      "ok": true,
+      "label": "Exit immediately restores the ordinary farm camera and controls"
+    },
+    {
+      "ok": true,
+      "label": "free ride, pause, five scenes, replay and Exit preserve the complete farm save and paid ledgers"
+    },
+    {
+      "ok": true,
+      "label": "repeated owner rides keep fully warmed scene resource counts stable",
+      "data": {
+        "beforeResources": {
+          "geometries": 51,
+          "textures": 14
+        },
+        "warmedResources": {
+          "geometries": 51,
+          "textures": 14
+        },
+        "afterResources": {
+          "geometries": 51,
+          "textures": 14
+        },
+        "completeWarmResources": {
+          "geometries": 60,
+          "textures": 16
+        },
+        "repeatedResources": {
+          "geometries": 60,
+          "textures": 16
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "resource warm-up cycles cannot alter farm progress or paid ledgers"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "Increase ticket price"
+    },
+    {
+      "ok": true,
+      "label": "changing price preserves tickets already paid"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "open"
+    },
+    {
+      "ok": true,
+      "label": "closing admissions does not cancel paid riders"
+    },
+    {
+      "ok": true,
+      "label": "the same convoy keeps running while viewing the house interior"
+    },
+    {
+      "ok": true,
+      "label": "reload preserves the paid convoy and receipt ledger",
+      "data": {
+        "purchased": true,
+        "tier": 1,
+        "open": false,
+        "ticketPrice": 9,
+        "invested": 7500,
+        "ticketsSold": 4,
+        "income": 32,
+        "completed": 0,
+        "missed": 0,
+        "runHome": 0,
+        "departures": 1,
+        "partyAt": 0.5,
+        "nextVisit": 4,
+        "nextRun": 1,
+        "receipts": [
+          {
+            "visitId": "hayride-3",
+            "runId": "hayride-run-0",
+            "visitor": 703,
+            "seat": 3,
+            "amount": 8,
+            "at": 6.5999999999999925
+          },
+          {
+            "visitId": "hayride-2",
+            "runId": "hayride-run-0",
+            "visitor": 702,
+            "seat": 2,
+            "amount": 8,
+            "at": 5.099999999999998
+          },
+          {
+            "visitId": "hayride-1",
+            "runId": "hayride-run-0",
+            "visitor": 701,
+            "seat": 1,
+            "amount": 8,
+            "at": 3.600000000000002
+          },
+          {
+            "visitId": "hayride-0",
+            "runId": "hayride-run-0",
+            "visitor": 700,
+            "seat": 0,
+            "amount": 8,
+            "at": 2.1000000000000005
+          }
+        ],
+        "haunts": {
+          "owned": [],
+          "active": []
+        },
+        "convoy": {
+          "phase": "circuit",
+          "elapsed": 20.50000000000002,
+          "progress": 0.22777777777777802,
+          "loadWait": 4.5,
+          "runId": "hayride-run-0",
+          "manifest": [
+            {
+              "visitId": "hayride-0",
+              "runId": "hayride-run-0",
+              "visitor": 700,
+              "seat": 0,
+              "amount": 8,
+              "at": 2.1000000000000005
+            },
+            {
+              "visitId": "hayride-1",
+              "runId": "hayride-run-0",
+              "visitor": 701,
+              "seat": 1,
+              "amount": 8,
+              "at": 3.600000000000002
+            },
+            {
+              "visitId": "hayride-2",
+              "runId": "hayride-run-0",
+              "visitor": 702,
+              "seat": 2,
+              "amount": 8,
+              "at": 5.099999999999998
+            },
+            {
+              "visitId": "hayride-3",
+              "runId": "hayride-run-0",
+              "visitor": 703,
+              "seat": 3,
+              "amount": 8,
+              "at": 6.5999999999999925
+            }
+          ]
+        },
+        "lastEvent": null
+      }
+    },
+    {
+      "ok": true,
+      "label": "reload retains guest identities and remaining wallets"
+    },
+    {
+      "ok": true,
+      "label": "background completion unloads everybody without another ticket",
+      "data": {
+        "purchased": true,
+        "tier": 1,
+        "open": false,
+        "ticketPrice": 9,
+        "invested": 7500,
+        "ticketsSold": 4,
+        "income": 32,
+        "completed": 4,
+        "missed": 0,
+        "runHome": 0,
+        "departures": 1,
+        "partyAt": 0.5,
+        "nextVisit": 4,
+        "nextRun": 2,
+        "receipts": [
+          {
+            "visitId": "hayride-3",
+            "runId": "hayride-run-0",
+            "visitor": 703,
+            "seat": 3,
+            "amount": 8,
+            "at": 6.5999999999999925
+          },
+          {
+            "visitId": "hayride-2",
+            "runId": "hayride-run-0",
+            "visitor": 702,
+            "seat": 2,
+            "amount": 8,
+            "at": 5.099999999999998
+          },
+          {
+            "visitId": "hayride-1",
+            "runId": "hayride-run-0",
+            "visitor": 701,
+            "seat": 1,
+            "amount": 8,
+            "at": 3.600000000000002
+          },
+          {
+            "visitId": "hayride-0",
+            "runId": "hayride-run-0",
+            "visitor": 700,
+            "seat": 0,
+            "amount": 8,
+            "at": 2.1000000000000005
+          }
+        ],
+        "haunts": {
+          "owned": [],
+          "active": []
+        },
+        "convoy": {
+          "phase": "loading",
+          "elapsed": 0,
+          "progress": 0,
+          "loadWait": 0,
+          "runId": "hayride-run-1",
+          "manifest": []
+        },
+        "lastEvent": {
+          "kind": "survivor",
+          "visitor": 703,
+          "at": 108.5999999999981
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "upgrade"
+    },
+    {
+      "ok": true,
+      "label": "first paid tier adds six seats"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "upgrade"
+    },
+    {
+      "ok": true,
+      "label": "second paid tier adds eight seats"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "navigation"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "navigation"
+    },
+    {
+      "ok": true,
+      "label": "a purchased scare improvement increases the real rating"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "open"
+    },
+    {
+      "ok": true,
+      "label": "open attraction appeal contributes to visitor footfall"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "navigation"
+    },
+    {
+      "ok": true,
+      "label": "turning off an owned scare changes the active installation without repurchase"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "navigation"
+    },
+    {
+      "ok": true,
+      "label": "phone: scrollable management fits with 44px targets",
+      "data": {
+        "width": 390,
+        "height": 844,
+        "horizontalOverflow": false,
+        "clipped": [],
+        "small": [],
+        "scrollable": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone-landscape: scrollable management fits with 44px targets",
+      "data": {
+        "width": 844,
+        "height": 390,
+        "horizontalOverflow": false,
+        "clipped": [],
+        "small": [],
+        "scrollable": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold-unfolded: scrollable management fits with 44px targets",
+      "data": {
+        "width": 874,
+        "height": 787,
+        "horizontalOverflow": false,
+        "clipped": [],
+        "small": [],
+        "scrollable": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "final visual build renders the upgraded physical station"
+    },
+    {
+      "ok": true,
+      "label": "the compact farm station and full woodland use separate scenes",
+      "data": {
+        "separate": true,
+        "farm": {
+          "x0": -23.5,
+          "x1": -8,
+          "z0": 11,
+          "z1": 44
+        },
+        "ride": {
+          "x0": -51,
+          "x1": -8,
+          "z0": 1,
+          "z1": 40
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "experience"
+    },
+    {
+      "ok": true,
+      "label": "final Fold briefing: ride controls fit with 44px targets",
+      "data": {
+        "width": 874,
+        "height": 787,
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "navigation"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "navigation"
+    },
+    {
+      "ok": true,
+      "label": "final Fold running ride: ride controls fit with 44px targets",
+      "data": {
+        "width": 874,
+        "height": 787,
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "final encounter captures use normal motion and the default guided view"
+    },
+    {
+      "ok": true,
+      "label": "the off-map ride produces its scheduled single lightning flash",
+      "data": 1
+    },
+    {
+      "ok": true,
+      "label": "final visual ride reaches Scarecrow patch",
+      "data": {
+        "active": true,
+        "title": "The Hollow Hayride",
+        "tier": 3,
+        "elapsed": 19.400000000000002,
+        "duration": 92.5,
+        "rideDuration": 90,
+        "progress": 0.1877777777777778,
+        "paused": false,
+        "completed": false,
+        "zoneName": "Scarecrow patch",
+        "eventsFired": [
+          "scarecrows"
+        ],
+        "currentCue": {
+          "type": "encounter",
+          "id": "hayride-scarecrows",
+          "stop": "scarecrows",
+          "name": "Scarecrow patch",
+          "sound": "knock",
+          "at": 18.7,
+          "intensity": 0.45
+        },
+        "gentle": false,
+        "lightning": true,
+        "lightningIntensity": 0,
+        "lookYaw": 0,
+        "lookPitch": 0,
+        "lookBounds": {
+          "yaw": 1.5079644737231006,
+          "pitch": 0.4487989505128276
+        },
+        "inputActive": true,
+        "camera": {
+          "x": -17.819189505746024,
+          "y": 2.123267438378601,
+          "z": 12.460647994183176,
+          "yaw": 0.9848698444974952,
+          "pitch": -0.07552693414425461
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "final visual ride reaches Spider tunnel",
+      "data": {
+        "active": true,
+        "title": "The Hollow Hayride",
+        "tier": 3,
+        "elapsed": 35.45,
+        "duration": 92.5,
+        "rideDuration": 90,
+        "progress": 0.36611111111111116,
+        "paused": false,
+        "completed": false,
+        "zoneName": "Spider tunnel",
+        "eventsFired": [
+          "scarecrows",
+          "spiders"
+        ],
+        "currentCue": {
+          "type": "encounter",
+          "id": "hayride-spiders",
+          "stop": "spiders",
+          "name": "Spider tunnel",
+          "sound": "skitter",
+          "at": 34.9,
+          "intensity": 0.45
+        },
+        "gentle": false,
+        "lightning": true,
+        "lightningIntensity": 0,
+        "lookYaw": 0,
+        "lookPitch": 0,
+        "lookBounds": {
+          "yaw": 1.5079644737231006,
+          "pitch": 0.4487989505128276
+        },
+        "inputActive": true,
+        "camera": {
+          "x": -32.117875591709065,
+          "y": 2.1359128251696426,
+          "z": 5.033467975542262,
+          "yaw": 1.6718670619716574,
+          "pitch": 0.19784872432729753
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "final visual ride reaches The bride’s manor",
+      "data": {
+        "active": true,
+        "title": "The Hollow Hayride",
+        "tier": 3,
+        "elapsed": 51.650000000000006,
+        "duration": 92.5,
+        "rideDuration": 90,
+        "progress": 0.5461111111111112,
+        "paused": false,
+        "completed": false,
+        "zoneName": "The bride’s manor",
+        "eventsFired": [
+          "scarecrows",
+          "spiders",
+          "bride"
+        ],
+        "currentCue": {
+          "type": "encounter",
+          "id": "hayride-bride",
+          "stop": "bride",
+          "name": "The bride’s manor",
+          "sound": "whisper",
+          "at": 51.1,
+          "intensity": 0.45
+        },
+        "gentle": false,
+        "lightning": true,
+        "lightningIntensity": 0,
+        "lookYaw": 0,
+        "lookPitch": 0,
+        "lookBounds": {
+          "yaw": 1.5079644737231006,
+          "pitch": 0.4487989505128276
+        },
+        "inputActive": true,
+        "camera": {
+          "x": -46.77202038558493,
+          "y": 2.122339801488305,
+          "z": 13.844879259960287,
+          "yaw": -2.5217918406276474,
+          "pitch": -0.058476510241448044
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "final visual ride reaches Spectral pursuit",
+      "data": {
+        "active": true,
+        "title": "The Hollow Hayride",
+        "tier": 3,
+        "elapsed": 66.96659999999997,
+        "duration": 92.5,
+        "rideDuration": 90,
+        "progress": 0.7162955555555552,
+        "paused": false,
+        "completed": false,
+        "zoneName": "Spectral pursuit",
+        "eventsFired": [
+          "scarecrows",
+          "spiders",
+          "bride",
+          "pursuit"
+        ],
+        "currentCue": {
+          "type": "encounter",
+          "id": "hayride-pursuit",
+          "stop": "pursuit",
+          "name": "Spectral pursuit",
+          "sound": "whoosh",
+          "at": 66.4,
+          "intensity": 0.45
+        },
+        "gentle": false,
+        "lightning": true,
+        "lightningIntensity": 0,
+        "lookYaw": 0,
+        "lookPitch": 0,
+        "lookBounds": {
+          "yaw": 1.5079644737231006,
+          "pitch": 0.4487989505128276
+        },
+        "inputActive": true,
+        "camera": {
+          "x": -43.28459033521337,
+          "y": 2.1224221141972275,
+          "z": 30.538195587632682,
+          "yaw": -1.4850323374807248,
+          "pitch": 0.05243248491600132
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "final visual ride reaches Zombie prison bus",
+      "data": {
+        "active": true,
+        "title": "The Hollow Hayride",
+        "tier": 3,
+        "elapsed": 81.36670000000001,
+        "duration": 92.5,
+        "rideDuration": 90,
+        "progress": 0.8762966666666667,
+        "paused": false,
+        "completed": false,
+        "zoneName": "Zombie prison bus",
+        "eventsFired": [
+          "scarecrows",
+          "spiders",
+          "bride",
+          "pursuit",
+          "bus"
+        ],
+        "currentCue": {
+          "type": "encounter",
+          "id": "hayride-bus",
+          "stop": "bus",
+          "name": "Zombie prison bus",
+          "sound": "chains",
+          "at": 80.8,
+          "intensity": 0.45
+        },
+        "gentle": false,
+        "lightning": true,
+        "lightningIntensity": 0,
+        "lookYaw": 0,
+        "lookPitch": 0,
+        "lookBounds": {
+          "yaw": 1.5079644737231006,
+          "pitch": 0.4487989505128276
+        },
+        "inputActive": true,
+        "camera": {
+          "x": -27.584838128442428,
+          "y": 2.134481742459905,
+          "z": 34.979591435284036,
+          "yaw": -0.9293744419077494,
+          "pitch": -0.06065419333625044
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "Pause hayride"
+    },
+    {
+      "ok": true,
+      "label": "final phone pause: ride controls fit with 44px targets",
+      "data": {
+        "width": 390,
+        "height": 844,
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "final phone-landscape pause: ride controls fit with 44px targets",
+      "data": {
+        "width": 844,
+        "height": 390,
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "navigation"
+    },
+    {
+      "ok": true,
+      "label": "final visual ride restores the farm on exit"
+    },
+    {
+      "ok": true,
+      "label": "off-map owner smoke preserves the farm save and paid ledger"
+    },
+    {
+      "ok": true,
+      "label": "final phone: scrollable management fits with 44px targets",
+      "data": {
+        "width": 390,
+        "height": 844,
+        "horizontalOverflow": false,
+        "clipped": [],
+        "small": [],
+        "scrollable": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "final phone-landscape: scrollable management fits with 44px targets",
+      "data": {
+        "width": 844,
+        "height": 390,
+        "horizontalOverflow": false,
+        "clipped": [],
+        "small": [],
+        "scrollable": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "final fold-unfolded: scrollable management fits with 44px targets",
+      "data": {
+        "width": 874,
+        "height": 787,
+        "horizontalOverflow": false,
+        "clipped": [],
+        "small": [],
+        "scrollable": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "fullscreen control remains available for the unfolded game"
+    },
+    {
+      "ok": true,
+      "label": "managed fullscreen policy leaves the returned farm usable"
+    },
+    {
+      "ok": true,
+      "label": "the expansion retains one main WebGL canvas"
+    },
+    {
+      "ok": true,
+      "label": "the single-file HTML needs no external runtime asset requests",
+      "data": []
+    },
+    {
+      "ok": true,
+      "label": "the integrated expansion reports no page or console errors",
+      "data": []
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "samples": [
+    {
+      "name": "fold-station",
+      "state": {
+        "time": 180.96659999999403,
+        "coins": 71132,
+        "earned": 200000,
+        "sold": 0,
+        "tips": {
+          "stall": 0,
+          "shop": 0
+        },
+        "version": 11,
+        "h": {
+          "purchased": true,
+          "tier": 3,
+          "open": true,
+          "ticketPrice": 9,
+          "invested": 28900,
+          "ticketsSold": 4,
+          "income": 32,
+          "completed": 4,
+          "missed": 0,
+          "runHome": 0,
+          "departures": 1,
+          "partyAt": 180.29999999999404,
+          "nextVisit": 5,
+          "nextRun": 2,
+          "receipts": [
+            {
+              "visitId": "hayride-3",
+              "runId": "hayride-run-0",
+              "visitor": 703,
+              "seat": 3,
+              "amount": 8,
+              "at": 6.5999999999999925
+            },
+            {
+              "visitId": "hayride-2",
+              "runId": "hayride-run-0",
+              "visitor": 702,
+              "seat": 2,
+              "amount": 8,
+              "at": 5.099999999999998
+            },
+            {
+              "visitId": "hayride-1",
+              "runId": "hayride-run-0",
+              "visitor": 701,
+              "seat": 1,
+              "amount": 8,
+              "at": 3.600000000000002
+            },
+            {
+              "visitId": "hayride-0",
+              "runId": "hayride-run-0",
+              "visitor": 700,
+              "seat": 0,
+              "amount": 8,
+              "at": 2.1000000000000005
+            }
+          ],
+          "haunts": {
+            "owned": [
+              "turning-scarecrows"
+            ],
+            "active": []
+          },
+          "convoy": {
+            "phase": "loading",
+            "elapsed": 0,
+            "progress": 0,
+            "loadWait": 0,
+            "runId": "hayride-run-1",
+            "manifest": []
+          },
+          "lastEvent": {
+            "kind": "survivor",
+            "visitor": 703,
+            "at": 108.5999999999981
+          }
+        },
+        "visitors": [
+          {
+            "id": 711,
+            "budget": 30,
+            "age": 0.9666000000000057,
+            "hayride": null
+          },
+          {
+            "id": 712,
+            "budget": 56,
+            "age": 0,
+            "hayride": {
+              "visitId": "hayride-4",
+              "order": 4,
+              "routeVersion": 1,
+              "fromStall": false,
+              "phase": "approach",
+              "elapsed": 0.03329999999998836,
+              "approachSeconds": 10.766666666666666,
+              "returnSeconds": 27.553047300848903,
+              "waited": 0,
+              "quote": 9,
+              "charged": false,
+              "ticket": 0,
+              "seat": null,
+              "runId": null,
+              "terror": 0,
+              "bravery": 70,
+              "done": false,
+              "missed": false,
+              "fleeing": false
+            }
+          }
+        ]
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 874,
+        "bufferHeight": 787,
+        "postprocessWidth": 874,
+        "postprocessHeight": 787,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.0011441647597254005,
+          0.0012706480304955528
+        ],
+        "touchDevice": true,
+        "calls": 46,
+        "triangles": 868376,
+        "geometries": 59,
+        "textures": 14
+      }
+    },
+    {
+      "name": "fold-owner-boarding",
+      "state": {
+        "time": 180.96659999999403,
+        "coins": 71132,
+        "earned": 200000,
+        "sold": 0,
+        "tips": {
+          "stall": 0,
+          "shop": 0
+        },
+        "version": 11,
+        "h": {
+          "purchased": true,
+          "tier": 3,
+          "open": true,
+          "ticketPrice": 9,
+          "invested": 28900,
+          "ticketsSold": 4,
+          "income": 32,
+          "completed": 4,
+          "missed": 0,
+          "runHome": 0,
+          "departures": 1,
+          "partyAt": 180.29999999999404,
+          "nextVisit": 5,
+          "nextRun": 2,
+          "receipts": [
+            {
+              "visitId": "hayride-3",
+              "runId": "hayride-run-0",
+              "visitor": 703,
+              "seat": 3,
+              "amount": 8,
+              "at": 6.5999999999999925
+            },
+            {
+              "visitId": "hayride-2",
+              "runId": "hayride-run-0",
+              "visitor": 702,
+              "seat": 2,
+              "amount": 8,
+              "at": 5.099999999999998
+            },
+            {
+              "visitId": "hayride-1",
+              "runId": "hayride-run-0",
+              "visitor": 701,
+              "seat": 1,
+              "amount": 8,
+              "at": 3.600000000000002
+            },
+            {
+              "visitId": "hayride-0",
+              "runId": "hayride-run-0",
+              "visitor": 700,
+              "seat": 0,
+              "amount": 8,
+              "at": 2.1000000000000005
+            }
+          ],
+          "haunts": {
+            "owned": [
+              "turning-scarecrows"
+            ],
+            "active": []
+          },
+          "convoy": {
+            "phase": "loading",
+            "elapsed": 0,
+            "progress": 0,
+            "loadWait": 0,
+            "runId": "hayride-run-1",
+            "manifest": []
+          },
+          "lastEvent": {
+            "kind": "survivor",
+            "visitor": 703,
+            "at": 108.5999999999981
+          }
+        },
+        "visitors": [
+          {
+            "id": 711,
+            "budget": 30,
+            "age": 0.9666000000000057,
+            "hayride": null
+          },
+          {
+            "id": 712,
+            "budget": 56,
+            "age": 0,
+            "hayride": {
+              "visitId": "hayride-4",
+              "order": 4,
+              "routeVersion": 1,
+              "fromStall": false,
+              "phase": "approach",
+              "elapsed": 0.03329999999998836,
+              "approachSeconds": 10.766666666666666,
+              "returnSeconds": 27.553047300848903,
+              "waited": 0,
+              "quote": 9,
+              "charged": false,
+              "ticket": 0,
+              "seat": null,
+              "runId": null,
+              "terror": 0,
+              "bravery": 70,
+              "done": false,
+              "missed": false,
+              "fleeing": false
+            }
+          }
+        ]
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 874,
+        "bufferHeight": 787,
+        "postprocessWidth": 874,
+        "postprocessHeight": 787,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.0011441647597254005,
+          0.0012706480304955528
+        ],
+        "touchDevice": true,
+        "calls": 25,
+        "triangles": 483492,
+        "geometries": 59,
+        "textures": 14
+      }
+    },
+    {
+      "name": "fold-ride-scarecrows",
+      "state": {
+        "time": 180.96659999999403,
+        "coins": 71132,
+        "earned": 200000,
+        "sold": 0,
+        "tips": {
+          "stall": 0,
+          "shop": 0
+        },
+        "version": 11,
+        "h": {
+          "purchased": true,
+          "tier": 3,
+          "open": true,
+          "ticketPrice": 9,
+          "invested": 28900,
+          "ticketsSold": 4,
+          "income": 32,
+          "completed": 4,
+          "missed": 0,
+          "runHome": 0,
+          "departures": 1,
+          "partyAt": 180.29999999999404,
+          "nextVisit": 5,
+          "nextRun": 2,
+          "receipts": [
+            {
+              "visitId": "hayride-3",
+              "runId": "hayride-run-0",
+              "visitor": 703,
+              "seat": 3,
+              "amount": 8,
+              "at": 6.5999999999999925
+            },
+            {
+              "visitId": "hayride-2",
+              "runId": "hayride-run-0",
+              "visitor": 702,
+              "seat": 2,
+              "amount": 8,
+              "at": 5.099999999999998
+            },
+            {
+              "visitId": "hayride-1",
+              "runId": "hayride-run-0",
+              "visitor": 701,
+              "seat": 1,
+              "amount": 8,
+              "at": 3.600000000000002
+            },
+            {
+              "visitId": "hayride-0",
+              "runId": "hayride-run-0",
+              "visitor": 700,
+              "seat": 0,
+              "amount": 8,
+              "at": 2.1000000000000005
+            }
+          ],
+          "haunts": {
+            "owned": [
+              "turning-scarecrows"
+            ],
+            "active": []
+          },
+          "convoy": {
+            "phase": "loading",
+            "elapsed": 0,
+            "progress": 0,
+            "loadWait": 0,
+            "runId": "hayride-run-1",
+            "manifest": []
+          },
+          "lastEvent": {
+            "kind": "survivor",
+            "visitor": 703,
+            "at": 108.5999999999981
+          }
+        },
+        "visitors": [
+          {
+            "id": 711,
+            "budget": 30,
+            "age": 0.9666000000000057,
+            "hayride": null
+          },
+          {
+            "id": 712,
+            "budget": 56,
+            "age": 0,
+            "hayride": {
+              "visitId": "hayride-4",
+              "order": 4,
+              "routeVersion": 1,
+              "fromStall": false,
+              "phase": "approach",
+              "elapsed": 0.03329999999998836,
+              "approachSeconds": 10.766666666666666,
+              "returnSeconds": 27.553047300848903,
+              "waited": 0,
+              "quote": 9,
+              "charged": false,
+              "ticket": 0,
+              "seat": null,
+              "runId": null,
+              "terror": 0,
+              "bravery": 70,
+              "done": false,
+              "missed": false,
+              "fleeing": false
+            }
+          }
+        ]
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 874,
+        "bufferHeight": 787,
+        "postprocessWidth": 874,
+        "postprocessHeight": 787,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.0011441647597254005,
+          0.0012706480304955528
+        ],
+        "touchDevice": true,
+        "calls": 27,
+        "triangles": 483926,
+        "geometries": 60,
+        "textures": 15
+      }
+    },
+    {
+      "name": "fold-ride-spiders",
+      "state": {
+        "time": 180.96659999999403,
+        "coins": 71132,
+        "earned": 200000,
+        "sold": 0,
+        "tips": {
+          "stall": 0,
+          "shop": 0
+        },
+        "version": 11,
+        "h": {
+          "purchased": true,
+          "tier": 3,
+          "open": true,
+          "ticketPrice": 9,
+          "invested": 28900,
+          "ticketsSold": 4,
+          "income": 32,
+          "completed": 4,
+          "missed": 0,
+          "runHome": 0,
+          "departures": 1,
+          "partyAt": 180.29999999999404,
+          "nextVisit": 5,
+          "nextRun": 2,
+          "receipts": [
+            {
+              "visitId": "hayride-3",
+              "runId": "hayride-run-0",
+              "visitor": 703,
+              "seat": 3,
+              "amount": 8,
+              "at": 6.5999999999999925
+            },
+            {
+              "visitId": "hayride-2",
+              "runId": "hayride-run-0",
+              "visitor": 702,
+              "seat": 2,
+              "amount": 8,
+              "at": 5.099999999999998
+            },
+            {
+              "visitId": "hayride-1",
+              "runId": "hayride-run-0",
+              "visitor": 701,
+              "seat": 1,
+              "amount": 8,
+              "at": 3.600000000000002
+            },
+            {
+              "visitId": "hayride-0",
+              "runId": "hayride-run-0",
+              "visitor": 700,
+              "seat": 0,
+              "amount": 8,
+              "at": 2.1000000000000005
+            }
+          ],
+          "haunts": {
+            "owned": [
+              "turning-scarecrows"
+            ],
+            "active": []
+          },
+          "convoy": {
+            "phase": "loading",
+            "elapsed": 0,
+            "progress": 0,
+            "loadWait": 0,
+            "runId": "hayride-run-1",
+            "manifest": []
+          },
+          "lastEvent": {
+            "kind": "survivor",
+            "visitor": 703,
+            "at": 108.5999999999981
+          }
+        },
+        "visitors": [
+          {
+            "id": 711,
+            "budget": 30,
+            "age": 0.9666000000000057,
+            "hayride": null
+          },
+          {
+            "id": 712,
+            "budget": 56,
+            "age": 0,
+            "hayride": {
+              "visitId": "hayride-4",
+              "order": 4,
+              "routeVersion": 1,
+              "fromStall": false,
+              "phase": "approach",
+              "elapsed": 0.03329999999998836,
+              "approachSeconds": 10.766666666666666,
+              "returnSeconds": 27.553047300848903,
+              "waited": 0,
+              "quote": 9,
+              "charged": false,
+              "ticket": 0,
+              "seat": null,
+              "runId": null,
+              "terror": 0,
+              "bravery": 70,
+              "done": false,
+              "missed": false,
+              "fleeing": false
+            }
+          }
+        ]
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 874,
+        "bufferHeight": 787,
+        "postprocessWidth": 874,
+        "postprocessHeight": 787,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.0011441647597254005,
+          0.0012706480304955528
+        ],
+        "touchDevice": true,
+        "calls": 18,
+        "triangles": 481368,
+        "geometries": 60,
+        "textures": 15
+      }
+    },
+    {
+      "name": "fold-ride-bride",
+      "state": {
+        "time": 180.96659999999403,
+        "coins": 71132,
+        "earned": 200000,
+        "sold": 0,
+        "tips": {
+          "stall": 0,
+          "shop": 0
+        },
+        "version": 11,
+        "h": {
+          "purchased": true,
+          "tier": 3,
+          "open": true,
+          "ticketPrice": 9,
+          "invested": 28900,
+          "ticketsSold": 4,
+          "income": 32,
+          "completed": 4,
+          "missed": 0,
+          "runHome": 0,
+          "departures": 1,
+          "partyAt": 180.29999999999404,
+          "nextVisit": 5,
+          "nextRun": 2,
+          "receipts": [
+            {
+              "visitId": "hayride-3",
+              "runId": "hayride-run-0",
+              "visitor": 703,
+              "seat": 3,
+              "amount": 8,
+              "at": 6.5999999999999925
+            },
+            {
+              "visitId": "hayride-2",
+              "runId": "hayride-run-0",
+              "visitor": 702,
+              "seat": 2,
+              "amount": 8,
+              "at": 5.099999999999998
+            },
+            {
+              "visitId": "hayride-1",
+              "runId": "hayride-run-0",
+              "visitor": 701,
+              "seat": 1,
+              "amount": 8,
+              "at": 3.600000000000002
+            },
+            {
+              "visitId": "hayride-0",
+              "runId": "hayride-run-0",
+              "visitor": 700,
+              "seat": 0,
+              "amount": 8,
+              "at": 2.1000000000000005
+            }
+          ],
+          "haunts": {
+            "owned": [
+              "turning-scarecrows"
+            ],
+            "active": []
+          },
+          "convoy": {
+            "phase": "loading",
+            "elapsed": 0,
+            "progress": 0,
+            "loadWait": 0,
+            "runId": "hayride-run-1",
+            "manifest": []
+          },
+          "lastEvent": {
+            "kind": "survivor",
+            "visitor": 703,
+            "at": 108.5999999999981
+          }
+        },
+        "visitors": [
+          {
+            "id": 711,
+            "budget": 30,
+            "age": 0.9666000000000057,
+            "hayride": null
+          },
+          {
+            "id": 712,
+            "budget": 56,
+            "age": 0,
+            "hayride": {
+              "visitId": "hayride-4",
+              "order": 4,
+              "routeVersion": 1,
+              "fromStall": false,
+              "phase": "approach",
+              "elapsed": 0.03329999999998836,
+              "approachSeconds": 10.766666666666666,
+              "returnSeconds": 27.553047300848903,
+              "waited": 0,
+              "quote": 9,
+              "charged": false,
+              "ticket": 0,
+              "seat": null,
+              "runId": null,
+              "terror": 0,
+              "bravery": 70,
+              "done": false,
+              "missed": false,
+              "fleeing": false
+            }
+          }
+        ]
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 874,
+        "bufferHeight": 787,
+        "postprocessWidth": 874,
+        "postprocessHeight": 787,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.0011441647597254005,
+          0.0012706480304955528
+        ],
+        "touchDevice": true,
+        "calls": 25,
+        "triangles": 478982,
+        "geometries": 61,
+        "textures": 16
+      }
+    },
+    {
+      "name": "fold-ride-pursuit",
+      "state": {
+        "time": 180.96659999999403,
+        "coins": 71132,
+        "earned": 200000,
+        "sold": 0,
+        "tips": {
+          "stall": 0,
+          "shop": 0
+        },
+        "version": 11,
+        "h": {
+          "purchased": true,
+          "tier": 3,
+          "open": true,
+          "ticketPrice": 9,
+          "invested": 28900,
+          "ticketsSold": 4,
+          "income": 32,
+          "completed": 4,
+          "missed": 0,
+          "runHome": 0,
+          "departures": 1,
+          "partyAt": 180.29999999999404,
+          "nextVisit": 5,
+          "nextRun": 2,
+          "receipts": [
+            {
+              "visitId": "hayride-3",
+              "runId": "hayride-run-0",
+              "visitor": 703,
+              "seat": 3,
+              "amount": 8,
+              "at": 6.5999999999999925
+            },
+            {
+              "visitId": "hayride-2",
+              "runId": "hayride-run-0",
+              "visitor": 702,
+              "seat": 2,
+              "amount": 8,
+              "at": 5.099999999999998
+            },
+            {
+              "visitId": "hayride-1",
+              "runId": "hayride-run-0",
+              "visitor": 701,
+              "seat": 1,
+              "amount": 8,
+              "at": 3.600000000000002
+            },
+            {
+              "visitId": "hayride-0",
+              "runId": "hayride-run-0",
+              "visitor": 700,
+              "seat": 0,
+              "amount": 8,
+              "at": 2.1000000000000005
+            }
+          ],
+          "haunts": {
+            "owned": [
+              "turning-scarecrows"
+            ],
+            "active": []
+          },
+          "convoy": {
+            "phase": "loading",
+            "elapsed": 0,
+            "progress": 0,
+            "loadWait": 0,
+            "runId": "hayride-run-1",
+            "manifest": []
+          },
+          "lastEvent": {
+            "kind": "survivor",
+            "visitor": 703,
+            "at": 108.5999999999981
+          }
+        },
+        "visitors": [
+          {
+            "id": 711,
+            "budget": 30,
+            "age": 0.9666000000000057,
+            "hayride": null
+          },
+          {
+            "id": 712,
+            "budget": 56,
+            "age": 0,
+            "hayride": {
+              "visitId": "hayride-4",
+              "order": 4,
+              "routeVersion": 1,
+              "fromStall": false,
+              "phase": "approach",
+              "elapsed": 0.03329999999998836,
+              "approachSeconds": 10.766666666666666,
+              "returnSeconds": 27.553047300848903,
+              "waited": 0,
+              "quote": 9,
+              "charged": false,
+              "ticket": 0,
+              "seat": null,
+              "runId": null,
+              "terror": 0,
+              "bravery": 70,
+              "done": false,
+              "missed": false,
+              "fleeing": false
+            }
+          }
+        ]
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 874,
+        "bufferHeight": 787,
+        "postprocessWidth": 874,
+        "postprocessHeight": 787,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.0011441647597254005,
+          0.0012706480304955528
+        ],
+        "touchDevice": true,
+        "calls": 30,
+        "triangles": 481262,
+        "geometries": 62,
+        "textures": 16
+      }
+    },
+    {
+      "name": "fold-ride-bus",
+      "state": {
+        "time": 180.96659999999403,
+        "coins": 71132,
+        "earned": 200000,
+        "sold": 0,
+        "tips": {
+          "stall": 0,
+          "shop": 0
+        },
+        "version": 11,
+        "h": {
+          "purchased": true,
+          "tier": 3,
+          "open": true,
+          "ticketPrice": 9,
+          "invested": 28900,
+          "ticketsSold": 4,
+          "income": 32,
+          "completed": 4,
+          "missed": 0,
+          "runHome": 0,
+          "departures": 1,
+          "partyAt": 180.29999999999404,
+          "nextVisit": 5,
+          "nextRun": 2,
+          "receipts": [
+            {
+              "visitId": "hayride-3",
+              "runId": "hayride-run-0",
+              "visitor": 703,
+              "seat": 3,
+              "amount": 8,
+              "at": 6.5999999999999925
+            },
+            {
+              "visitId": "hayride-2",
+              "runId": "hayride-run-0",
+              "visitor": 702,
+              "seat": 2,
+              "amount": 8,
+              "at": 5.099999999999998
+            },
+            {
+              "visitId": "hayride-1",
+              "runId": "hayride-run-0",
+              "visitor": 701,
+              "seat": 1,
+              "amount": 8,
+              "at": 3.600000000000002
+            },
+            {
+              "visitId": "hayride-0",
+              "runId": "hayride-run-0",
+              "visitor": 700,
+              "seat": 0,
+              "amount": 8,
+              "at": 2.1000000000000005
+            }
+          ],
+          "haunts": {
+            "owned": [
+              "turning-scarecrows"
+            ],
+            "active": []
+          },
+          "convoy": {
+            "phase": "loading",
+            "elapsed": 0,
+            "progress": 0,
+            "loadWait": 0,
+            "runId": "hayride-run-1",
+            "manifest": []
+          },
+          "lastEvent": {
+            "kind": "survivor",
+            "visitor": 703,
+            "at": 108.5999999999981
+          }
+        },
+        "visitors": [
+          {
+            "id": 711,
+            "budget": 30,
+            "age": 0.9666000000000057,
+            "hayride": null
+          },
+          {
+            "id": 712,
+            "budget": 56,
+            "age": 0,
+            "hayride": {
+              "visitId": "hayride-4",
+              "order": 4,
+              "routeVersion": 1,
+              "fromStall": false,
+              "phase": "approach",
+              "elapsed": 0.03329999999998836,
+              "approachSeconds": 10.766666666666666,
+              "returnSeconds": 27.553047300848903,
+              "waited": 0,
+              "quote": 9,
+              "charged": false,
+              "ticket": 0,
+              "seat": null,
+              "runId": null,
+              "terror": 0,
+              "bravery": 70,
+              "done": false,
+              "missed": false,
+              "fleeing": false
+            }
+          }
+        ]
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 874,
+        "bufferHeight": 787,
+        "postprocessWidth": 874,
+        "postprocessHeight": 787,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.0011441647597254005,
+          0.0012706480304955528
+        ],
+        "touchDevice": true,
+        "calls": 22,
+        "triangles": 480110,
+        "geometries": 63,
+        "textures": 16
+      }
+    },
+    {
+      "name": "phone-ride-paused",
+      "state": {
+        "time": 180.96659999999403,
+        "coins": 71132,
+        "earned": 200000,
+        "sold": 0,
+        "tips": {
+          "stall": 0,
+          "shop": 0
+        },
+        "version": 11,
+        "h": {
+          "purchased": true,
+          "tier": 3,
+          "open": true,
+          "ticketPrice": 9,
+          "invested": 28900,
+          "ticketsSold": 4,
+          "income": 32,
+          "completed": 4,
+          "missed": 0,
+          "runHome": 0,
+          "departures": 1,
+          "partyAt": 180.29999999999404,
+          "nextVisit": 5,
+          "nextRun": 2,
+          "receipts": [
+            {
+              "visitId": "hayride-3",
+              "runId": "hayride-run-0",
+              "visitor": 703,
+              "seat": 3,
+              "amount": 8,
+              "at": 6.5999999999999925
+            },
+            {
+              "visitId": "hayride-2",
+              "runId": "hayride-run-0",
+              "visitor": 702,
+              "seat": 2,
+              "amount": 8,
+              "at": 5.099999999999998
+            },
+            {
+              "visitId": "hayride-1",
+              "runId": "hayride-run-0",
+              "visitor": 701,
+              "seat": 1,
+              "amount": 8,
+              "at": 3.600000000000002
+            },
+            {
+              "visitId": "hayride-0",
+              "runId": "hayride-run-0",
+              "visitor": 700,
+              "seat": 0,
+              "amount": 8,
+              "at": 2.1000000000000005
+            }
+          ],
+          "haunts": {
+            "owned": [
+              "turning-scarecrows"
+            ],
+            "active": []
+          },
+          "convoy": {
+            "phase": "loading",
+            "elapsed": 0,
+            "progress": 0,
+            "loadWait": 0,
+            "runId": "hayride-run-1",
+            "manifest": []
+          },
+          "lastEvent": {
+            "kind": "survivor",
+            "visitor": 703,
+            "at": 108.5999999999981
+          }
+        },
+        "visitors": [
+          {
+            "id": 711,
+            "budget": 30,
+            "age": 0.9666000000000057,
+            "hayride": null
+          },
+          {
+            "id": 712,
+            "budget": 56,
+            "age": 0,
+            "hayride": {
+              "visitId": "hayride-4",
+              "order": 4,
+              "routeVersion": 1,
+              "fromStall": false,
+              "phase": "approach",
+              "elapsed": 0.03329999999998836,
+              "approachSeconds": 10.766666666666666,
+              "returnSeconds": 27.553047300848903,
+              "waited": 0,
+              "quote": 9,
+              "charged": false,
+              "ticket": 0,
+              "seat": null,
+              "runId": null,
+              "terror": 0,
+              "bravery": 70,
+              "done": false,
+              "missed": false,
+              "fleeing": false
+            }
+          }
+        ]
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 390,
+        "bufferHeight": 844,
+        "postprocessWidth": 390,
+        "postprocessHeight": 844,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.002564102564102564,
+          0.001184834123222749
+        ],
+        "touchDevice": true,
+        "calls": 14,
+        "triangles": 473318,
+        "geometries": 63,
+        "textures": 16
+      }
+    },
+    {
+      "name": "phone-landscape-ride-paused",
+      "state": {
+        "time": 180.96659999999403,
+        "coins": 71132,
+        "earned": 200000,
+        "sold": 0,
+        "tips": {
+          "stall": 0,
+          "shop": 0
+        },
+        "version": 11,
+        "h": {
+          "purchased": true,
+          "tier": 3,
+          "open": true,
+          "ticketPrice": 9,
+          "invested": 28900,
+          "ticketsSold": 4,
+          "income": 32,
+          "completed": 4,
+          "missed": 0,
+          "runHome": 0,
+          "departures": 1,
+          "partyAt": 180.29999999999404,
+          "nextVisit": 5,
+          "nextRun": 2,
+          "receipts": [
+            {
+              "visitId": "hayride-3",
+              "runId": "hayride-run-0",
+              "visitor": 703,
+              "seat": 3,
+              "amount": 8,
+              "at": 6.5999999999999925
+            },
+            {
+              "visitId": "hayride-2",
+              "runId": "hayride-run-0",
+              "visitor": 702,
+              "seat": 2,
+              "amount": 8,
+              "at": 5.099999999999998
+            },
+            {
+              "visitId": "hayride-1",
+              "runId": "hayride-run-0",
+              "visitor": 701,
+              "seat": 1,
+              "amount": 8,
+              "at": 3.600000000000002
+            },
+            {
+              "visitId": "hayride-0",
+              "runId": "hayride-run-0",
+              "visitor": 700,
+              "seat": 0,
+              "amount": 8,
+              "at": 2.1000000000000005
+            }
+          ],
+          "haunts": {
+            "owned": [
+              "turning-scarecrows"
+            ],
+            "active": []
+          },
+          "convoy": {
+            "phase": "loading",
+            "elapsed": 0,
+            "progress": 0,
+            "loadWait": 0,
+            "runId": "hayride-run-1",
+            "manifest": []
+          },
+          "lastEvent": {
+            "kind": "survivor",
+            "visitor": 703,
+            "at": 108.5999999999981
+          }
+        },
+        "visitors": [
+          {
+            "id": 711,
+            "budget": 30,
+            "age": 0.9666000000000057,
+            "hayride": null
+          },
+          {
+            "id": 712,
+            "budget": 56,
+            "age": 0,
+            "hayride": {
+              "visitId": "hayride-4",
+              "order": 4,
+              "routeVersion": 1,
+              "fromStall": false,
+              "phase": "approach",
+              "elapsed": 0.03329999999998836,
+              "approachSeconds": 10.766666666666666,
+              "returnSeconds": 27.553047300848903,
+              "waited": 0,
+              "quote": 9,
+              "charged": false,
+              "ticket": 0,
+              "seat": null,
+              "runId": null,
+              "terror": 0,
+              "bravery": 70,
+              "done": false,
+              "missed": false,
+              "fleeing": false
+            }
+          }
+        ]
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 844,
+        "bufferHeight": 390,
+        "postprocessWidth": 844,
+        "postprocessHeight": 390,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.001184834123222749,
+          0.002564102564102564
+        ],
+        "touchDevice": true,
+        "calls": 28,
+        "triangles": 481538,
+        "geometries": 63,
+        "textures": 16
+      }
+    },
+    {
+      "name": "phone-management",
+      "state": {
+        "time": 180.96659999999403,
+        "coins": 71132,
+        "earned": 200000,
+        "sold": 0,
+        "tips": {
+          "stall": 0,
+          "shop": 0
+        },
+        "version": 11,
+        "h": {
+          "purchased": true,
+          "tier": 3,
+          "open": true,
+          "ticketPrice": 9,
+          "invested": 28900,
+          "ticketsSold": 4,
+          "income": 32,
+          "completed": 4,
+          "missed": 0,
+          "runHome": 0,
+          "departures": 1,
+          "partyAt": 180.29999999999404,
+          "nextVisit": 5,
+          "nextRun": 2,
+          "receipts": [
+            {
+              "visitId": "hayride-3",
+              "runId": "hayride-run-0",
+              "visitor": 703,
+              "seat": 3,
+              "amount": 8,
+              "at": 6.5999999999999925
+            },
+            {
+              "visitId": "hayride-2",
+              "runId": "hayride-run-0",
+              "visitor": 702,
+              "seat": 2,
+              "amount": 8,
+              "at": 5.099999999999998
+            },
+            {
+              "visitId": "hayride-1",
+              "runId": "hayride-run-0",
+              "visitor": 701,
+              "seat": 1,
+              "amount": 8,
+              "at": 3.600000000000002
+            },
+            {
+              "visitId": "hayride-0",
+              "runId": "hayride-run-0",
+              "visitor": 700,
+              "seat": 0,
+              "amount": 8,
+              "at": 2.1000000000000005
+            }
+          ],
+          "haunts": {
+            "owned": [
+              "turning-scarecrows"
+            ],
+            "active": []
+          },
+          "convoy": {
+            "phase": "loading",
+            "elapsed": 0,
+            "progress": 0,
+            "loadWait": 0,
+            "runId": "hayride-run-1",
+            "manifest": []
+          },
+          "lastEvent": {
+            "kind": "survivor",
+            "visitor": 703,
+            "at": 108.5999999999981
+          }
+        },
+        "visitors": [
+          {
+            "id": 711,
+            "budget": 30,
+            "age": 0.9666000000000057,
+            "hayride": null
+          },
+          {
+            "id": 712,
+            "budget": 56,
+            "age": 0,
+            "hayride": {
+              "visitId": "hayride-4",
+              "order": 4,
+              "routeVersion": 1,
+              "fromStall": false,
+              "phase": "approach",
+              "elapsed": 0.03329999999998836,
+              "approachSeconds": 10.766666666666666,
+              "returnSeconds": 27.553047300848903,
+              "waited": 0,
+              "quote": 9,
+              "charged": false,
+              "ticket": 0,
+              "seat": null,
+              "runId": null,
+              "terror": 0,
+              "bravery": 70,
+              "done": false,
+              "missed": false,
+              "fleeing": false
+            }
+          }
+        ]
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 390,
+        "bufferHeight": 844,
+        "postprocessWidth": 390,
+        "postprocessHeight": 844,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.002564102564102564,
+          0.001184834123222749
+        ],
+        "touchDevice": true,
+        "calls": 25,
+        "triangles": 927528,
+        "geometries": 64,
+        "textures": 16
+      }
+    },
+    {
+      "name": "phone-landscape-management",
+      "state": {
+        "time": 180.96659999999403,
+        "coins": 71132,
+        "earned": 200000,
+        "sold": 0,
+        "tips": {
+          "stall": 0,
+          "shop": 0
+        },
+        "version": 11,
+        "h": {
+          "purchased": true,
+          "tier": 3,
+          "open": true,
+          "ticketPrice": 9,
+          "invested": 28900,
+          "ticketsSold": 4,
+          "income": 32,
+          "completed": 4,
+          "missed": 0,
+          "runHome": 0,
+          "departures": 1,
+          "partyAt": 180.29999999999404,
+          "nextVisit": 5,
+          "nextRun": 2,
+          "receipts": [
+            {
+              "visitId": "hayride-3",
+              "runId": "hayride-run-0",
+              "visitor": 703,
+              "seat": 3,
+              "amount": 8,
+              "at": 6.5999999999999925
+            },
+            {
+              "visitId": "hayride-2",
+              "runId": "hayride-run-0",
+              "visitor": 702,
+              "seat": 2,
+              "amount": 8,
+              "at": 5.099999999999998
+            },
+            {
+              "visitId": "hayride-1",
+              "runId": "hayride-run-0",
+              "visitor": 701,
+              "seat": 1,
+              "amount": 8,
+              "at": 3.600000000000002
+            },
+            {
+              "visitId": "hayride-0",
+              "runId": "hayride-run-0",
+              "visitor": 700,
+              "seat": 0,
+              "amount": 8,
+              "at": 2.1000000000000005
+            }
+          ],
+          "haunts": {
+            "owned": [
+              "turning-scarecrows"
+            ],
+            "active": []
+          },
+          "convoy": {
+            "phase": "loading",
+            "elapsed": 0,
+            "progress": 0,
+            "loadWait": 0,
+            "runId": "hayride-run-1",
+            "manifest": []
+          },
+          "lastEvent": {
+            "kind": "survivor",
+            "visitor": 703,
+            "at": 108.5999999999981
+          }
+        },
+        "visitors": [
+          {
+            "id": 711,
+            "budget": 30,
+            "age": 0.9666000000000057,
+            "hayride": null
+          },
+          {
+            "id": 712,
+            "budget": 56,
+            "age": 0,
+            "hayride": {
+              "visitId": "hayride-4",
+              "order": 4,
+              "routeVersion": 1,
+              "fromStall": false,
+              "phase": "approach",
+              "elapsed": 0.03329999999998836,
+              "approachSeconds": 10.766666666666666,
+              "returnSeconds": 27.553047300848903,
+              "waited": 0,
+              "quote": 9,
+              "charged": false,
+              "ticket": 0,
+              "seat": null,
+              "runId": null,
+              "terror": 0,
+              "bravery": 70,
+              "done": false,
+              "missed": false,
+              "fleeing": false
+            }
+          }
+        ]
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 844,
+        "bufferHeight": 390,
+        "postprocessWidth": 844,
+        "postprocessHeight": 390,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.001184834123222749,
+          0.002564102564102564
+        ],
+        "touchDevice": true,
+        "calls": 92,
+        "triangles": 942008,
+        "geometries": 64,
+        "textures": 16
+      }
+    },
+    {
+      "name": "fold-unfolded-management",
+      "state": {
+        "time": 180.96659999999403,
+        "coins": 71132,
+        "earned": 200000,
+        "sold": 0,
+        "tips": {
+          "stall": 0,
+          "shop": 0
+        },
+        "version": 11,
+        "h": {
+          "purchased": true,
+          "tier": 3,
+          "open": true,
+          "ticketPrice": 9,
+          "invested": 28900,
+          "ticketsSold": 4,
+          "income": 32,
+          "completed": 4,
+          "missed": 0,
+          "runHome": 0,
+          "departures": 1,
+          "partyAt": 180.29999999999404,
+          "nextVisit": 5,
+          "nextRun": 2,
+          "receipts": [
+            {
+              "visitId": "hayride-3",
+              "runId": "hayride-run-0",
+              "visitor": 703,
+              "seat": 3,
+              "amount": 8,
+              "at": 6.5999999999999925
+            },
+            {
+              "visitId": "hayride-2",
+              "runId": "hayride-run-0",
+              "visitor": 702,
+              "seat": 2,
+              "amount": 8,
+              "at": 5.099999999999998
+            },
+            {
+              "visitId": "hayride-1",
+              "runId": "hayride-run-0",
+              "visitor": 701,
+              "seat": 1,
+              "amount": 8,
+              "at": 3.600000000000002
+            },
+            {
+              "visitId": "hayride-0",
+              "runId": "hayride-run-0",
+              "visitor": 700,
+              "seat": 0,
+              "amount": 8,
+              "at": 2.1000000000000005
+            }
+          ],
+          "haunts": {
+            "owned": [
+              "turning-scarecrows"
+            ],
+            "active": []
+          },
+          "convoy": {
+            "phase": "loading",
+            "elapsed": 0,
+            "progress": 0,
+            "loadWait": 0,
+            "runId": "hayride-run-1",
+            "manifest": []
+          },
+          "lastEvent": {
+            "kind": "survivor",
+            "visitor": 703,
+            "at": 108.5999999999981
+          }
+        },
+        "visitors": [
+          {
+            "id": 711,
+            "budget": 30,
+            "age": 0.9666000000000057,
+            "hayride": null
+          },
+          {
+            "id": 712,
+            "budget": 56,
+            "age": 0,
+            "hayride": {
+              "visitId": "hayride-4",
+              "order": 4,
+              "routeVersion": 1,
+              "fromStall": false,
+              "phase": "approach",
+              "elapsed": 0.03329999999998836,
+              "approachSeconds": 10.766666666666666,
+              "returnSeconds": 27.553047300848903,
+              "waited": 0,
+              "quote": 9,
+              "charged": false,
+              "ticket": 0,
+              "seat": null,
+              "runId": null,
+              "terror": 0,
+              "bravery": 70,
+              "done": false,
+              "missed": false,
+              "fleeing": false
+            }
+          }
+        ]
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 874,
+        "bufferHeight": 787,
+        "postprocessWidth": 874,
+        "postprocessHeight": 787,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.0011441647597254005,
+          0.0012706480304955528
+        ],
+        "touchDevice": true,
+        "calls": 92,
+        "triangles": 942008,
+        "geometries": 64,
+        "textures": 16
+      }
+    }
+  ],
+  "limitations": [
+    "Managed Chromium disables fullscreen (FullscreenAllowed: false). Successful native OS fullscreen is unverified; the game button remains available."
+  ],
+  "rendering": "Chromium SwiftShader, performance profile, bloom/shadows/mist/lake lights off; desktop and phone/Fold layouts; real UI clicks with stability polling bypassed; game-time advancement uses ordinary rules"
+}

@@ -1,0 +1,793 @@
+{
+  "date": "2026-11-08T07:55:49.301Z",
+  "html": "pumpkin-patch-voxel.html",
+  "sha256": "e036d56b40c298ee898c8e9f06343126ec62d1359dba175c168164f756499776",
+  "bytes": 48455613,
+  "scope": "Full game in one Chromium/SwiftShader browser. A declared \u00a36000 starting-savings fixture completes invitation, bench, stall and letter through real model rules before boot. All subsequent quest acceptance, journal deliveries, payments, purchases and decoration transactions use the visible UI. Ground placement uses the same world-pick callback as a tap. Resident routes are sampled through their real tick adapter. Layout and standard-pad emulation do not certify physical Fold, Bluetooth or TV hardware.",
+  "fixture": {
+    "coins": 6140,
+    "earned": 3540,
+    "materials": {
+      "logs": 40,
+      "stone": 40,
+      "fibre": 40,
+      "herbs": 40,
+      "hardwood": 0,
+      "moth-silk": 0,
+      "iron": 0,
+      "clay": 0,
+      "moonstone": 0,
+      "emberbloom": 0,
+      "star-amber": 0
+    },
+    "completed": [
+      "invitation",
+      "rowan-1",
+      "rowan-stall",
+      "elowen-1"
+    ],
+    "almanac": [
+      {
+        "id": "chat",
+        "base": 0,
+        "done": false,
+        "text": "Chat with 2 neighbours",
+        "coins": 40,
+        "need": 2,
+        "have": 0
+      },
+      {
+        "id": "favour",
+        "base": 0,
+        "done": false,
+        "text": "Do a neighbour a favour",
+        "coins": 60,
+        "need": 1,
+        "have": 0
+      },
+      {
+        "id": "gather",
+        "base": 34,
+        "done": true,
+        "text": "Gather 8 materials",
+        "coins": 50,
+        "need": 8,
+        "have": 8
+      },
+      {
+        "id": "harvest",
+        "base": 0,
+        "done": false,
+        "text": "Pick 25 pumpkins",
+        "coins": 50,
+        "need": 25,
+        "have": 0
+      }
+    ]
+  },
+  "checks": [
+    {
+      "pass": true,
+      "label": "checkpoint enters the saved village without replaying the tour"
+    },
+    {
+      "pass": true,
+      "label": "rowan-2: dialogue finishes",
+      "detail": [
+        "I've drawn up plans for a workshop cottage. I've drawn them up nine times, actually.",
+        "It'd need a lot of timber and stone. And someone to make me actually start.",
+        "How will you answer?",
+        "Kindly bossy. My favourite kind."
+      ]
+    },
+    {
+      "pass": true,
+      "label": "elowen-2: dialogue finishes",
+      "detail": [
+        "I've slept in the library's draughty corner for years. The moths don't mind. My back does.",
+        "There's a plot by the green with room for a glasshouse. A conservatory library, with the moon on the ceiling.",
+        "How will you answer?",
+        "So I can read by moonlight and the moths can find their way in."
+      ]
+    },
+    {
+      "pass": true,
+      "label": "Following a journal story updates the live objective"
+    },
+    {
+      "pass": true,
+      "label": "Journal lists each required restoration material"
+    },
+    {
+      "pass": true,
+      "label": "desktop-journal: panel fits viewport",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "desktop-journal: readable 44px controls",
+      "detail": {
+        "targets": [],
+        "text": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "Rowan journal handover consumes only its named quest materials"
+    },
+    {
+      "pass": true,
+      "label": "Rowan restored workshop: dialogue finishes",
+      "detail": [
+        "It's real. Walls, roof, chimney, and a door. On two hinges. I keep opening it to hear it not creak.",
+        "How will you answer?",
+        "...Home. Gosh. Give me a minute, I've got sawdust in my eye."
+      ]
+    },
+    {
+      "pass": true,
+      "label": "Rowan workshop restoration completes through visible handovers and dialogue"
+    },
+    {
+      "pass": true,
+      "label": "Elowen payment consumes exactly \u00a3450 and raises the conservatory"
+    },
+    {
+      "pass": true,
+      "label": "Workshop upgrade charges its exact displayed coins and materials"
+    },
+    {
+      "pass": true,
+      "label": "Owned upgrade cannot be bought twice and does not replace farm earnings"
+    },
+    {
+      "pass": true,
+      "label": "Stall price button buys one stored stool"
+    },
+    {
+      "pass": true,
+      "label": "stool: intended reading-nook position is clear",
+      "detail": {
+        "id": "stool",
+        "x": 80.1,
+        "z": 37.2,
+        "rotation": 0,
+        "pending": true,
+        "valid": true
+      }
+    },
+    {
+      "pass": true,
+      "label": "Keyboard turns the held piece by one 15-degree step"
+    },
+    {
+      "pass": true,
+      "label": "Moving a placed piece confirms its new position"
+    },
+    {
+      "pass": true,
+      "label": "Extra satchel pockets purchase raises capacity to 60"
+    },
+    {
+      "pass": true,
+      "label": "Decor undo restores placement while preserving the intervening purchase and farm purse"
+    },
+    {
+      "pass": true,
+      "label": "Cancel discards a moved preview without changing saved decor"
+    },
+    {
+      "pass": true,
+      "label": "Store returns the exact placed copy to the catalogue"
+    },
+    {
+      "pass": true,
+      "label": "Undo storage restores one copy without duplication"
+    },
+    {
+      "pass": true,
+      "label": "moth-lamp: intended reading-nook position is clear",
+      "detail": {
+        "id": "moth-lamp",
+        "x": 74.4,
+        "z": 36.9,
+        "rotation": 0,
+        "pending": true,
+        "valid": true
+      }
+    },
+    {
+      "pass": true,
+      "label": "reading-stand: intended reading-nook position is clear",
+      "detail": {
+        "id": "reading-stand",
+        "x": 74.1,
+        "z": 33.9,
+        "rotation": 0,
+        "pending": true,
+        "valid": true
+      }
+    },
+    {
+      "pass": true,
+      "label": "fold-unfolded-decor: panel fits viewport",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "fold-unfolded-decor: readable 44px controls",
+      "detail": {
+        "targets": [],
+        "text": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "Three real placed pieces satisfy the reading-nook quest"
+    },
+    {
+      "pass": true,
+      "label": "Elowen reading nook: dialogue finishes",
+      "detail": [
+        "A lamp, a seat and a stand of books, right by my own door. You thought of the moths, too; look how they're settling.",
+        "How will you answer?",
+        "Home. I'd almost forgotten the shape of the word. It's a lovely shape."
+      ]
+    },
+    {
+      "pass": true,
+      "label": "Elowen conservatory chapter finishes through its journal talk action"
+    },
+    {
+      "pass": true,
+      "label": "elowen almanac chat: dialogue finishes",
+      "detail": [
+        "I've been rebinding the village's old stories. Some of the pages are missing.",
+        "Not lost, I think. Hiding until someone's ready to read them.",
+        "How will you answer?",
+        "The pages do. They're terribly fussy. One waited forty years for a librarian with clean gloves."
+      ]
+    },
+    {
+      "pass": true,
+      "label": "rowan almanac chat: dialogue finishes",
+      "detail": [
+        "Business at the stall's picking up! Sold a stool to a ghost yesterday.",
+        "He couldn't sit on it, but he liked looking at it.",
+        "How will you answer?",
+        "No wear and tear! I'll make him a matching table."
+      ]
+    },
+    {
+      "pass": true,
+      "label": "Two visible conversations complete the almanac chat duty"
+    },
+    {
+      "pass": true,
+      "label": "Almanac shows completed duty progress and automatic reward receipt"
+    },
+    {
+      "pass": true,
+      "label": "fold-unfolded-almanac: panel fits viewport",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "fold-unfolded-almanac: readable 44px controls",
+      "detail": {
+        "targets": [],
+        "text": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "Resident routes use all four authored walking frames",
+      "detail": {
+        "elowen": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "rowan": [
+          1,
+          2,
+          3,
+          4
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "Conversations and reduced motion hold feet; pick proxy follows actual pose"
+    },
+    {
+      "pass": true,
+      "label": "Resident ticks allocate no scene objects"
+    },
+    {
+      "pass": true,
+      "label": "Integrated atmosphere reports its live state",
+      "detail": {
+        "budget": "full",
+        "moths": 6,
+        "particles": 40,
+        "instances": 70,
+        "drawCalls": 2,
+        "triangles": 840,
+        "lights": 0,
+        "textures": 0,
+        "maxEmissiveChannel": 1.35,
+        "time": 3.3666,
+        "bufferUpdates": 36
+      }
+    },
+    {
+      "pass": true,
+      "label": "Fold cover: simultaneous movement and camera thumbs release independently",
+      "detail": {
+        "both": 2,
+        "one": 1,
+        "moved": true,
+        "looked": true,
+        "released": 0
+      }
+    },
+    {
+      "pass": true,
+      "label": "fold-cover-green: panel fits viewport",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "fold-cover-green: readable 44px controls",
+      "detail": {
+        "targets": [],
+        "text": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "An idle connected DualSense leaves the touch interface visible"
+    },
+    {
+      "pass": true,
+      "label": "DualSense Options opens the journal and switches to controller controls"
+    },
+    {
+      "pass": true,
+      "label": "D-pad moves a visible focus ring through the journal"
+    },
+    {
+      "pass": true,
+      "label": "Cross activates the focused Almanac action"
+    },
+    {
+      "pass": true,
+      "label": "Circle closes one panel and keeps the player in the village"
+    },
+    {
+      "pass": true,
+      "label": "fold-landscape-placement: panel fits viewport",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "fold-landscape-placement: readable 44px controls",
+      "detail": {
+        "targets": [],
+        "text": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "Vesper welcome: dialogue finishes",
+      "detail": [
+        "Come in, come in. The candles have been waiting for someone worth lighting for."
+      ]
+    },
+    {
+      "pass": true,
+      "label": "Farm button leaves the edited village normally"
+    },
+    {
+      "pass": true,
+      "label": "Village chapter preserves farm stock, garden, equipped outfits, helping hands and all prior costumes; authored friendship costumes are added",
+      "detail": {
+        "evidenceReport": "village-raycast-report.json",
+        "evidenceSha256": "147fb2bca354029eee29f85775e8cc37a8fd2afd6eafe78cd037cd1944b14601",
+        "observedWardrobe": {
+          "before": [
+            "natalie-base",
+            "shane-base",
+            "shane-scarecrow",
+            "natalie-wheelchair"
+          ],
+          "after": [
+            "natalie-base",
+            "shane-base",
+            "shane-scarecrow",
+            "natalie-wheelchair",
+            "natalie-batqueen"
+          ]
+        },
+        "correction": "The original harness compared the complete wardrobe for equality. Rowan and Elowen intentionally award shane-scarecrow and natalie-batqueen at friendship rank five. The real-UI restoration checkpoint contained Rowan\u2019s award; the focused replay verified Elowen\u2019s visible completion adds her award, retains every owned costume and leaves equipped outfits, garden, stock and helping hands unchanged."
+      }
+    },
+    {
+      "pass": true,
+      "label": "Reload preserves exact coins, both restorations, upgrades, placed pieces and almanac receipts"
+    },
+    {
+      "pass": true,
+      "label": "tv-journal: panel fits viewport",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "tv-journal: readable 44px controls",
+      "detail": {
+        "targets": [],
+        "text": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "tv-green: panel fits viewport",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "tv-green: readable 44px controls",
+      "detail": {
+        "targets": [],
+        "text": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "Revisiting and reopening menus never repays the completed almanac duty"
+    },
+    {
+      "pass": true,
+      "label": "Self-contained full game uses no external assets",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "Integrated flow has no page or console errors",
+      "detail": []
+    }
+  ],
+  "screenshots": [
+    "desktop-green-arrival.png",
+    "desktop-journal-requirements.png",
+    "fold-unfolded-reading-nook.png",
+    "fold-unfolded-almanac.png",
+    "fold-cover-green.png",
+    "fold-landscape-placement.png",
+    "desktop-living-green.png",
+    "velvet-bat-welcome.png",
+    "tv-journal.png",
+    "tv-living-green.png"
+  ],
+  "layouts": [
+    {
+      "name": "desktop-journal",
+      "size": [
+        1280,
+        800
+      ],
+      "tv": false,
+      "overflow": false,
+      "smallTargets": [],
+      "smallText": [],
+      "clipped": []
+    },
+    {
+      "name": "fold-unfolded-decor",
+      "size": [
+        900,
+        840
+      ],
+      "tv": false,
+      "overflow": false,
+      "smallTargets": [],
+      "smallText": [],
+      "clipped": []
+    },
+    {
+      "name": "fold-unfolded-almanac",
+      "size": [
+        900,
+        840
+      ],
+      "tv": false,
+      "overflow": false,
+      "smallTargets": [],
+      "smallText": [],
+      "clipped": []
+    },
+    {
+      "name": "fold-cover-green",
+      "size": [
+        390,
+        844
+      ],
+      "tv": false,
+      "overflow": false,
+      "smallTargets": [],
+      "smallText": [],
+      "clipped": []
+    },
+    {
+      "name": "fold-landscape-placement",
+      "size": [
+        844,
+        390
+      ],
+      "tv": false,
+      "overflow": false,
+      "smallTargets": [],
+      "smallText": [],
+      "clipped": []
+    },
+    {
+      "name": "tv-journal",
+      "size": [
+        1920,
+        1080
+      ],
+      "tv": true,
+      "overflow": false,
+      "smallTargets": [],
+      "smallText": [],
+      "clipped": []
+    },
+    {
+      "name": "tv-green",
+      "size": [
+        1920,
+        1080
+      ],
+      "tv": true,
+      "overflow": false,
+      "smallTargets": [],
+      "smallText": [],
+      "clipped": []
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "residents": {
+    "before": [
+      {
+        "id": "elowen",
+        "style": "sprite",
+        "ready": true,
+        "frame": 1,
+        "action": "walk",
+        "walking": true,
+        "height": 2.3,
+        "frames": {
+          "idle": [
+            0
+          ],
+          "walk": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "wave": [
+            5
+          ],
+          "talk": [
+            0
+          ]
+        },
+        "x": 80.4,
+        "z": 44.77202399999997,
+        "activity": "at the library",
+        "route": "elowen-library"
+      },
+      {
+        "id": "rowan",
+        "style": "sprite",
+        "ready": true,
+        "frame": 0,
+        "action": "idle",
+        "walking": false,
+        "height": 2.3,
+        "frames": {
+          "idle": [
+            0
+          ],
+          "walk": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "wave": [
+            5
+          ],
+          "talk": [
+            0
+          ]
+        },
+        "x": 98.85000000000001,
+        "z": 36.900000000000006,
+        "activity": "at his stall",
+        "route": "rowan-stall"
+      },
+      {
+        "id": "vesper",
+        "style": "sprite",
+        "ready": true,
+        "frame": 0,
+        "action": "idle",
+        "walking": false,
+        "height": 2.3,
+        "frames": {
+          "idle": [
+            0
+          ],
+          "walk": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "wave": [
+            5
+          ],
+          "talk": [
+            0
+          ]
+        },
+        "x": 150.3,
+        "z": 39,
+        "activity": "at their post",
+        "route": null
+      }
+    ],
+    "moved": [
+      {
+        "id": "elowen",
+        "style": "sprite",
+        "ready": true,
+        "frame": 0,
+        "action": "idle",
+        "walking": false,
+        "height": 2.3,
+        "frames": {
+          "idle": [
+            0
+          ],
+          "walk": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "wave": [
+            5
+          ],
+          "talk": [
+            0
+          ]
+        },
+        "x": 74.4,
+        "z": 32.400000000000006,
+        "activity": "at the library",
+        "route": "elowen-library"
+      },
+      {
+        "id": "rowan",
+        "style": "sprite",
+        "ready": true,
+        "frame": 1,
+        "action": "walk",
+        "walking": true,
+        "height": 2.3,
+        "frames": {
+          "idle": [
+            0
+          ],
+          "walk": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "wave": [
+            5
+          ],
+          "talk": [
+            0
+          ]
+        },
+        "x": 97.90503092138566,
+        "z": 41.322689929124195,
+        "activity": "returning to his stall",
+        "route": "rowan-stall"
+      },
+      {
+        "id": "vesper",
+        "style": "sprite",
+        "ready": true,
+        "frame": 0,
+        "action": "idle",
+        "walking": false,
+        "height": 2.3,
+        "frames": {
+          "idle": [
+            0
+          ],
+          "walk": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "wave": [
+            5
+          ],
+          "talk": [
+            0
+          ]
+        },
+        "x": 150.3,
+        "z": 39,
+        "activity": "at their post",
+        "route": null
+      }
+    ],
+    "frames": {
+      "elowen": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "rowan": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    "stopped": true,
+    "reduced": true,
+    "proxyFollows": true,
+    "childrenBefore": 57,
+    "childrenAfter": 57,
+    "atmosphere": {
+      "budget": "full",
+      "moths": 6,
+      "particles": 40,
+      "instances": 70,
+      "drawCalls": 2,
+      "triangles": 840,
+      "lights": 0,
+      "textures": 0,
+      "maxEmissiveChannel": 1.35,
+      "time": 3.3666,
+      "bufferUpdates": 36
+    }
+  },
+  "localFileCheck": "Not run: managed Chrome policy blocks file URLs. This report verifies the identical self-contained HTML on loopback with zero external asset requests; opening the downloaded file on a physical device remains unverified.",
+  "passed": true,
+  "harnessCorrections": [
+    {
+      "originalAssertion": {
+        "pass": false,
+        "label": "Village chapter preserves unrelated farm stock, garden, wardrobe and helping hands"
+      },
+      "correctedAssertion": "Village chapter preserves farm stock, garden, equipped outfits, helping hands and all prior costumes; authored friendship costumes are added",
+      "evidenceReport": "village-raycast-report.json",
+      "evidenceSha256": "147fb2bca354029eee29f85775e8cc37a8fd2afd6eafe78cd037cd1944b14601"
+    }
+  ]
+}

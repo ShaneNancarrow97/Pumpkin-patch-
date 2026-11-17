@@ -1,0 +1,733 @@
+{
+  "htmlSha256": "ac84f3f317131a77c4efc1c1994d621626d683f5db6aeaa4538b357330caf4a0",
+  "harnessSha256": "0f3989acf8bad9f779bc0ba5f83198698ad638f138656ad35ca6cd22b4822e3f",
+  "fixtureSha256": "d46bf1d296b8663e0650175f0c024839a4884fd8e2816bc9abbd26bbf1f0cade",
+  "bytes": 61815329,
+  "viewport": {
+    "width": 960,
+    "height": 540
+  },
+  "scope": "Exact offline game HTML on loopback, one native village entry, genuine keyboard walking, public hall entry/exit and native game RAF/rendering. No held draws, advance(), manual tick or manual render. Stationary counter checks are conditional on exactly unchanged horizontal camera/target; changing smoothing poses are reported, with exact stationary behavior covered by Node tests. GPU acceptance reads actual canvas pixels because this software Chromium runner has a separately reproduced page-compositor defect; raw success does not certify page compositing or physical phone/TV FPS.",
+  "acceptancePath": "webgpu-canvas-readback",
+  "passed": true,
+  "checks": [
+    {
+      "label": "Requested renderer becomes ready",
+      "pass": true,
+      "actual": {
+        "requested": "auto",
+        "backend": "webgl",
+        "stage": "ready",
+        "reason": null,
+        "failureStack": null,
+        "frames": 1,
+        "actualBackend": "webgpu",
+        "renderFrames": 2,
+        "completedFrames": 1,
+        "inFlight": true,
+        "maxFramesInFlight": 1,
+        "skippedSubmissions": 2,
+        "mirroredObjects": 2526,
+        "ownedGeometryViews": 588,
+        "geometryViewsCreated": 588,
+        "geometryViewsRetired": 0,
+        "ownedLineGeometries": 0,
+        "lights": {
+          "point": 8,
+          "hemisphere": 1,
+          "directional": 2,
+          "ambient": 0
+        },
+        "materials": {
+          "ready": true,
+          "converted": 1885,
+          "effectMaterials": 6,
+          "unsupported": 0,
+          "roles": {
+            "ground-detail": 1,
+            "finish": 1097,
+            "pbr-atlas": 717,
+            "water": 14,
+            "voxel-ao": 111,
+            "alpha-hash": 434,
+            "grass": 306,
+            "native-fade": 2,
+            "crisp-sprite": 17,
+            "sprite-rim": 12,
+            "cutout-shadow": 17
+          },
+          "derivedInstanceBytes": 4950132,
+          "textureSynchronizations": 2315,
+          "textureUploads": 29,
+          "activeMaterials": 1883,
+          "materialRetirements": 2,
+          "layoutScans": 1160,
+          "textureWrappers": 29,
+          "activeEffectMaterials": 8,
+          "activePointGeometries": 2,
+          "activeBindings": 4000
+        },
+        "calls": 372,
+        "triangles": 1824274,
+        "renderPasses": 16,
+        "shadowBudget": {
+          "frames": 2,
+          "requests": 2,
+          "refreshes": 2,
+          "deferred": 0,
+          "forced": 2,
+          "invalidations": 2
+        },
+        "shaderCache": {
+          "normalizedStages": 261,
+          "builders": 357,
+          "vertexPrograms": 200,
+          "fragmentPrograms": 49
+        },
+        "textures": 48,
+        "bufferWidth": 960,
+        "bufferHeight": 540,
+        "post": {
+          "hdr": true,
+          "bloom": true,
+          "shadows": true,
+          "displayGrade": true,
+          "fxaa": true,
+          "glowScale": 1,
+          "toneMapping": "ACES",
+          "output": "sRGB"
+        }
+      }
+    },
+    {
+      "label": "Native GPU frames continue without fallback",
+      "pass": true
+    },
+    {
+      "label": "Native GPU frames continue without fallback",
+      "pass": true
+    },
+    {
+      "label": "entrance.png: actual GPU colour buffer is opaque",
+      "pass": true,
+      "actual": 1
+    },
+    {
+      "label": "Native dusk sky retains violet cloud colour",
+      "pass": true,
+      "actual": 1
+    },
+    {
+      "label": "Grass, ambient and lamp diagnostics are available",
+      "pass": true
+    },
+    {
+      "label": "Distance detail still reduces grass vertices",
+      "pass": true,
+      "actual": {
+        "patches": 159,
+        "activePatches": 33,
+        "fullPatches": 12,
+        "middlePatches": 8,
+        "farPatches": 13,
+        "vertices": 422988,
+        "fullVertices": 757800,
+        "visible": true,
+        "selectionPasses": 1,
+        "patchChecks": 159
+      }
+    },
+    {
+      "label": "Native GPU frames continue without fallback",
+      "pass": true
+    },
+    {
+      "label": "Stationary camera avoids repeated grass selection",
+      "pass": true
+    },
+    {
+      "label": "Stationary target avoids repeated nearest-lamp searches",
+      "pass": true
+    },
+    {
+      "label": "Visible ambient animation continues during native stationary frames",
+      "pass": true,
+      "actual": {
+        "before": {
+          "ticks": 1391,
+          "hiddenTicks": 0,
+          "visible": true,
+          "bufferUpdates": 22256,
+          "matrixWrites": 965354,
+          "pointWrites": 329667,
+          "matricesPerTick": 694,
+          "pointsPerTick": 237
+        },
+        "after": {
+          "ticks": 3477,
+          "hiddenTicks": 0,
+          "visible": true,
+          "bufferUpdates": 55632,
+          "matrixWrites": 2413038,
+          "pointWrites": 824049,
+          "matricesPerTick": 694,
+          "pointsPerTick": 237
+        }
+      }
+    },
+    {
+      "label": "Nearby target broad phase avoids distant readiness work",
+      "pass": true,
+      "actual": {
+        "positionsChecked": 229460,
+        "readinessChecks": 0
+      }
+    },
+    {
+      "label": "Stationary GPU shadows defer redundant requests between accepted frames",
+      "pass": true,
+      "actual": {
+        "before": {
+          "frames": 8,
+          "requests": 7,
+          "refreshes": 5,
+          "deferred": 2,
+          "forced": 2,
+          "invalidations": 2
+        },
+        "after": {
+          "frames": 14,
+          "requests": 13,
+          "refreshes": 8,
+          "deferred": 5,
+          "forced": 2,
+          "invalidations": 2
+        }
+      }
+    },
+    {
+      "label": "Native GPU frames continue without fallback",
+      "pass": true
+    },
+    {
+      "label": "Hidden attached native meshes retain their presentation materials",
+      "pass": true,
+      "actual": {
+        "before": 1885,
+        "attached": 1909
+      }
+    },
+    {
+      "label": "Native GPU frames continue without fallback",
+      "pass": true
+    },
+    {
+      "label": "Detached native meshes retire materials and bindings",
+      "pass": true,
+      "actual": {
+        "attached": {
+          "ready": true,
+          "converted": 1913,
+          "effectMaterials": 6,
+          "unsupported": 0,
+          "roles": {
+            "ground-detail": 1,
+            "finish": 1121,
+            "pbr-atlas": 717,
+            "water": 14,
+            "voxel-ao": 111,
+            "alpha-hash": 434,
+            "grass": 306,
+            "native-fade": 2,
+            "crisp-sprite": 19,
+            "sprite-rim": 14,
+            "cutout-shadow": 19
+          },
+          "derivedInstanceBytes": 4950132,
+          "textureSynchronizations": 2716,
+          "textureUploads": 31,
+          "activeMaterials": 1909,
+          "materialRetirements": 4,
+          "layoutScans": 8700,
+          "textureWrappers": 31,
+          "activeEffectMaterials": 8,
+          "activePointGeometries": 2,
+          "activeBindings": 4056
+        },
+        "detached": {
+          "ready": true,
+          "converted": 1913,
+          "effectMaterials": 6,
+          "unsupported": 0,
+          "roles": {
+            "ground-detail": 1,
+            "finish": 1121,
+            "pbr-atlas": 717,
+            "water": 14,
+            "voxel-ao": 111,
+            "alpha-hash": 434,
+            "grass": 306,
+            "native-fade": 2,
+            "crisp-sprite": 19,
+            "sprite-rim": 14,
+            "cutout-shadow": 19
+          },
+          "derivedInstanceBytes": 4950132,
+          "textureSynchronizations": 2809,
+          "textureUploads": 31,
+          "activeMaterials": 1885,
+          "materialRetirements": 28,
+          "layoutScans": 10440,
+          "textureWrappers": 31,
+          "activeEffectMaterials": 8,
+          "activePointGeometries": 2,
+          "activeBindings": 4008
+        }
+      }
+    },
+    {
+      "label": "Native GPU frames continue without fallback",
+      "pass": true
+    },
+    {
+      "label": "walking.png: actual GPU colour buffer is opaque",
+      "pass": true,
+      "actual": 1
+    },
+    {
+      "label": "walking.png: actual GPU world pixels change",
+      "pass": true,
+      "actual": {
+        "changedPixels": 101687,
+        "changedFraction": 0.9928044208388659,
+        "meanMaxChannelDelta": 90.51802311958134
+      }
+    },
+    {
+      "label": "Genuine movement advances Natalie through alternating authored steps",
+      "pass": true,
+      "actual": {
+        "distance": 47.95790999999972,
+        "geometryFrames": 8,
+        "legs": [
+          "left",
+          "right"
+        ]
+      }
+    },
+    {
+      "label": "Moving the camera refreshes grass and lamp selection",
+      "pass": true
+    },
+    {
+      "label": "Native GPU frames continue without fallback",
+      "pass": true
+    },
+    {
+      "label": "Releasing movement restores an authored idle without recompiling its material",
+      "pass": true,
+      "actual": {
+        "authored": true,
+        "idle": true,
+        "direction": "back",
+        "frame": 0,
+        "leg": null,
+        "geometry": "2b4f1204-9a80-4478-bd3d-7ad184c3188f",
+        "map": "83b4130a-12b6-4f3a-95c4-115cbc2ff629",
+        "material": "4b6b5ef8-3aae-46f2-9d4e-d47824629e9d",
+        "materialVersion": 2
+      }
+    },
+    {
+      "label": "GPU submission remains bounded and all materials supported",
+      "pass": true,
+      "actual": {
+        "ready": true,
+        "converted": 1913,
+        "effectMaterials": 6,
+        "unsupported": 0,
+        "roles": {
+          "ground-detail": 1,
+          "finish": 1121,
+          "pbr-atlas": 717,
+          "water": 14,
+          "voxel-ao": 111,
+          "alpha-hash": 434,
+          "grass": 306,
+          "native-fade": 2,
+          "crisp-sprite": 19,
+          "sprite-rim": 14,
+          "cutout-shadow": 19
+        },
+        "derivedInstanceBytes": 4950132,
+        "textureSynchronizations": 2995,
+        "textureUploads": 31,
+        "activeMaterials": 1885,
+        "materialRetirements": 28,
+        "layoutScans": 13920,
+        "textureWrappers": 31,
+        "activeEffectMaterials": 8,
+        "activePointGeometries": 2,
+        "activeBindings": 4008
+      }
+    },
+    {
+      "label": "Native GPU frames continue without fallback",
+      "pass": true
+    },
+    {
+      "label": "Native GPU frames continue without fallback",
+      "pass": true
+    },
+    {
+      "label": "The hidden outdoor surface stops grass selection",
+      "pass": true,
+      "actual": {
+        "before": {
+          "patches": 159,
+          "activePatches": 43,
+          "fullPatches": 18,
+          "middlePatches": 12,
+          "farPatches": 13,
+          "vertices": 650052,
+          "fullVertices": 1072920,
+          "visible": false,
+          "selectionPasses": 455,
+          "patchChecks": 72345
+        },
+        "after": {
+          "patches": 159,
+          "activePatches": 43,
+          "fullPatches": 18,
+          "middlePatches": 12,
+          "farPatches": 13,
+          "vertices": 650052,
+          "fullVertices": 1072920,
+          "visible": false,
+          "selectionPasses": 455,
+          "patchChecks": 72345
+        }
+      }
+    },
+    {
+      "label": "The hidden outdoor life stops instance and point updates",
+      "pass": true,
+      "actual": {
+        "before": {
+          "ticks": 6707,
+          "hiddenTicks": 119,
+          "visible": false,
+          "bufferUpdates": 105408,
+          "matrixWrites": 4572072,
+          "pointWrites": 1561356,
+          "matricesPerTick": 694,
+          "pointsPerTick": 237
+        },
+        "after": {
+          "ticks": 6870,
+          "hiddenTicks": 282,
+          "visible": false,
+          "bufferUpdates": 105408,
+          "matrixWrites": 4572072,
+          "pointWrites": 1561356,
+          "matricesPerTick": 694,
+          "pointsPerTick": 237
+        }
+      }
+    },
+    {
+      "label": "The interior retains a finite fixed pool of eight lights",
+      "pass": true,
+      "actual": [
+        {
+          "visible": true,
+          "position": [
+            3996.85,
+            2.7,
+            -9.375
+          ],
+          "intensity": 20.39255432662022
+        },
+        {
+          "visible": true,
+          "position": [
+            4005.85,
+            1.0499999999999998,
+            -11.850000000000001
+          ],
+          "intensity": 19.374103541979444
+        },
+        {
+          "visible": true,
+          "position": [
+            3996.85,
+            2.7,
+            -9.375
+          ],
+          "intensity": 20.1336803652827
+        },
+        {
+          "visible": true,
+          "position": [
+            4005.85,
+            1.0499999999999998,
+            -11.850000000000001
+          ],
+          "intensity": 20.91269187724361
+        },
+        {
+          "visible": true,
+          "position": [
+            3996.85,
+            2.7,
+            -9.375
+          ],
+          "intensity": 21.382925108360876
+        },
+        {
+          "visible": true,
+          "position": [
+            4005.85,
+            1.0499999999999998,
+            -11.850000000000001
+          ],
+          "intensity": 21.817598635392837
+        },
+        {
+          "visible": true,
+          "position": [
+            3996.85,
+            2.7,
+            -9.375
+          ],
+          "intensity": 20.5869975180674
+        },
+        {
+          "visible": true,
+          "position": [
+            4005.85,
+            1.0499999999999998,
+            -11.850000000000001
+          ],
+          "intensity": 20.44331833432196
+        }
+      ]
+    },
+    {
+      "label": "Interior frames stop surface resource target scans",
+      "pass": true
+    },
+    {
+      "label": "Entering the workshop refreshes its shadow context",
+      "pass": true
+    },
+    {
+      "label": "Native GPU frames continue without fallback",
+      "pass": true
+    },
+    {
+      "label": "rowan-interior.png: actual GPU colour buffer is opaque",
+      "pass": true,
+      "actual": 1
+    },
+    {
+      "label": "rowan-interior.png: actual GPU world pixels change",
+      "pass": true,
+      "actual": {
+        "changedPixels": 102056,
+        "changedFraction": 0.9964070920877919,
+        "meanMaxChannelDelta": 96.38512458017652
+      }
+    },
+    {
+      "label": "Native GPU frames continue without fallback",
+      "pass": true
+    },
+    {
+      "label": "Returning outdoors refreshes grass and resumes ambient life",
+      "pass": true,
+      "actual": {
+        "grass": {
+          "patches": 159,
+          "activePatches": 46,
+          "fullPatches": 19,
+          "middlePatches": 12,
+          "farPatches": 15,
+          "vertices": 671106,
+          "fullVertices": 1225650,
+          "visible": true,
+          "selectionPasses": 456,
+          "patchChecks": 72504
+        },
+        "life": {
+          "ticks": 7356,
+          "hiddenTicks": 409,
+          "visible": true,
+          "bufferUpdates": 111152,
+          "matrixWrites": 4821218,
+          "pointWrites": 1646439,
+          "matricesPerTick": 694,
+          "pointsPerTick": 237
+        }
+      }
+    },
+    {
+      "label": "Returning outdoors refreshes the surface lamp selection",
+      "pass": true,
+      "actual": {
+        "selections": 457,
+        "cacheHits": 6899,
+        "distanceChecks": 32834,
+        "candidates": 72
+      }
+    },
+    {
+      "label": "Returning outside refreshes its shadow context",
+      "pass": true
+    },
+    {
+      "label": "Native GPU frames continue without fallback",
+      "pass": true
+    },
+    {
+      "label": "surface-return.png: actual GPU colour buffer is opaque",
+      "pass": true,
+      "actual": 1
+    },
+    {
+      "label": "surface-return.png: actual GPU world pixels change",
+      "pass": true,
+      "actual": {
+        "changedPixels": 93486,
+        "changedFraction": 0.9127352964149028,
+        "meanMaxChannelDelta": 70.27758142622822
+      }
+    },
+    {
+      "label": "Closing the village restores the farm",
+      "pass": true
+    },
+    {
+      "label": "No page, shader or loading errors",
+      "pass": true,
+      "actual": {
+        "errors": [],
+        "consoleErrors": [],
+        "externalRequests": [],
+        "failedRequests": []
+      }
+    }
+  ],
+  "errors": [],
+  "consoleErrors": [],
+  "externalRequests": [],
+  "failedRequests": [],
+  "pageCompositorLimitationObserved": true,
+  "submittedFramePassCounts": {
+    "15": 15,
+    "16": 19
+  },
+  "submittedFrameCount": 34,
+  "stationary": {
+    "cameraStill": true,
+    "targetStill": true
+  },
+  "shadowBudget": {
+    "frames": 35,
+    "requests": 34,
+    "refreshes": 20,
+    "deferred": 14,
+    "forced": 7,
+    "invalidations": 4
+  },
+  "nativeMaterialLifetime": {
+    "count": 24,
+    "before": {
+      "ready": true,
+      "converted": 1889,
+      "effectMaterials": 6,
+      "unsupported": 0,
+      "roles": {
+        "ground-detail": 1,
+        "finish": 1097,
+        "pbr-atlas": 717,
+        "water": 14,
+        "voxel-ao": 111,
+        "alpha-hash": 434,
+        "grass": 306,
+        "native-fade": 2,
+        "crisp-sprite": 19,
+        "sprite-rim": 14,
+        "cutout-shadow": 19
+      },
+      "derivedInstanceBytes": 4950132,
+      "textureSynchronizations": 2685,
+      "textureUploads": 31,
+      "activeMaterials": 1885,
+      "materialRetirements": 4,
+      "layoutScans": 8120,
+      "textureWrappers": 31,
+      "activeEffectMaterials": 8,
+      "activePointGeometries": 2,
+      "activeBindings": 4008
+    },
+    "attached": {
+      "ready": true,
+      "converted": 1913,
+      "effectMaterials": 6,
+      "unsupported": 0,
+      "roles": {
+        "ground-detail": 1,
+        "finish": 1121,
+        "pbr-atlas": 717,
+        "water": 14,
+        "voxel-ao": 111,
+        "alpha-hash": 434,
+        "grass": 306,
+        "native-fade": 2,
+        "crisp-sprite": 19,
+        "sprite-rim": 14,
+        "cutout-shadow": 19
+      },
+      "derivedInstanceBytes": 4950132,
+      "textureSynchronizations": 2716,
+      "textureUploads": 31,
+      "activeMaterials": 1909,
+      "materialRetirements": 4,
+      "layoutScans": 8700,
+      "textureWrappers": 31,
+      "activeEffectMaterials": 8,
+      "activePointGeometries": 2,
+      "activeBindings": 4056
+    },
+    "detached": {
+      "ready": true,
+      "converted": 1913,
+      "effectMaterials": 6,
+      "unsupported": 0,
+      "roles": {
+        "ground-detail": 1,
+        "finish": 1121,
+        "pbr-atlas": 717,
+        "water": 14,
+        "voxel-ao": 111,
+        "alpha-hash": 434,
+        "grass": 306,
+        "native-fade": 2,
+        "crisp-sprite": 19,
+        "sprite-rim": 14,
+        "cutout-shadow": 19
+      },
+      "derivedInstanceBytes": 4950132,
+      "textureSynchronizations": 2809,
+      "textureUploads": 31,
+      "activeMaterials": 1885,
+      "materialRetirements": 28,
+      "layoutScans": 10440,
+      "textureWrappers": 31,
+      "activeEffectMaterials": 8,
+      "activePointGeometries": 2,
+      "activeBindings": 4008
+    }
+  }
+}

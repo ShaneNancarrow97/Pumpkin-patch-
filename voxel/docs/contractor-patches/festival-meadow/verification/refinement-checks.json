@@ -1,0 +1,76 @@
+{
+  "file": "/workspace/Pumpkin Patch - Moonbrew Meadow.html",
+  "checks": [
+    {
+      "ok": true,
+      "label": "stock and drink names distinguish plain cocoa from specials"
+    },
+    {
+      "ok": true,
+      "label": "all cocoa prices and operating switches disable during tea break",
+      "data": {
+        "count": 10,
+        "disabled": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "a rejected stale price event restores the saved price without charging"
+    },
+    {
+      "ok": true,
+      "label": "prices become editable again after resuming"
+    },
+    {
+      "ok": true,
+      "label": "phone: refined menu fits with 44px controls",
+      "data": {
+        "width": 390,
+        "small": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold: refined menu fits with 44px controls",
+      "data": {
+        "width": 874,
+        "small": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape: refined menu fits with 44px controls",
+      "data": {
+        "width": 844,
+        "small": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "Escape dismisses the guest inspector"
+    },
+    {
+      "ok": true,
+      "label": "entering the house clears the outdoor guest inspector"
+    },
+    {
+      "ok": true,
+      "label": "returning outside does not revive the stale guest inspector"
+    },
+    {
+      "ok": true,
+      "label": "entering Skyla’s shop also clears the outdoor inspector"
+    },
+    {
+      "ok": true,
+      "label": "signage remains part of the voxel world without floating map labels"
+    },
+    {
+      "ok": true,
+      "label": "no page or console errors",
+      "data": []
+    }
+  ],
+  "errors": [],
+  "rendering": "Chromium/SwiftShader; bloom and shadows off for focused UI QA"
+}

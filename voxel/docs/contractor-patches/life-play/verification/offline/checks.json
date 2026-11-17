@@ -1,0 +1,11 @@
+{
+  "sha256": "51a39600e0032f7bd775f5088b70fb15af7862b645146e30522c9002ec4499c3",
+  "scope": "Fresh file:// launch in Chromium with default settings; no QA save or preferences. Browser emulation only.",
+  "passed": false,
+  "checks": [],
+  "errors": [],
+  "requests": [],
+  "failure": "Error: page.goto: net::ERR_BLOCKED_BY_ADMINISTRATOR at file:///workspace/Pumpkin-Patch-Life-Play.html\nCall log:\n\u001b[2m  - navigating to \"file:///workspace/Pumpkin-Patch-Life-Play.html\", waiting until \"load\"\u001b[22m\n",
+  "status": "blocked-by-managed-browser-policy",
+  "note": "file:// navigation was blocked before game bootstrap. This is not a successful local-file run. Exact standalone bytes pass the separate local HTTP release flow with no external runtime asset requests."
+}

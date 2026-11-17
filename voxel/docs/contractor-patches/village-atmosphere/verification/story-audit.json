@@ -1,0 +1,2411 @@
+{
+  "schema": 1,
+  "scope": "Review inventory, not an enforced story lint or an approved rewrite. Act labels are planning annotations only. Current IDs, gates, transactions and rewards remain authoritative.",
+  "counts": {
+    "entries": 77,
+    "sources": {
+      "legacy": 13,
+      "main": 23,
+      "friend": 41
+    },
+    "legacySteps": 46,
+    "legacyStepKinds": {
+      "tour": 1,
+      "talk": 13,
+      "gather": 3,
+      "deliver": 8,
+      "pay": 3,
+      "build": 2,
+      "give": 3,
+      "carve": 1,
+      "find": 3,
+      "sell": 1,
+      "place": 1,
+      "cook": 1,
+      "harvest": 3,
+      "root-out": 3
+    },
+    "chapterActivityKinds": {
+      "inspect": 59,
+      "puzzle": 63,
+      "restore": 16,
+      "reveal": 51,
+      "story-vein": 2,
+      "farm": 10
+    }
+  },
+  "duplicateTitles": [
+    [
+      {
+        "source": "main",
+        "id": "quarry-bell",
+        "title": "The Stone That Rang"
+      },
+      {
+        "source": "friend",
+        "id": "cast-opal-1",
+        "title": "The Stone That Rang"
+      }
+    ],
+    [
+      {
+        "source": "main",
+        "id": "restaurant-opening",
+        "title": "Supper After Midnight"
+      },
+      {
+        "source": "friend",
+        "id": "cast-cinder-5",
+        "title": "Supper After Midnight"
+      }
+    ],
+    [
+      {
+        "source": "main",
+        "id": "moor-stage",
+        "title": "A Silent Midway"
+      },
+      {
+        "source": "friend",
+        "id": "cast-corvus-1",
+        "title": "A Silent Midway"
+      }
+    ],
+    [
+      {
+        "source": "main",
+        "id": "moor-collection",
+        "title": "A Guest, Not a Customer"
+      },
+      {
+        "source": "friend",
+        "id": "cast-baron-4",
+        "title": "A Guest, Not a Customer"
+      }
+    ],
+    [
+      {
+        "source": "main",
+        "id": "moor-restored",
+        "title": "The Last Bow"
+      },
+      {
+        "source": "friend",
+        "id": "cast-corvus-5",
+        "title": "The Last Bow"
+      }
+    ]
+  ],
+  "repeatedMainShapes": [
+    {
+      "shape": "inspect \u2192 puzzle \u2192 restore",
+      "chapters": [
+        "green-research",
+        "green-workshop",
+        "quarry-bell",
+        "moor-stage",
+        "moor-collection",
+        "marsh-reflections",
+        "granny-bells",
+        "granny-eyes"
+      ]
+    },
+    {
+      "shape": "inspect \u2192 puzzle \u2192 reveal",
+      "chapters": [
+        "green-supper",
+        "restaurant-opening",
+        "granny-listens",
+        "granny-invited"
+      ]
+    },
+    {
+      "shape": "puzzle \u2192 restore \u2192 reveal",
+      "chapters": [
+        "copse-restored",
+        "moor-restored",
+        "marsh-restored"
+      ]
+    }
+  ],
+  "puzzleCluesContainingEverySolutionToken": [
+    {
+      "activity": "green-research:2",
+      "chapter": "green-research",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "green-workshop:2",
+      "chapter": "green-workshop",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "copse-threads:3",
+      "chapter": "copse-threads",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "copse-lantern:3",
+      "chapter": "copse-lantern",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "copse-restored:1",
+      "chapter": "copse-restored",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "quarry-supper:2",
+      "chapter": "quarry-supper",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "moor-stage:2",
+      "chapter": "moor-stage",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "moor-collection:2",
+      "chapter": "moor-collection",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "marsh-reflections:2",
+      "chapter": "marsh-reflections",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "lantern-night:1",
+      "chapter": "lantern-night",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "granny-listens:2",
+      "chapter": "granny-listens",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "granny-bells:2",
+      "chapter": "granny-bells",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "granny-table:2",
+      "chapter": "granny-table",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "granny-invited:2",
+      "chapter": "granny-invited",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "cast-mabel-1:work",
+      "chapter": "cast-mabel-1",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "cast-mabel-3:work",
+      "chapter": "cast-mabel-3",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "cast-mabel-5:work",
+      "chapter": "cast-mabel-5",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "cast-tansy-1:work",
+      "chapter": "cast-tansy-1",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "cast-tansy-2:work",
+      "chapter": "cast-tansy-2",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "cast-tansy-4:work",
+      "chapter": "cast-tansy-4",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "cast-opal-3:work",
+      "chapter": "cast-opal-3",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "cast-opal-5:work",
+      "chapter": "cast-opal-5",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "cast-cinder-1:work",
+      "chapter": "cast-cinder-1",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "cast-cinder-3:work",
+      "chapter": "cast-cinder-3",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "cast-corvus-1:work",
+      "chapter": "cast-corvus-1",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "cast-corvus-4:work",
+      "chapter": "cast-corvus-4",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "cast-corvus-5:work",
+      "chapter": "cast-corvus-5",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "cast-baron-1:work",
+      "chapter": "cast-baron-1",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "cast-baron-3:work",
+      "chapter": "cast-baron-3",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "cast-baron-4:work",
+      "chapter": "cast-baron-4",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "cast-granny-1:work",
+      "chapter": "cast-granny-1",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "cast-granny-3:work",
+      "chapter": "cast-granny-3",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "cast-elowen-3:work",
+      "chapter": "cast-elowen-3",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "cast-elowen-4:work",
+      "chapter": "cast-elowen-4",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "cast-rowan-3:work",
+      "chapter": "cast-rowan-3",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "cast-rowan-4:work",
+      "chapter": "cast-rowan-4",
+      "mechanism": "sequence"
+    },
+    {
+      "activity": "cast-rowan-5:work",
+      "chapter": "cast-rowan-5",
+      "mechanism": "sequence"
+    }
+  ],
+  "smallTalk": {
+    "mabel": {
+      "encounters": 3,
+      "spokenLines": 15
+    },
+    "tansy": {
+      "encounters": 3,
+      "spokenLines": 15
+    },
+    "opal": {
+      "encounters": 3,
+      "spokenLines": 15
+    },
+    "cinder": {
+      "encounters": 3,
+      "spokenLines": 15
+    },
+    "corvus": {
+      "encounters": 3,
+      "spokenLines": 15
+    },
+    "baron": {
+      "encounters": 3,
+      "spokenLines": 15
+    },
+    "granny": {
+      "encounters": 3,
+      "spokenLines": 15
+    }
+  },
+  "chapters": [
+    {
+      "source": "legacy",
+      "id": "invitation",
+      "title": "The Moving Address",
+      "who": "elowen",
+      "area": "green",
+      "act": "I \u00b7 Welcoming the Green",
+      "needs": [],
+      "steps": [
+        {
+          "type": "tour",
+          "who": "elowen"
+        },
+        {
+          "type": "talk",
+          "who": "rowan"
+        },
+        {
+          "type": "talk",
+          "who": "elowen"
+        }
+      ]
+    },
+    {
+      "source": "legacy",
+      "id": "rowan-1",
+      "title": "Loose Boards",
+      "who": "rowan",
+      "area": "green",
+      "act": "I \u00b7 Welcoming the Green",
+      "needs": [
+        "invitation"
+      ],
+      "steps": [
+        {
+          "type": "gather",
+          "who": "rowan"
+        },
+        {
+          "type": "gather",
+          "who": "rowan"
+        },
+        {
+          "type": "deliver",
+          "who": "rowan"
+        }
+      ]
+    },
+    {
+      "source": "legacy",
+      "id": "rowan-stall",
+      "title": "Open for Business",
+      "who": "rowan",
+      "area": "green",
+      "act": "I \u00b7 Welcoming the Green",
+      "needs": [
+        "rowan-1"
+      ],
+      "steps": [
+        {
+          "type": "gather",
+          "who": "rowan"
+        },
+        {
+          "type": "deliver",
+          "who": "rowan"
+        },
+        {
+          "type": "pay",
+          "who": "rowan"
+        }
+      ]
+    },
+    {
+      "source": "legacy",
+      "id": "rowan-2",
+      "title": "A Door of His Own",
+      "who": "rowan",
+      "area": "green",
+      "act": "I \u00b7 Welcoming the Green",
+      "needs": [
+        "rowan-stall"
+      ],
+      "steps": [
+        {
+          "type": "deliver",
+          "who": "rowan"
+        },
+        {
+          "type": "pay",
+          "who": "rowan"
+        },
+        {
+          "type": "build",
+          "who": "rowan"
+        },
+        {
+          "type": "talk",
+          "who": "rowan"
+        }
+      ]
+    },
+    {
+      "source": "legacy",
+      "id": "rowan-pumpkins",
+      "title": "A Door Made of Pumpkin",
+      "who": "rowan",
+      "area": "green",
+      "act": "I \u00b7 Welcoming the Green",
+      "needs": [
+        "rowan-2"
+      ],
+      "steps": [
+        {
+          "type": "give",
+          "who": "rowan"
+        },
+        {
+          "type": "carve",
+          "who": "rowan"
+        },
+        {
+          "type": "talk",
+          "who": "rowan"
+        }
+      ]
+    },
+    {
+      "source": "legacy",
+      "id": "elowen-1",
+      "title": "A Letter That Will Not Stay Still",
+      "who": "elowen",
+      "area": "green",
+      "act": "I \u00b7 Welcoming the Green",
+      "needs": [
+        "invitation"
+      ],
+      "steps": [
+        {
+          "type": "find",
+          "who": "elowen"
+        },
+        {
+          "type": "find",
+          "who": "elowen"
+        },
+        {
+          "type": "find",
+          "who": "elowen"
+        },
+        {
+          "type": "talk",
+          "who": "elowen"
+        }
+      ]
+    },
+    {
+      "source": "legacy",
+      "id": "elowen-moonlight",
+      "title": "Ink by Pumpkinlight",
+      "who": "elowen",
+      "area": "green",
+      "act": "I \u00b7 Welcoming the Green",
+      "needs": [
+        "elowen-1"
+      ],
+      "steps": [
+        {
+          "type": "give",
+          "who": "elowen"
+        },
+        {
+          "type": "sell",
+          "who": "elowen"
+        },
+        {
+          "type": "talk",
+          "who": "elowen"
+        }
+      ]
+    },
+    {
+      "source": "legacy",
+      "id": "elowen-2",
+      "title": "A Room for Quiet Wings",
+      "who": "elowen",
+      "area": "green",
+      "act": "I \u00b7 Welcoming the Green",
+      "needs": [
+        "elowen-1"
+      ],
+      "steps": [
+        {
+          "type": "deliver",
+          "who": "elowen"
+        },
+        {
+          "type": "pay",
+          "who": "elowen"
+        },
+        {
+          "type": "build",
+          "who": "elowen"
+        },
+        {
+          "type": "place",
+          "who": "elowen"
+        },
+        {
+          "type": "talk",
+          "who": "elowen"
+        }
+      ]
+    },
+    {
+      "source": "legacy",
+      "id": "two-doorbells",
+      "title": "Two Doorbells",
+      "who": "elowen",
+      "area": "green",
+      "act": "I \u00b7 Welcoming the Green",
+      "needs": [
+        "rowan-2",
+        "elowen-2"
+      ],
+      "steps": [
+        {
+          "type": "give",
+          "who": "elowen"
+        },
+        {
+          "type": "cook",
+          "who": "elowen"
+        },
+        {
+          "type": "talk",
+          "who": "rowan"
+        }
+      ]
+    },
+    {
+      "source": "legacy",
+      "id": "lantern-keepers",
+      "title": "The Lantern Keepers",
+      "who": "elowen",
+      "area": "green",
+      "act": "I \u00b7 Welcoming the Green",
+      "needs": [
+        "two-doorbells"
+      ],
+      "steps": [
+        {
+          "type": "deliver",
+          "who": "rowan"
+        },
+        {
+          "type": "harvest",
+          "who": "elowen"
+        },
+        {
+          "type": "talk",
+          "who": "elowen"
+        }
+      ]
+    },
+    {
+      "source": "legacy",
+      "id": "blight-first-signs",
+      "title": "A Bruise Beneath the Green",
+      "who": "elowen",
+      "area": "green",
+      "act": "II \u00b7 Blackroot thread",
+      "needs": [
+        "invitation"
+      ],
+      "steps": [
+        {
+          "type": "root-out",
+          "who": "elowen"
+        },
+        {
+          "type": "deliver",
+          "who": "elowen"
+        },
+        {
+          "type": "talk",
+          "who": "rowan"
+        }
+      ]
+    },
+    {
+      "source": "legacy",
+      "id": "blight-root-and-remedy",
+      "title": "Roots, Remedies and Supper",
+      "who": "rowan",
+      "area": "green",
+      "act": "II \u00b7 Blackroot thread",
+      "needs": [
+        "blight-first-signs"
+      ],
+      "steps": [
+        {
+          "type": "talk",
+          "who": "rowan"
+        },
+        {
+          "type": "deliver",
+          "who": "rowan"
+        },
+        {
+          "type": "root-out",
+          "who": "rowan"
+        },
+        {
+          "type": "harvest",
+          "who": "rowan"
+        },
+        {
+          "type": "talk",
+          "who": "elowen"
+        }
+      ]
+    },
+    {
+      "source": "legacy",
+      "id": "blight-lantern-ward",
+      "title": "A Light the Roots Remember",
+      "who": "elowen",
+      "area": "green",
+      "act": "II \u00b7 Blackroot thread",
+      "needs": [
+        "blight-root-and-remedy"
+      ],
+      "steps": [
+        {
+          "type": "root-out",
+          "who": "elowen"
+        },
+        {
+          "type": "deliver",
+          "who": "rowan"
+        },
+        {
+          "type": "harvest",
+          "who": "elowen"
+        },
+        {
+          "type": "talk",
+          "who": "elowen"
+        }
+      ]
+    },
+    {
+      "source": "main",
+      "id": "green-research",
+      "title": "The Ink Beneath the Roots",
+      "who": "elowen",
+      "area": "green",
+      "act": "I \u00b7 Welcoming the Green",
+      "needs": "legacy:invitation",
+      "steps": [
+        {
+          "id": "green-research:1",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "green-research:2",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "green-research:3",
+          "type": "restore",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "main",
+      "id": "green-workshop",
+      "title": "A Door Worth Knocking On",
+      "who": "rowan",
+      "area": "green",
+      "act": "I \u00b7 Welcoming the Green",
+      "needs": "green-research",
+      "steps": [
+        {
+          "id": "green-workshop:1",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "green-workshop:2",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "green-workshop:3",
+          "type": "restore",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "main",
+      "id": "green-supper",
+      "title": "A Seat for Somebody",
+      "who": "vesper",
+      "area": "green",
+      "act": "I \u00b7 Welcoming the Green",
+      "needs": "legacy:two-doorbells",
+      "steps": [
+        {
+          "id": "green-supper:1",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "green-supper:2",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "green-supper:3",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "main",
+      "id": "copse-threads",
+      "title": "A Stitch in the Dark",
+      "who": "mabel",
+      "area": "copse",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "legacy:two-doorbells",
+      "steps": [
+        {
+          "id": "copse-threads:1",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "copse-threads:2",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "copse-threads:3",
+          "type": "puzzle",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "main",
+      "id": "copse-lantern",
+      "title": "The Stone That Hums",
+      "who": "tansy",
+      "area": "cave-shallows",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "copse-threads",
+      "steps": [
+        {
+          "id": "copse-lantern:1",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "copse-lantern:2",
+          "type": "story-vein",
+          "mechanism": null
+        },
+        {
+          "id": "copse-lantern:3",
+          "type": "puzzle",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "main",
+      "id": "copse-restored",
+      "title": "Every Window a Welcome",
+      "who": "mabel",
+      "area": "copse",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "copse-lantern",
+      "steps": [
+        {
+          "id": "copse-restored:1",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "copse-restored:2",
+          "type": "restore",
+          "mechanism": null
+        },
+        {
+          "id": "copse-restored:3",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "main",
+      "id": "quarry-bell",
+      "title": "The Stone That Rang",
+      "who": "opal",
+      "area": "quarry",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "copse-restored",
+      "steps": [
+        {
+          "id": "quarry-bell:1",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "quarry-bell:2",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "quarry-bell:3",
+          "type": "restore",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "main",
+      "id": "quarry-supper",
+      "title": "The Supper That Never Arrived",
+      "who": "cinder",
+      "area": "quarry",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "quarry-bell",
+      "steps": [
+        {
+          "id": "quarry-supper:1",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "quarry-supper:2",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "quarry-supper:3",
+          "type": "farm",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "main",
+      "id": "restaurant-opening",
+      "title": "Supper After Midnight",
+      "who": "cinder",
+      "area": "quarry",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "quarry-supper",
+      "steps": [
+        {
+          "id": "restaurant-opening:1",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "restaurant-opening:2",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "restaurant-opening:3",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "main",
+      "id": "moor-stage",
+      "title": "A Silent Midway",
+      "who": "corvus",
+      "area": "moor",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "restaurant-opening",
+      "steps": [
+        {
+          "id": "moor-stage:1",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "moor-stage:2",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "moor-stage:3",
+          "type": "restore",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "main",
+      "id": "moor-collection",
+      "title": "A Guest, Not a Customer",
+      "who": "baron",
+      "area": "moor",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "moor-stage",
+      "steps": [
+        {
+          "id": "moor-collection:1",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "moor-collection:2",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "moor-collection:3",
+          "type": "restore",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "main",
+      "id": "moor-restored",
+      "title": "The Last Bow",
+      "who": "corvus",
+      "area": "moor",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "moor-collection",
+      "steps": [
+        {
+          "id": "moor-restored:1",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "moor-restored:2",
+          "type": "restore",
+          "mechanism": null
+        },
+        {
+          "id": "moor-restored:3",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "main",
+      "id": "marsh-reflections",
+      "title": "The Path That Remembered",
+      "who": "elowen",
+      "area": "marsh",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "four-seals",
+      "steps": [
+        {
+          "id": "marsh-reflections:1",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "marsh-reflections:2",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "marsh-reflections:3",
+          "type": "restore",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "main",
+      "id": "marsh-heart",
+      "title": "The Root Cathedral",
+      "who": "elowen",
+      "area": "cave-cathedral",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "marsh-reflections",
+      "steps": [
+        {
+          "id": "marsh-heart:1",
+          "type": "story-vein",
+          "mechanism": null
+        },
+        {
+          "id": "marsh-heart:2",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "marsh-heart:3",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "main",
+      "id": "marsh-restored",
+      "title": "A Window for Every Light",
+      "who": "opal",
+      "area": "marsh",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "marsh-heart",
+      "steps": [
+        {
+          "id": "marsh-restored:1",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "marsh-restored:2",
+          "type": "restore",
+          "mechanism": null
+        },
+        {
+          "id": "marsh-restored:3",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "main",
+      "id": "festival-prepare",
+      "title": "An Invitation for Everyone",
+      "who": "vesper",
+      "area": "green",
+      "act": "III \u00b7 Lantern Night",
+      "needs": "marsh-restored",
+      "steps": [
+        {
+          "id": "festival-prepare:1",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "festival-prepare:2",
+          "type": "farm",
+          "mechanism": null
+        },
+        {
+          "id": "festival-prepare:3",
+          "type": "farm",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "main",
+      "id": "festival-arrange",
+      "title": "The Village Is the Table",
+      "who": "rowan",
+      "area": "green",
+      "act": "III \u00b7 Lantern Night",
+      "needs": "festival-prepare",
+      "steps": [
+        {
+          "id": "festival-arrange:1",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "festival-arrange:2",
+          "type": "restore",
+          "mechanism": null
+        },
+        {
+          "id": "festival-arrange:3",
+          "type": "inspect",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "main",
+      "id": "lantern-night",
+      "title": "The Village That Remembered",
+      "who": "elowen",
+      "area": "green",
+      "act": "III \u00b7 Lantern Night",
+      "needs": "festival-arrange",
+      "steps": [
+        {
+          "id": "lantern-night:1",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "lantern-night:2",
+          "type": "reveal",
+          "mechanism": null
+        },
+        {
+          "id": "lantern-night:3",
+          "type": "restore",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "main",
+      "id": "granny-listens",
+      "title": "The House That Listens",
+      "who": "granny",
+      "area": "acre",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "copse-restored",
+      "steps": [
+        {
+          "id": "granny-listens:1",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "granny-listens:2",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "granny-listens:3",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "main",
+      "id": "granny-bells",
+      "title": "Three Bells Before Supper",
+      "who": "granny",
+      "area": "acre",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "granny-listens",
+      "steps": [
+        {
+          "id": "granny-bells:1",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "granny-bells:2",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "granny-bells:3",
+          "type": "restore",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "main",
+      "id": "granny-eyes",
+      "title": "Eyes for the Watchers",
+      "who": "granny",
+      "area": "acre",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "granny-bells",
+      "steps": [
+        {
+          "id": "granny-eyes:1",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "granny-eyes:2",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "granny-eyes:3",
+          "type": "restore",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "main",
+      "id": "granny-table",
+      "title": "A Place at the Table",
+      "who": "granny",
+      "area": "acre",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "granny-eyes",
+      "steps": [
+        {
+          "id": "granny-table:1",
+          "type": "farm",
+          "mechanism": null
+        },
+        {
+          "id": "granny-table:2",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "granny-table:3",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "main",
+      "id": "granny-invited",
+      "title": "Nobody Leaves Granny Behind",
+      "who": "granny",
+      "area": "acre",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "granny-table",
+      "steps": [
+        {
+          "id": "granny-invited:1",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "granny-invited:2",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "granny-invited:3",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-mabel-1",
+      "title": "A Loose Thread",
+      "who": "mabel",
+      "area": "copse",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "copse-threads",
+      "steps": [
+        {
+          "id": "cast-mabel-1:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-mabel-1:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-mabel-1:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-mabel-2",
+      "title": "Somewhere to Hang a Coat",
+      "who": "mabel",
+      "area": "copse",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "cast-mabel-1",
+      "steps": [
+        {
+          "id": "cast-mabel-2:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-mabel-2:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-mabel-2:homecoming",
+          "type": "restore",
+          "mechanism": null
+        },
+        {
+          "id": "cast-mabel-2:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-mabel-3",
+      "title": "Pattern of a Promise",
+      "who": "mabel",
+      "area": "copse",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "cast-mabel-2",
+      "steps": [
+        {
+          "id": "cast-mabel-3:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-mabel-3:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-mabel-3:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-mabel-4",
+      "title": "Dressed for the Midway",
+      "who": "mabel",
+      "area": "copse",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "cast-mabel-3",
+      "steps": [
+        {
+          "id": "cast-mabel-4:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-mabel-4:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-mabel-4:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-mabel-5",
+      "title": "Every Stitch a Story",
+      "who": "mabel",
+      "area": "copse",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "cast-mabel-4",
+      "steps": [
+        {
+          "id": "cast-mabel-5:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-mabel-5:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-mabel-5:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-tansy-1",
+      "title": "The Useful Weeds",
+      "who": "tansy",
+      "area": "copse",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "copse-threads",
+      "steps": [
+        {
+          "id": "cast-tansy-1:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-tansy-1:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-tansy-1:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-tansy-2",
+      "title": "A Path Through the Brambles",
+      "who": "tansy",
+      "area": "copse",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "cast-tansy-1",
+      "steps": [
+        {
+          "id": "cast-tansy-2:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-tansy-2:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-tansy-2:homecoming",
+          "type": "restore",
+          "mechanism": null
+        },
+        {
+          "id": "cast-tansy-2:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-tansy-3",
+      "title": "What the Moths Remember",
+      "who": "tansy",
+      "area": "copse",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "cast-tansy-2",
+      "steps": [
+        {
+          "id": "cast-tansy-3:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-tansy-3:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-tansy-3:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-tansy-4",
+      "title": "A Basket for Everyone",
+      "who": "tansy",
+      "area": "copse",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "cast-tansy-3",
+      "steps": [
+        {
+          "id": "cast-tansy-4:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-tansy-4:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-tansy-4:home",
+          "type": "farm",
+          "mechanism": null
+        },
+        {
+          "id": "cast-tansy-4:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-tansy-5",
+      "title": "The Garden Party",
+      "who": "tansy",
+      "area": "copse",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "cast-tansy-4",
+      "steps": [
+        {
+          "id": "cast-tansy-5:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-tansy-5:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-tansy-5:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-opal-1",
+      "title": "The Stone That Rang",
+      "who": "opal",
+      "area": "quarry",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "quarry-bell",
+      "steps": [
+        {
+          "id": "cast-opal-1:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-opal-1:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-opal-1:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-opal-2",
+      "title": "Light Through Old Windows",
+      "who": "opal",
+      "area": "quarry",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "cast-opal-1",
+      "steps": [
+        {
+          "id": "cast-opal-2:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-opal-2:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-opal-2:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-opal-3",
+      "title": "Weight of a Name",
+      "who": "opal",
+      "area": "quarry",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "cast-opal-2",
+      "steps": [
+        {
+          "id": "cast-opal-3:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-opal-3:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-opal-3:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-opal-4",
+      "title": "Beautifully Unfinished",
+      "who": "opal",
+      "area": "quarry",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "cast-opal-3",
+      "steps": [
+        {
+          "id": "cast-opal-4:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-opal-4:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-opal-4:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-opal-5",
+      "title": "A Window for the Moon",
+      "who": "opal",
+      "area": "quarry",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "cast-opal-4",
+      "steps": [
+        {
+          "id": "cast-opal-5:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-opal-5:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-opal-5:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-cinder-1",
+      "title": "A Table for Nobody",
+      "who": "cinder",
+      "area": "quarry",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "quarry-bell",
+      "steps": [
+        {
+          "id": "cast-cinder-1:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-cinder-1:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-cinder-1:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-cinder-2",
+      "title": "Open at Last",
+      "who": "cinder",
+      "area": "quarry",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "cast-cinder-1",
+      "steps": [
+        {
+          "id": "cast-cinder-2:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-cinder-2:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-cinder-2:home",
+          "type": "farm",
+          "mechanism": null
+        },
+        {
+          "id": "cast-cinder-2:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-cinder-3",
+      "title": "The Missing Course",
+      "who": "cinder",
+      "area": "quarry",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "cast-cinder-2",
+      "steps": [
+        {
+          "id": "cast-cinder-3:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-cinder-3:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-cinder-3:home",
+          "type": "farm",
+          "mechanism": null
+        },
+        {
+          "id": "cast-cinder-3:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-cinder-4",
+      "title": "Too Many Pans",
+      "who": "cinder",
+      "area": "quarry",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "cast-cinder-3",
+      "steps": [
+        {
+          "id": "cast-cinder-4:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-cinder-4:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-cinder-4:home",
+          "type": "farm",
+          "mechanism": null
+        },
+        {
+          "id": "cast-cinder-4:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-cinder-5",
+      "title": "Supper After Midnight",
+      "who": "cinder",
+      "area": "quarry",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "cast-cinder-4",
+      "steps": [
+        {
+          "id": "cast-cinder-5:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-cinder-5:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-cinder-5:home",
+          "type": "farm",
+          "mechanism": null
+        },
+        {
+          "id": "cast-cinder-5:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-corvus-1",
+      "title": "A Silent Midway",
+      "who": "corvus",
+      "area": "moor",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "moor-stage",
+      "steps": [
+        {
+          "id": "cast-corvus-1:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-corvus-1:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-corvus-1:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-corvus-2",
+      "title": "A Tent Worth Coming Home To",
+      "who": "corvus",
+      "area": "moor",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "cast-corvus-1",
+      "steps": [
+        {
+          "id": "cast-corvus-2:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-corvus-2:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-corvus-2:homecoming",
+          "type": "restore",
+          "mechanism": null
+        },
+        {
+          "id": "cast-corvus-2:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-corvus-3",
+      "title": "The Mirror\u2019s Favourite Lie",
+      "who": "corvus",
+      "area": "moor",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "cast-corvus-2",
+      "steps": [
+        {
+          "id": "cast-corvus-3:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-corvus-3:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-corvus-3:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-corvus-4",
+      "title": "A Full House",
+      "who": "corvus",
+      "area": "moor",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "cast-corvus-3",
+      "steps": [
+        {
+          "id": "cast-corvus-4:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-corvus-4:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-corvus-4:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-corvus-5",
+      "title": "The Last Bow",
+      "who": "corvus",
+      "area": "moor",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "cast-corvus-4",
+      "steps": [
+        {
+          "id": "cast-corvus-5:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-corvus-5:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-corvus-5:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-baron-1",
+      "title": "An Expensive Mistake",
+      "who": "baron",
+      "area": "moor",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "moor-stage",
+      "steps": [
+        {
+          "id": "cast-baron-1:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-baron-1:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-baron-1:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-baron-2",
+      "title": "Rooms Worth Living In",
+      "who": "baron",
+      "area": "moor",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "cast-baron-1",
+      "steps": [
+        {
+          "id": "cast-baron-2:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-baron-2:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-baron-2:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-baron-3",
+      "title": "The Catalogue of Impossible Things",
+      "who": "baron",
+      "area": "moor",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "cast-baron-2",
+      "steps": [
+        {
+          "id": "cast-baron-3:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-baron-3:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-baron-3:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-baron-4",
+      "title": "A Guest, Not a Customer",
+      "who": "baron",
+      "area": "moor",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "cast-baron-3",
+      "steps": [
+        {
+          "id": "cast-baron-4:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-baron-4:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-baron-4:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-baron-5",
+      "title": "Something Money Cannot Buy",
+      "who": "baron",
+      "area": "moor",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "cast-baron-4",
+      "steps": [
+        {
+          "id": "cast-baron-5:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-baron-5:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-baron-5:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-granny-1",
+      "title": "Buttons Before Biscuits",
+      "who": "granny",
+      "area": "acre",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "granny-listens",
+      "steps": [
+        {
+          "id": "cast-granny-1:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-granny-1:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-granny-1:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-granny-2",
+      "title": "Her Sunday Best",
+      "who": "granny",
+      "area": "acre",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "cast-granny-1",
+      "steps": [
+        {
+          "id": "cast-granny-2:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-granny-2:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-granny-2:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-granny-3",
+      "title": "Under the Kitchen Floor",
+      "who": "granny",
+      "area": "acre",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "cast-granny-2",
+      "steps": [
+        {
+          "id": "cast-granny-3:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-granny-3:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-granny-3:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-granny-4",
+      "title": "A Chair for Two",
+      "who": "granny",
+      "area": "acre",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "cast-granny-3",
+      "steps": [
+        {
+          "id": "cast-granny-4:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-granny-4:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-granny-4:home",
+          "type": "farm",
+          "mechanism": null
+        },
+        {
+          "id": "cast-granny-4:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-granny-5",
+      "title": "The Next Knock",
+      "who": "granny",
+      "area": "acre",
+      "act": "II \u00b7 Restoring the districts",
+      "needs": "cast-granny-4",
+      "steps": [
+        {
+          "id": "cast-granny-5:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-granny-5:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-granny-5:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-elowen-3",
+      "title": "The Constellation Between Pages",
+      "who": "elowen",
+      "area": "green",
+      "act": "I \u00b7 Welcoming the Green",
+      "needs": "legacy:elowen-2",
+      "steps": [
+        {
+          "id": "cast-elowen-3:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-elowen-3:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-elowen-3:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-elowen-4",
+      "title": "The Page She Kept",
+      "who": "elowen",
+      "area": "green",
+      "act": "I \u00b7 Welcoming the Green",
+      "needs": "cast-elowen-3",
+      "steps": [
+        {
+          "id": "cast-elowen-4:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-elowen-4:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-elowen-4:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-elowen-5",
+      "title": "An Invitation Accepted",
+      "who": "elowen",
+      "area": "green",
+      "act": "I \u00b7 Welcoming the Green",
+      "needs": "cast-elowen-4",
+      "steps": [
+        {
+          "id": "cast-elowen-5:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-elowen-5:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-elowen-5:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-rowan-3",
+      "title": "The Bridge With Too Many Pieces",
+      "who": "rowan",
+      "area": "green",
+      "act": "I \u00b7 Welcoming the Green",
+      "needs": "legacy:rowan-2",
+      "steps": [
+        {
+          "id": "cast-rowan-3:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-rowan-3:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-rowan-3:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-rowan-4",
+      "title": "Made to Last",
+      "who": "rowan",
+      "area": "green",
+      "act": "I \u00b7 Welcoming the Green",
+      "needs": "cast-rowan-3",
+      "steps": [
+        {
+          "id": "cast-rowan-4:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-rowan-4:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-rowan-4:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    },
+    {
+      "source": "friend",
+      "id": "cast-rowan-5",
+      "title": "The Housewarming He Forgot",
+      "who": "rowan",
+      "area": "green",
+      "act": "I \u00b7 Welcoming the Green",
+      "needs": "cast-rowan-4",
+      "steps": [
+        {
+          "id": "cast-rowan-5:clue",
+          "type": "inspect",
+          "mechanism": null
+        },
+        {
+          "id": "cast-rowan-5:work",
+          "type": "puzzle",
+          "mechanism": null
+        },
+        {
+          "id": "cast-rowan-5:reveal",
+          "type": "reveal",
+          "mechanism": null
+        }
+      ]
+    }
+  ]
+}

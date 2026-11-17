@@ -1,0 +1,297 @@
+{
+  "file": "/tmp/Pumpkin-Patch-Mothlight-After-Dark.html",
+  "baseline": true,
+  "uiOnly": false,
+  "tvOnly": false,
+  "worldOnly": true,
+  "htmlSha256": "0ebe0c57436becfccd44f87b47bf36e1ab8e01b8edfc58421cf38be4a33ac786",
+  "bytes": 60582366,
+  "harnessSha256": "70383114df180366b8f05798ccff54684838f2e4d6f87e73c3caca2dcfb47140",
+  "fixtureSha256": "8c4f22501f3217f4d466c57b95ca0988a8d10f7c92275719177c27fc533790be",
+  "stateVersion": 20,
+  "preferences": {
+    "music": false,
+    "sound": false,
+    "voiceEnabled": false,
+    "frameRate": "30",
+    "renderQuality": "sharp",
+    "voxelCharacters": false,
+    "glow": true,
+    "shadows": true,
+    "villageTrackedQuest": "green-research"
+  },
+  "staging": {
+    "duskClock": 1800,
+    "period": 2700,
+    "phase": "dusk",
+    "owner": "natalie",
+    "views": {
+      "entrance": {
+        "x": 87,
+        "z": -7.5,
+        "yaw": 0,
+        "pitch": 0.3,
+        "distance": 13
+      },
+      "detail": {
+        "x": 83,
+        "z": -3,
+        "yaw": -0.12,
+        "pitch": 0.3,
+        "distance": 8
+      },
+      "granny": {
+        "x": -138,
+        "z": 179.25,
+        "yaw": 0,
+        "pitch": 0.24,
+        "distance": 12
+      },
+      "square": {
+        "x": 87,
+        "z": 78,
+        "yaw": 0,
+        "pitch": 0.3,
+        "distance": 13
+      }
+    },
+    "wallClock": "2026-11-13T21:00:00Z",
+    "randomSeed": 20261113
+  },
+  "scope": "Exact offline HTML served unchanged over loopback. Normal native RAF, renderer and composer throughout; no held draws or manual renders. A declared progressed fixture opens existing gates without claiming authored story completion. place() and saved-clock staging compose matching views; keyboard and injected standard Gamepad API exercise actual input. No physical Bluetooth or device FPS certification.",
+  "checks": [
+    {
+      "label": "The staged entrance is the playable Natalie village at the existing dusk phase",
+      "pass": true,
+      "actual": {
+        "position": {
+          "x": 87,
+          "z": -7.5
+        },
+        "who": "natalie",
+        "atmosphere": {
+          "district": "green",
+          "phase": "dusk",
+          "worldUnits": true,
+          "cycleSeconds": 2700,
+          "addedLights": 0,
+          "addedPasses": 0
+        },
+        "fidelity": null,
+        "contact": {
+          "capacity": 32,
+          "count": 13,
+          "drawCalls": 1,
+          "triangles": 26,
+          "lights": 0,
+          "textures": 0,
+          "uploads": 2
+        },
+        "lights": 8,
+        "meshes": 1884,
+        "instances": 386260,
+        "memory": {
+          "geometries": 218,
+          "textures": 54
+        },
+        "programs": 88,
+        "lastRenderPass": {
+          "frame": 268,
+          "calls": 1,
+          "triangles": 1,
+          "points": 0,
+          "lines": 0
+        }
+      }
+    },
+    {
+      "label": "Normal rendering completes without page, console, shader or external-request errors",
+      "pass": true,
+      "actual": {
+        "count": 89,
+        "failed": []
+      }
+    }
+  ],
+  "errors": [],
+  "consoleErrors": [],
+  "externalRequests": [],
+  "screenshots": [
+    "entrance-world.png",
+    "entrance-journal.png",
+    "entrance-detail.png",
+    "granny-cottage.png",
+    "moonclock-square.png"
+  ],
+  "views": [
+    {
+      "id": "entrance",
+      "position": {
+        "x": 87,
+        "z": -7.5
+      },
+      "who": "natalie",
+      "atmosphere": {
+        "district": "green",
+        "phase": "dusk",
+        "worldUnits": true,
+        "cycleSeconds": 2700,
+        "addedLights": 0,
+        "addedPasses": 0
+      },
+      "fidelity": null,
+      "contact": {
+        "capacity": 32,
+        "count": 13,
+        "drawCalls": 1,
+        "triangles": 26,
+        "lights": 0,
+        "textures": 0,
+        "uploads": 2
+      },
+      "lights": 8,
+      "meshes": 1884,
+      "instances": 386260,
+      "memory": {
+        "geometries": 218,
+        "textures": 54
+      },
+      "programs": 88,
+      "lastRenderPass": {
+        "frame": 268,
+        "calls": 1,
+        "triangles": 1,
+        "points": 0,
+        "lines": 0
+      }
+    },
+    {
+      "id": "detail",
+      "position": {
+        "x": 83,
+        "z": -3
+      },
+      "who": "natalie",
+      "atmosphere": {
+        "district": "green",
+        "phase": "dusk",
+        "worldUnits": true,
+        "cycleSeconds": 2700,
+        "addedLights": 0,
+        "addedPasses": 0
+      },
+      "fidelity": null,
+      "contact": {
+        "capacity": 32,
+        "count": 13,
+        "drawCalls": 1,
+        "triangles": 26,
+        "lights": 0,
+        "textures": 0,
+        "uploads": 22
+      },
+      "lights": 8,
+      "meshes": 1884,
+      "instances": 386418,
+      "memory": {
+        "geometries": 223,
+        "textures": 64
+      },
+      "programs": 89,
+      "lastRenderPass": {
+        "frame": 659,
+        "calls": 1,
+        "triangles": 1,
+        "points": 0,
+        "lines": 0
+      }
+    },
+    {
+      "id": "granny",
+      "position": {
+        "x": -138,
+        "z": 179.25
+      },
+      "who": "natalie",
+      "atmosphere": {
+        "district": "acre",
+        "phase": "dusk",
+        "worldUnits": true,
+        "cycleSeconds": 2700,
+        "addedLights": 0,
+        "addedPasses": 0
+      },
+      "fidelity": null,
+      "contact": {
+        "capacity": 32,
+        "count": 13,
+        "drawCalls": 1,
+        "triangles": 26,
+        "lights": 0,
+        "textures": 0,
+        "uploads": 33
+      },
+      "lights": 8,
+      "meshes": 1884,
+      "instances": 384181,
+      "memory": {
+        "geometries": 234,
+        "textures": 66
+      },
+      "programs": 89,
+      "lastRenderPass": {
+        "frame": 829,
+        "calls": 1,
+        "triangles": 1,
+        "points": 0,
+        "lines": 0
+      }
+    },
+    {
+      "id": "square",
+      "position": {
+        "x": 87,
+        "z": 78
+      },
+      "who": "natalie",
+      "atmosphere": {
+        "district": "square",
+        "phase": "dusk",
+        "worldUnits": true,
+        "cycleSeconds": 2700,
+        "addedLights": 0,
+        "addedPasses": 0
+      },
+      "fidelity": null,
+      "contact": {
+        "capacity": 32,
+        "count": 13,
+        "drawCalls": 1,
+        "triangles": 26,
+        "lights": 0,
+        "textures": 0,
+        "uploads": 44
+      },
+      "lights": 8,
+      "meshes": 1884,
+      "instances": 387002,
+      "memory": {
+        "geometries": 239,
+        "textures": 67
+      },
+      "programs": 89,
+      "lastRenderPass": {
+        "frame": 999,
+        "calls": 1,
+        "triangles": 1,
+        "points": 0,
+        "lines": 0
+      }
+    }
+  ],
+  "programs": {
+    "count": 89,
+    "failed": []
+  },
+  "passed": true
+}

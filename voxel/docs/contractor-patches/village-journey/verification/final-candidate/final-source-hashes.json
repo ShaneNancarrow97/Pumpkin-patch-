@@ -1,0 +1,22 @@
+{
+  "html": "/workspace/Pumpkin-Patch-Village-Journey.html",
+  "sha256": "f6a755b2b692f899d132df07b148dacba229711c8a1c67a7d8bcdeacaacf2edd",
+  "runtimeSource": {
+    "src/main.js": "b053ec2919e90d01d87b0c9a297648e1a57af1266e94e75668d1d9a50614eca4",
+    "src/scene.js": "c8d59650888ce288a4479aa367e9f3673f66402d0739dff6d222bf62ddfaf40c",
+    "src/model.js": "a2880ac30cc74afce09f3784ef42982170d84680d5a49c4709e8e3ddec06ad3b",
+    "src/village-game.js": "fab56cd84957dd14a6e04c5c485dc198264ab6ff44d0164580fedda73a272cff",
+    "src/village-world.js": "4ec6d81b8d2b6fbea135b2df92acaa0c3e0d94b035c828edabe2dd8818c81c8c",
+    "src/ground.js": "0ab35cff57fca289bba965a0538dc1384869627eb417862f1c611cf55ae1a058",
+    "src/grass-detail.js": "2280a4724f0688373fab2183fc0221050e7789b3c7348e2afb323095a79aab02",
+    "src/rules/fountain.js": "7f23b623ab2b62ea1e0bc9c32c063732cd7ff84b242c9a02eac17cfc30f12e23",
+    "src/rules/cooking-visits.js": "6a3052a859435ce5fb7c58e8c8e234d3b7868b031cb8696e97e4caccde15a7bf",
+    "src/ui/village-chapters.js": "101e6cc08097f0d9db5d6a3fb7a5d0145fde6ced77e12b87cf5574b452aa7396",
+    "src/ui/furniture-set-icons.js": "9ae573a84d3b94885c198195eee4d285d8f589b075eb88c7f33eb9155a8d8ad4",
+    "src/ui/music-tracks.js": "2152eaeb98e42ee3237be1d749188ca9fa9a1fc9842c79bb4d39fdf82b0be59c",
+    "assets/directional/shane-base.webp": "91e2bd13c921f491ade3c6f47db72dfb24448572be408c7761763c509267df50",
+    "assets/directional/natalie-base.webp": "f65562c90450ac3bd3a306525d4e87f041cb46de626cad7dc30ce9232c0bf8bf",
+    "assets/furniture-set-icons/furniture-sets.webp": "156f0c6bbe43777e3e9b6737486baa25160f0b09458d80b92e7344515b301377",
+    "assets/terrain/grass-tile.webp": "f8ef63a4315540d0df66050e23a047930df9404bf6d4bdcc61c20822184b5a5f"
+  }
+}

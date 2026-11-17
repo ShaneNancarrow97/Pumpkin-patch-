@@ -1,0 +1,224 @@
+{
+  "source": "tansy-front-repair.png",
+  "preservedSource": "tansy-before-front-repair.png",
+  "output": "tansy.png",
+  "targetHeight": 147,
+  "footLine": 151,
+  "rowHeight": 157,
+  "alphaCutoff": 32,
+  "sourceColumnCuts": [
+    0,
+    274,
+    548,
+    821,
+    1092,
+    1364,
+    1636,
+    1906,
+    2172
+  ],
+  "columnOrder": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "frames": [
+    {
+      "column": 0,
+      "repairCrop": [
+        0,
+        0,
+        274,
+        724
+      ],
+      "alphaBounds": [
+        9,
+        145,
+        265,
+        588
+      ],
+      "sharedScale": 0.33182844243792325,
+      "paste": [
+        36,
+        4
+      ],
+      "size": [
+        85,
+        147
+      ]
+    },
+    {
+      "column": 1,
+      "repairCrop": [
+        274,
+        0,
+        548,
+        724
+      ],
+      "alphaBounds": [
+        10,
+        145,
+        263,
+        585
+      ],
+      "sharedScale": 0.33182844243792325,
+      "paste": [
+        194,
+        5
+      ],
+      "size": [
+        84,
+        146
+      ]
+    },
+    {
+      "column": 2,
+      "repairCrop": [
+        548,
+        0,
+        821,
+        724
+      ],
+      "alphaBounds": [
+        11,
+        145,
+        258,
+        585
+      ],
+      "sharedScale": 0.33182844243792325,
+      "paste": [
+        351,
+        5
+      ],
+      "size": [
+        82,
+        146
+      ]
+    },
+    {
+      "column": 3,
+      "repairCrop": [
+        821,
+        0,
+        1092,
+        724
+      ],
+      "alphaBounds": [
+        16,
+        145,
+        258,
+        585
+      ],
+      "sharedScale": 0.33182844243792325,
+      "paste": [
+        508,
+        5
+      ],
+      "size": [
+        80,
+        146
+      ]
+    },
+    {
+      "column": 4,
+      "repairCrop": [
+        1092,
+        0,
+        1364,
+        724
+      ],
+      "alphaBounds": [
+        12,
+        145,
+        258,
+        587
+      ],
+      "sharedScale": 0.33182844243792325,
+      "paste": [
+        664,
+        4
+      ],
+      "size": [
+        82,
+        147
+      ]
+    },
+    {
+      "column": 5,
+      "repairCrop": [
+        1364,
+        0,
+        1636,
+        724
+      ],
+      "alphaBounds": [
+        15,
+        145,
+        259,
+        585
+      ],
+      "sharedScale": 0.33182844243792325,
+      "paste": [
+        822,
+        5
+      ],
+      "size": [
+        81,
+        146
+      ]
+    },
+    {
+      "column": 6,
+      "repairCrop": [
+        1636,
+        0,
+        1906,
+        724
+      ],
+      "alphaBounds": [
+        15,
+        145,
+        259,
+        585
+      ],
+      "sharedScale": 0.33182844243792325,
+      "paste": [
+        978,
+        5
+      ],
+      "size": [
+        81,
+        146
+      ]
+    },
+    {
+      "column": 7,
+      "repairCrop": [
+        1906,
+        0,
+        2172,
+        724
+      ],
+      "alphaBounds": [
+        12,
+        145,
+        258,
+        586
+      ],
+      "sharedScale": 0.33182844243792325,
+      "paste": [
+        1134,
+        5
+      ],
+      "size": [
+        82,
+        146
+      ]
+    }
+  ]
+}

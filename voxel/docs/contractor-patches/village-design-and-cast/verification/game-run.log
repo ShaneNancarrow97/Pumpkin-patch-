@@ -1,0 +1,71 @@
+PASS level four requires the invitation even at its earned threshold
+PASS declared level-three save boots in the real farm
+PASS More contains a visible Mothlight journey
+PASS More enters the actual village and accepts Elowen's invitation
+PASS the first visit starts Elowen's tour
+PASS farm favour cards stay off the village playfield
+SHOT game-desktop-first-tour.png
+PASS Skip tour completes the tour step through its visible control
+PASS the home-goal action returns to the saved village quest
+SHOT game-desktop-rowan-introduction.png
+PASS Rowan invitation: conversation reaches Done
+PASS Rowan's finished introduction advances the invitation
+PASS Elowen invitation: conversation reaches Done
+PASS meeting both neighbours unlocks gathering through the real invitation
+PASS invitation pays its once-only £150 reward
+PASS completed invitation satisfies the level-four home requirement
+PASS rowan-1: conversation reaches Done
+PASS logs and stone gathering advances Loose Boards to its delivery
+PASS a freshly gathered node cannot pay out twice
+PASS Rowan consumes the materials, repairs the bench and pays £60
+PASS rowan-stall: conversation reaches Done
+PASS stall repair consumes six logs, two stone and three fibre
+PASS the real £200 handover opens Rowan's stall
+SHOT game-desktop-rowan-stall.png
+PASS one visible price click buys a stool and deducts its exact price
+PASS actual-game interior velvet-bat opens
+SHOT game-inside-velvet-bat.png
+PASS actual-game interior elowen-library opens
+SHOT game-inside-elowen-library.png
+PASS actual-game interior rowan-workshop opens
+SHOT game-inside-rowan-workshop.png
+PASS desktop: no horizontal overflow
+PASS desktop: controls meet 44px targets
+PASS desktop: controls stay at least 12px
+SHOT game-desktop-green.png
+PASS desktop-journal: no horizontal overflow
+PASS desktop-journal: controls meet 44px targets
+PASS desktop-journal: controls stay at least 12px
+SHOT game-desktop-journal.png
+PASS phone: no horizontal overflow
+PASS phone: controls meet 44px targets
+PASS phone: controls stay at least 12px
+SHOT game-phone-green.png
+PASS phone-journal: no horizontal overflow
+PASS phone-journal: controls meet 44px targets
+PASS phone-journal: controls stay at least 12px
+SHOT game-phone-journal.png
+PASS landscape: no horizontal overflow
+PASS landscape: controls meet 44px targets
+PASS landscape: controls stay at least 12px
+SHOT game-landscape-green.png
+PASS landscape-journal: no horizontal overflow
+PASS landscape-journal: controls meet 44px targets
+PASS landscape-journal: controls stay at least 12px
+SHOT game-landscape-journal.png
+PASS fold: no horizontal overflow
+PASS fold: controls meet 44px targets
+PASS fold: controls stay at least 12px
+SHOT game-fold-green.png
+PASS fold-journal: no horizontal overflow
+PASS fold-journal: controls meet 44px targets
+PASS fold-journal: controls stay at least 12px
+SHOT game-fold-journal.png
+PASS Farm returns from Mothlight through its visible control
+PASS village travel preserves the fixture's house, garden, wardrobe, stock and helping hands
+SHOT game-returned-farm.png
+PASS reload preserves coins, completed quests, gathering, owned stool, purchase counts and reward claims
+PASS revisiting Mothlight keeps the finished tour and does not repay its rewards
+PASS actual-game journey makes no external asset or font requests
+PASS actual-game village flow has no page or console errors
+{"passed":true,"checks":55,"errors":0,"screenshots":15,"sha256":"1dc758ae753244335539f4a57a19d2cbe31932a0f5874914591e064b4f82102f"}

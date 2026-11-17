@@ -1,0 +1,224 @@
+{
+  "source": "opal-front-repair.png",
+  "preservedSource": "opal-before-front-repair.png",
+  "output": "opal.png",
+  "targetHeight": 147,
+  "footLine": 151,
+  "rowHeight": 157,
+  "alphaCutoff": 32,
+  "sourceColumnCuts": [
+    0,
+    291,
+    554,
+    824,
+    1092,
+    1358,
+    1622,
+    1888,
+    2172
+  ],
+  "columnOrder": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "frames": [
+    {
+      "column": 0,
+      "repairCrop": [
+        0,
+        0,
+        291,
+        724
+      ],
+      "alphaBounds": [
+        52,
+        141,
+        266,
+        597
+      ],
+      "sharedScale": 0.32096069868995636,
+      "paste": [
+        44,
+        5
+      ],
+      "size": [
+        69,
+        146
+      ]
+    },
+    {
+      "column": 1,
+      "repairCrop": [
+        291,
+        0,
+        554,
+        724
+      ],
+      "alphaBounds": [
+        27,
+        141,
+        235,
+        592
+      ],
+      "sharedScale": 0.32096069868995636,
+      "paste": [
+        202,
+        6
+      ],
+      "size": [
+        67,
+        145
+      ]
+    },
+    {
+      "column": 2,
+      "repairCrop": [
+        554,
+        0,
+        824,
+        724
+      ],
+      "alphaBounds": [
+        28,
+        140,
+        245,
+        596
+      ],
+      "sharedScale": 0.32096069868995636,
+      "paste": [
+        357,
+        5
+      ],
+      "size": [
+        70,
+        146
+      ]
+    },
+    {
+      "column": 3,
+      "repairCrop": [
+        824,
+        0,
+        1092,
+        724
+      ],
+      "alphaBounds": [
+        26,
+        140,
+        245,
+        594
+      ],
+      "sharedScale": 0.32096069868995636,
+      "paste": [
+        514,
+        5
+      ],
+      "size": [
+        70,
+        146
+      ]
+    },
+    {
+      "column": 4,
+      "repairCrop": [
+        1092,
+        0,
+        1358,
+        724
+      ],
+      "alphaBounds": [
+        24,
+        140,
+        242,
+        595
+      ],
+      "sharedScale": 0.32096069868995636,
+      "paste": [
+        670,
+        5
+      ],
+      "size": [
+        70,
+        146
+      ]
+    },
+    {
+      "column": 5,
+      "repairCrop": [
+        1358,
+        0,
+        1622,
+        724
+      ],
+      "alphaBounds": [
+        24,
+        140,
+        238,
+        593
+      ],
+      "sharedScale": 0.32096069868995636,
+      "paste": [
+        828,
+        6
+      ],
+      "size": [
+        69,
+        145
+      ]
+    },
+    {
+      "column": 6,
+      "repairCrop": [
+        1622,
+        0,
+        1888,
+        724
+      ],
+      "alphaBounds": [
+        27,
+        140,
+        240,
+        594
+      ],
+      "sharedScale": 0.32096069868995636,
+      "paste": [
+        984,
+        5
+      ],
+      "size": [
+        68,
+        146
+      ]
+    },
+    {
+      "column": 7,
+      "repairCrop": [
+        1888,
+        0,
+        2172,
+        724
+      ],
+      "alphaBounds": [
+        29,
+        140,
+        247,
+        598
+      ],
+      "sharedScale": 0.32096069868995636,
+      "paste": [
+        1140,
+        4
+      ],
+      "size": [
+        70,
+        147
+      ]
+    }
+  ]
+}

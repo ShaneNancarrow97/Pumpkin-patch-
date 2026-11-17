@@ -1,0 +1,282 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Hollow-Exterior.html",
+  "sha256": "4e84fd080a749e129020da081afdc064cdc29328678c208210e72a4111cccbf5",
+  "focus": "final-visual",
+  "started": "2026-10-25T14:41:05.183Z",
+  "fixture": "QA-only funds; gate derived from current content",
+  "passed": true,
+  "checks": [
+    {
+      "ok": true,
+      "label": "the final sign refinement renders derelict"
+    },
+    {
+      "ok": true,
+      "label": "the final sign refinement renders tier-3"
+    },
+    {
+      "ok": true,
+      "label": "the final sign refinement renders tier-5"
+    },
+    {
+      "ok": true,
+      "label": "world target is visible",
+      "data": {
+        "x": 639.9999999999999,
+        "y": 464.04985915003516
+      }
+    },
+    {
+      "ok": true,
+      "label": "the final visible entrance still enters the foyer"
+    },
+    {
+      "ok": true,
+      "label": "the final entrance and sign refinement cannot change farm or ticket state"
+    },
+    {
+      "ok": true,
+      "label": "final phone: upgrade menu fits with 44px targets",
+      "data": {
+        "width": 390,
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "the exterior retains one main WebGL canvas"
+    },
+    {
+      "ok": true,
+      "label": "the standalone HTML fetches no external runtime assets",
+      "data": []
+    },
+    {
+      "ok": true,
+      "label": "the exterior reports no page or console errors",
+      "data": []
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "samples": [
+    {
+      "name": "desktop-derelict",
+      "status": {
+        "status": "derelict",
+        "tier": 1,
+        "rebuilds": 2,
+        "boxes": 2065,
+        "reducedMotion": false,
+        "doorReady": false,
+        "pooledLamps": 2,
+        "effects": {
+          "reducedMotion": false,
+          "active": false,
+          "time": 1.1166000000000058,
+          "shutters": 0,
+          "silhouettes": 0,
+          "ghost": false
+        },
+        "footprint": {
+          "w": 8,
+          "d": 5
+        }
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 800,
+        "postprocessWidth": 1280,
+        "postprocessHeight": 800,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.00078125,
+          0.00125
+        ],
+        "touchDevice": true,
+        "calls": 57,
+        "triangles": 580726,
+        "geometries": 57,
+        "textures": 18
+      }
+    },
+    {
+      "name": "desktop-tier-3",
+      "status": {
+        "status": "ready",
+        "tier": 3,
+        "rebuilds": 3,
+        "boxes": 2401,
+        "reducedMotion": false,
+        "doorReady": true,
+        "pooledLamps": 2,
+        "effects": {
+          "reducedMotion": false,
+          "active": true,
+          "time": 1.7831999999999977,
+          "shutters": 4,
+          "silhouettes": 0,
+          "ghost": false
+        },
+        "footprint": {
+          "w": 8,
+          "d": 5
+        }
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 800,
+        "postprocessWidth": 1280,
+        "postprocessHeight": 800,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.00078125,
+          0.00125
+        ],
+        "touchDevice": true,
+        "calls": 64,
+        "triangles": 585458,
+        "geometries": 57,
+        "textures": 18
+      }
+    },
+    {
+      "name": "desktop-tier-5",
+      "status": {
+        "status": "ready",
+        "tier": 5,
+        "rebuilds": 4,
+        "boxes": 2636,
+        "reducedMotion": false,
+        "doorReady": true,
+        "pooledLamps": 2,
+        "effects": {
+          "reducedMotion": false,
+          "active": true,
+          "time": 2.433199999999998,
+          "shutters": 4,
+          "silhouettes": 0,
+          "ghost": false
+        },
+        "footprint": {
+          "w": 8,
+          "d": 5
+        }
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 800,
+        "postprocessWidth": 1280,
+        "postprocessHeight": 800,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.00078125,
+          0.00125
+        ],
+        "touchDevice": true,
+        "calls": 64,
+        "triangles": 588278,
+        "geometries": 57,
+        "textures": 18
+      }
+    },
+    {
+      "name": "phone-upgrade-menu",
+      "status": {
+        "status": "ready",
+        "tier": 5,
+        "rebuilds": 4,
+        "boxes": 2636,
+        "reducedMotion": false,
+        "doorReady": true,
+        "pooledLamps": 2,
+        "effects": {
+          "reducedMotion": false,
+          "active": true,
+          "time": 3.59990000000004,
+          "shutters": 4,
+          "silhouettes": 0,
+          "ghost": false
+        },
+        "footprint": {
+          "w": 8,
+          "d": 5
+        }
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 390,
+        "bufferHeight": 844,
+        "postprocessWidth": 390,
+        "postprocessHeight": 844,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.002564102564102564,
+          0.001184834123222749
+        ],
+        "touchDevice": true,
+        "calls": 41,
+        "triangles": 588084,
+        "geometries": 74,
+        "textures": 19
+      }
+    },
+    {
+      "name": "fold-tier-5",
+      "status": {
+        "status": "ready",
+        "tier": 5,
+        "rebuilds": 4,
+        "boxes": 2636,
+        "reducedMotion": false,
+        "doorReady": true,
+        "pooledLamps": 2,
+        "effects": {
+          "reducedMotion": false,
+          "active": true,
+          "time": 4.266500000000045,
+          "shutters": 4,
+          "silhouettes": 0,
+          "ghost": false
+        },
+        "footprint": {
+          "w": 8,
+          "d": 5
+        }
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 874,
+        "bufferHeight": 787,
+        "postprocessWidth": 874,
+        "postprocessHeight": 787,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.0011441647597254005,
+          0.0012706480304955528
+        ],
+        "touchDevice": true,
+        "calls": 103,
+        "triangles": 629796,
+        "geometries": 76,
+        "textures": 19
+      }
+    }
+  ],
+  "rendering": "One Chromium/SwiftShader process; performance/DPR1, bloom/shadows/mist/lake lights off. Viewport checks do not establish physical Fold frame rate. Managed browser policy blocks direct file:// and native fullscreen."
+}

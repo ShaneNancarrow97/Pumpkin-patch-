@@ -1,0 +1,20 @@
+{
+  "created": "2026-11-08",
+  "purpose": "Custom illustrated village navigation, map landmarks and gathering-tool UI icons",
+  "method": "image_gen generation using viewed local garden and furniture icon references",
+  "originalGeneratedPath": "/workspace/generated_images/exec-75cf4003-7fb9-4041-a1dc-0d0f5a9a5124.png",
+  "source": "source.png",
+  "sourceSha256": "ae7c0208658877ed9441b01dc69d78fce4ffc4fd5f5ce6d3363619c31fd56009",
+  "sourceSize": [
+    1448,
+    1086
+  ],
+  "prompt": "prompt.txt",
+  "references": [
+    "../home/garden-icons.webp",
+    "../furniture-set-icons/furniture-sets.webp"
+  ],
+  "runtime": "../village-ui-icons/village-ui.webp",
+  "technicalProcessing": "Equal-grid crop, alpha under24 cleanup, aspect-preserving normalisation, sharedWebPatlas packing and contact preview. Pillow does not draw icon artwork.",
+  "runtimeBudgetBytes": 200000
+}

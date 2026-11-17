@@ -1,0 +1,1106 @@
+{
+  "front": {
+    "file": "front.png",
+    "sha256": "1c601030d1fcead6a99ec020fdf9b5feb6666c7608713a69d7e20747a63e2ded",
+    "grid": {
+      "columns": 4,
+      "rows": 2
+    },
+    "crops": [
+      {
+        "phase": 0,
+        "box": [
+          0,
+          0,
+          443,
+          443
+        ],
+        "alphaBounds": [
+          130,
+          14,
+          319,
+          435
+        ],
+        "bodyHeight": 421
+      },
+      {
+        "phase": 1,
+        "box": [
+          443,
+          0,
+          886,
+          443
+        ],
+        "alphaBounds": [
+          130,
+          16,
+          320,
+          435
+        ],
+        "bodyHeight": 419
+      },
+      {
+        "phase": 2,
+        "box": [
+          886,
+          0,
+          1330,
+          443
+        ],
+        "alphaBounds": [
+          130,
+          15,
+          323,
+          435
+        ],
+        "bodyHeight": 420
+      },
+      {
+        "phase": 3,
+        "box": [
+          1330,
+          0,
+          1774,
+          443
+        ],
+        "alphaBounds": [
+          125,
+          14,
+          316,
+          435
+        ],
+        "bodyHeight": 421
+      },
+      {
+        "phase": 4,
+        "box": [
+          0,
+          443,
+          443,
+          887
+        ],
+        "alphaBounds": [
+          121,
+          15,
+          316,
+          434
+        ],
+        "bodyHeight": 419
+      },
+      {
+        "phase": 5,
+        "box": [
+          443,
+          443,
+          886,
+          887
+        ],
+        "alphaBounds": [
+          124,
+          15,
+          316,
+          434
+        ],
+        "bodyHeight": 419
+      },
+      {
+        "phase": 6,
+        "box": [
+          886,
+          443,
+          1330,
+          887
+        ],
+        "alphaBounds": [
+          126,
+          16,
+          317,
+          434
+        ],
+        "bodyHeight": 418
+      },
+      {
+        "phase": 7,
+        "box": [
+          1330,
+          443,
+          1774,
+          887
+        ],
+        "alphaBounds": [
+          132,
+          16,
+          323,
+          432
+        ],
+        "bodyHeight": 416
+      }
+    ]
+  },
+  "frontRight": {
+    "file": "frontRight.png",
+    "sha256": "a61fdcfffcc2ecf7aef030a5f93119f9b858ec82c93fbfe8afb1c0a9d5981dc4",
+    "grid": {
+      "columns": 4,
+      "rows": 2
+    },
+    "crops": [
+      {
+        "phase": 0,
+        "box": [
+          0,
+          0,
+          443,
+          443
+        ],
+        "alphaBounds": [
+          86,
+          10,
+          364,
+          433
+        ],
+        "bodyHeight": 423
+      },
+      {
+        "phase": 1,
+        "box": [
+          443,
+          0,
+          886,
+          443
+        ],
+        "alphaBounds": [
+          106,
+          12,
+          302,
+          434
+        ],
+        "bodyHeight": 422
+      },
+      {
+        "phase": 2,
+        "box": [
+          886,
+          0,
+          1330,
+          443
+        ],
+        "alphaBounds": [
+          146,
+          12,
+          309,
+          432
+        ],
+        "bodyHeight": 420
+      },
+      {
+        "phase": 3,
+        "box": [
+          1330,
+          0,
+          1774,
+          443
+        ],
+        "alphaBounds": [
+          111,
+          12,
+          361,
+          428
+        ],
+        "bodyHeight": 416
+      },
+      {
+        "phase": 4,
+        "box": [
+          0,
+          443,
+          443,
+          887
+        ],
+        "alphaBounds": [
+          82,
+          12,
+          362,
+          437
+        ],
+        "bodyHeight": 425
+      },
+      {
+        "phase": 5,
+        "box": [
+          443,
+          443,
+          886,
+          887
+        ],
+        "alphaBounds": [
+          105,
+          13,
+          315,
+          437
+        ],
+        "bodyHeight": 424
+      },
+      {
+        "phase": 6,
+        "box": [
+          886,
+          443,
+          1330,
+          887
+        ],
+        "alphaBounds": [
+          125,
+          13,
+          302,
+          439
+        ],
+        "bodyHeight": 426
+      },
+      {
+        "phase": 7,
+        "box": [
+          1330,
+          443,
+          1774,
+          887
+        ],
+        "alphaBounds": [
+          87,
+          13,
+          380,
+          433
+        ],
+        "bodyHeight": 420
+      }
+    ]
+  },
+  "right": {
+    "file": "right-repair.png",
+    "sha256": "509affcad9186bb9b99228047e0503fc74c07c99f89afdd6ccdbc885378ba346",
+    "grid": {
+      "columns": 4,
+      "rows": 2
+    },
+    "crops": [
+      {
+        "phase": 0,
+        "box": [
+          0,
+          0,
+          443,
+          443
+        ],
+        "alphaBounds": [
+          72,
+          10,
+          374,
+          428
+        ],
+        "bodyHeight": 418
+      },
+      {
+        "phase": 1,
+        "box": [
+          443,
+          0,
+          886,
+          443
+        ],
+        "alphaBounds": [
+          105,
+          18,
+          317,
+          429
+        ],
+        "bodyHeight": 411
+      },
+      {
+        "phase": 2,
+        "box": [
+          886,
+          0,
+          1330,
+          443
+        ],
+        "alphaBounds": [
+          150,
+          10,
+          318,
+          429
+        ],
+        "bodyHeight": 419
+      },
+      {
+        "phase": 3,
+        "box": [
+          1330,
+          0,
+          1774,
+          443
+        ],
+        "alphaBounds": [
+          94,
+          12,
+          379,
+          426
+        ],
+        "bodyHeight": 414
+      },
+      {
+        "phase": 4,
+        "box": [
+          0,
+          443,
+          443,
+          887
+        ],
+        "alphaBounds": [
+          67,
+          15,
+          371,
+          430
+        ],
+        "bodyHeight": 415
+      },
+      {
+        "phase": 5,
+        "box": [
+          443,
+          443,
+          886,
+          887
+        ],
+        "alphaBounds": [
+          103,
+          23,
+          321,
+          430
+        ],
+        "bodyHeight": 407
+      },
+      {
+        "phase": 6,
+        "box": [
+          886,
+          443,
+          1330,
+          887
+        ],
+        "alphaBounds": [
+          125,
+          14,
+          312,
+          431
+        ],
+        "bodyHeight": 417
+      },
+      {
+        "phase": 7,
+        "box": [
+          1330,
+          443,
+          1774,
+          887
+        ],
+        "alphaBounds": [
+          90,
+          15,
+          378,
+          427
+        ],
+        "bodyHeight": 412
+      }
+    ]
+  },
+  "backRight": {
+    "file": "backRight.png",
+    "sha256": "a04e5c735e4e2919a134b31a0be49d3fcaf209d0a72d2a75a675aa8131e48931",
+    "grid": {
+      "columns": 4,
+      "rows": 2
+    },
+    "crops": [
+      {
+        "phase": 0,
+        "box": [
+          0,
+          0,
+          443,
+          443
+        ],
+        "alphaBounds": [
+          99,
+          12,
+          360,
+          439
+        ],
+        "bodyHeight": 427
+      },
+      {
+        "phase": 1,
+        "box": [
+          443,
+          0,
+          886,
+          443
+        ],
+        "alphaBounds": [
+          112,
+          12,
+          342,
+          434
+        ],
+        "bodyHeight": 422
+      },
+      {
+        "phase": 2,
+        "box": [
+          886,
+          0,
+          1330,
+          443
+        ],
+        "alphaBounds": [
+          144,
+          12,
+          329,
+          432
+        ],
+        "bodyHeight": 420
+      },
+      {
+        "phase": 3,
+        "box": [
+          1330,
+          0,
+          1774,
+          443
+        ],
+        "alphaBounds": [
+          99,
+          12,
+          371,
+          432
+        ],
+        "bodyHeight": 420
+      },
+      {
+        "phase": 4,
+        "box": [
+          0,
+          443,
+          443,
+          887
+        ],
+        "alphaBounds": [
+          77,
+          12,
+          364,
+          433
+        ],
+        "bodyHeight": 421
+      },
+      {
+        "phase": 5,
+        "box": [
+          443,
+          443,
+          886,
+          887
+        ],
+        "alphaBounds": [
+          95,
+          13,
+          334,
+          433
+        ],
+        "bodyHeight": 420
+      },
+      {
+        "phase": 6,
+        "box": [
+          886,
+          443,
+          1330,
+          887
+        ],
+        "alphaBounds": [
+          105,
+          13,
+          338,
+          433
+        ],
+        "bodyHeight": 420
+      },
+      {
+        "phase": 7,
+        "box": [
+          1330,
+          443,
+          1774,
+          887
+        ],
+        "alphaBounds": [
+          94,
+          13,
+          373,
+          430
+        ],
+        "bodyHeight": 417
+      }
+    ]
+  },
+  "back": {
+    "file": "back.png",
+    "sha256": "b83e4d66b36fc6bd64cfc54c919b1e26a04b380f79b1847e0c3ce7a988b03050",
+    "grid": {
+      "columns": 4,
+      "rows": 2
+    },
+    "crops": [
+      {
+        "phase": 0,
+        "box": [
+          0,
+          0,
+          443,
+          443
+        ],
+        "alphaBounds": [
+          117,
+          11,
+          317,
+          435
+        ],
+        "bodyHeight": 424
+      },
+      {
+        "phase": 1,
+        "box": [
+          443,
+          0,
+          886,
+          443
+        ],
+        "alphaBounds": [
+          115,
+          11,
+          316,
+          425
+        ],
+        "bodyHeight": 414
+      },
+      {
+        "phase": 2,
+        "box": [
+          886,
+          0,
+          1330,
+          443
+        ],
+        "alphaBounds": [
+          115,
+          11,
+          314,
+          435
+        ],
+        "bodyHeight": 424
+      },
+      {
+        "phase": 3,
+        "box": [
+          1330,
+          0,
+          1774,
+          443
+        ],
+        "alphaBounds": [
+          108,
+          11,
+          313,
+          433
+        ],
+        "bodyHeight": 422
+      },
+      {
+        "phase": 4,
+        "box": [
+          0,
+          443,
+          443,
+          887
+        ],
+        "alphaBounds": [
+          107,
+          11,
+          315,
+          432
+        ],
+        "bodyHeight": 421
+      },
+      {
+        "phase": 5,
+        "box": [
+          443,
+          443,
+          886,
+          887
+        ],
+        "alphaBounds": [
+          110,
+          11,
+          318,
+          431
+        ],
+        "bodyHeight": 420
+      },
+      {
+        "phase": 6,
+        "box": [
+          886,
+          443,
+          1330,
+          887
+        ],
+        "alphaBounds": [
+          113,
+          11,
+          319,
+          432
+        ],
+        "bodyHeight": 421
+      },
+      {
+        "phase": 7,
+        "box": [
+          1330,
+          443,
+          1774,
+          887
+        ],
+        "alphaBounds": [
+          112,
+          11,
+          317,
+          433
+        ],
+        "bodyHeight": 422
+      }
+    ]
+  },
+  "backLeft": {
+    "file": "backLeft.png",
+    "sha256": "db60e862e8ff0a122ec9ddbe5b2dbb1d2e29846daadf99db81322a860e33eafc",
+    "grid": {
+      "columns": 4,
+      "rows": 2
+    },
+    "crops": [
+      {
+        "phase": 0,
+        "box": [
+          0,
+          0,
+          443,
+          443
+        ],
+        "alphaBounds": [
+          76,
+          10,
+          362,
+          433
+        ],
+        "bodyHeight": 423
+      },
+      {
+        "phase": 1,
+        "box": [
+          443,
+          0,
+          886,
+          443
+        ],
+        "alphaBounds": [
+          128,
+          14,
+          339,
+          427
+        ],
+        "bodyHeight": 413
+      },
+      {
+        "phase": 2,
+        "box": [
+          886,
+          0,
+          1330,
+          443
+        ],
+        "alphaBounds": [
+          138,
+          15,
+          317,
+          429
+        ],
+        "bodyHeight": 414
+      },
+      {
+        "phase": 3,
+        "box": [
+          1330,
+          0,
+          1774,
+          443
+        ],
+        "alphaBounds": [
+          120,
+          15,
+          335,
+          435
+        ],
+        "bodyHeight": 420
+      },
+      {
+        "phase": 4,
+        "box": [
+          0,
+          443,
+          443,
+          887
+        ],
+        "alphaBounds": [
+          100,
+          16,
+          338,
+          439
+        ],
+        "bodyHeight": 423
+      },
+      {
+        "phase": 5,
+        "box": [
+          443,
+          443,
+          886,
+          887
+        ],
+        "alphaBounds": [
+          124,
+          17,
+          334,
+          425
+        ],
+        "bodyHeight": 408
+      },
+      {
+        "phase": 6,
+        "box": [
+          886,
+          443,
+          1330,
+          887
+        ],
+        "alphaBounds": [
+          137,
+          15,
+          322,
+          435
+        ],
+        "bodyHeight": 420
+      },
+      {
+        "phase": 7,
+        "box": [
+          1330,
+          443,
+          1774,
+          887
+        ],
+        "alphaBounds": [
+          80,
+          17,
+          372,
+          437
+        ],
+        "bodyHeight": 420
+      }
+    ]
+  },
+  "left": {
+    "file": "left.png",
+    "sha256": "f3c58500a30dcb6acc17aad167a445e57ec7ba20920163fbb0b8dd94bfd28af1",
+    "grid": {
+      "columns": 4,
+      "rows": 2
+    },
+    "crops": [
+      {
+        "phase": 0,
+        "box": [
+          0,
+          0,
+          443,
+          443
+        ],
+        "alphaBounds": [
+          65,
+          12,
+          380,
+          438
+        ],
+        "bodyHeight": 426
+      },
+      {
+        "phase": 1,
+        "box": [
+          443,
+          0,
+          886,
+          443
+        ],
+        "alphaBounds": [
+          110,
+          13,
+          339,
+          439
+        ],
+        "bodyHeight": 426
+      },
+      {
+        "phase": 2,
+        "box": [
+          886,
+          0,
+          1330,
+          443
+        ],
+        "alphaBounds": [
+          135,
+          12,
+          308,
+          439
+        ],
+        "bodyHeight": 427
+      },
+      {
+        "phase": 3,
+        "box": [
+          1330,
+          0,
+          1774,
+          443
+        ],
+        "alphaBounds": [
+          66,
+          12,
+          363,
+          438
+        ],
+        "bodyHeight": 426
+      },
+      {
+        "phase": 4,
+        "box": [
+          0,
+          443,
+          443,
+          887
+        ],
+        "alphaBounds": [
+          67,
+          14,
+          385,
+          437
+        ],
+        "bodyHeight": 423
+      },
+      {
+        "phase": 5,
+        "box": [
+          443,
+          443,
+          886,
+          887
+        ],
+        "alphaBounds": [
+          129,
+          14,
+          340,
+          437
+        ],
+        "bodyHeight": 423
+      },
+      {
+        "phase": 6,
+        "box": [
+          886,
+          443,
+          1330,
+          887
+        ],
+        "alphaBounds": [
+          131,
+          14,
+          311,
+          437
+        ],
+        "bodyHeight": 423
+      },
+      {
+        "phase": 7,
+        "box": [
+          1330,
+          443,
+          1774,
+          887
+        ],
+        "alphaBounds": [
+          64,
+          14,
+          378,
+          437
+        ],
+        "bodyHeight": 423
+      }
+    ]
+  },
+  "frontLeft": {
+    "file": "frontLeft.png",
+    "sha256": "b744b121fbcdf89eb60152fcb39acb6ac3953ba9e70d6bacafa7772418edba13",
+    "grid": {
+      "columns": 4,
+      "rows": 2
+    },
+    "crops": [
+      {
+        "phase": 0,
+        "box": [
+          0,
+          0,
+          443,
+          443
+        ],
+        "alphaBounds": [
+          112,
+          14,
+          337,
+          434
+        ],
+        "bodyHeight": 420
+      },
+      {
+        "phase": 1,
+        "box": [
+          443,
+          0,
+          886,
+          443
+        ],
+        "alphaBounds": [
+          130,
+          13,
+          337,
+          428
+        ],
+        "bodyHeight": 415
+      },
+      {
+        "phase": 2,
+        "box": [
+          886,
+          0,
+          1330,
+          443
+        ],
+        "alphaBounds": [
+          136,
+          13,
+          337,
+          427
+        ],
+        "bodyHeight": 414
+      },
+      {
+        "phase": 3,
+        "box": [
+          1330,
+          0,
+          1774,
+          443
+        ],
+        "alphaBounds": [
+          101,
+          14,
+          344,
+          419
+        ],
+        "bodyHeight": 405
+      },
+      {
+        "phase": 4,
+        "box": [
+          0,
+          443,
+          443,
+          887
+        ],
+        "alphaBounds": [
+          91,
+          15,
+          349,
+          439
+        ],
+        "bodyHeight": 424
+      },
+      {
+        "phase": 5,
+        "box": [
+          443,
+          443,
+          886,
+          887
+        ],
+        "alphaBounds": [
+          130,
+          15,
+          334,
+          435
+        ],
+        "bodyHeight": 420
+      },
+      {
+        "phase": 6,
+        "box": [
+          886,
+          443,
+          1330,
+          887
+        ],
+        "alphaBounds": [
+          160,
+          15,
+          331,
+          435
+        ],
+        "bodyHeight": 420
+      },
+      {
+        "phase": 7,
+        "box": [
+          1330,
+          443,
+          1774,
+          887
+        ],
+        "alphaBounds": [
+          91,
+          15,
+          356,
+          436
+        ],
+        "bodyHeight": 421
+      }
+    ]
+  }
+}

@@ -1,0 +1,206 @@
+{
+  "passed": true,
+  "errors": [],
+  "final_html_sha256": "0ebe0c57436becfccd44f87b47bf36e1ab8e01b8edfc58421cf38be4a33ac786",
+  "candidate_html_sha256": "b415649f8ae46d4dc6083a6eb48dec4ccca8241cc3698aace27cc42e3c6305cb",
+  "scope": "Seventeen distinct UI assertions across scoped runs. Twelve passed on the world candidate; the final exact HTML has seven TV/controller/contrast assertions, repeating two earlier checks. Check-level hashes identify provenance. Only the dialogue stylesheet changed between them.",
+  "checks": [
+    {
+      "label": "One followed story leads the journal; future and finished information starts folded",
+      "pass": true,
+      "htmlSha256": "b415649f8ae46d4dc6083a6eb48dec4ccca8241cc3698aace27cc42e3c6305cb"
+    },
+    {
+      "label": "Following a legacy quest replaces the chapter in both the journal and tracker",
+      "pass": true,
+      "htmlSha256": "b415649f8ae46d4dc6083a6eb48dec4ccca8241cc3698aace27cc42e3c6305cb"
+    },
+    {
+      "label": "The map offers the same followed legacy objective",
+      "pass": true,
+      "htmlSha256": "b415649f8ae46d4dc6083a6eb48dec4ccca8241cc3698aace27cc42e3c6305cb"
+    },
+    {
+      "label": "Map routing keeps legacy objective ownership and releases play",
+      "pass": true,
+      "htmlSha256": "b415649f8ae46d4dc6083a6eb48dec4ccca8241cc3698aace27cc42e3c6305cb"
+    },
+    {
+      "label": "390\u00d7844 journal keeps a vertical reading flow",
+      "pass": true,
+      "actual": {
+        "overflow": 0,
+        "font": 14
+      },
+      "htmlSha256": "b415649f8ae46d4dc6083a6eb48dec4ccca8241cc3698aace27cc42e3c6305cb"
+    },
+    {
+      "label": "844\u00d7390 journal keeps a vertical reading flow",
+      "pass": true,
+      "actual": {
+        "overflow": 0,
+        "font": 14
+      },
+      "htmlSha256": "b415649f8ae46d4dc6083a6eb48dec4ccca8241cc3698aace27cc42e3c6305cb"
+    },
+    {
+      "label": "720\u00d7900 journal keeps a vertical reading flow",
+      "pass": true,
+      "actual": {
+        "overflow": 0,
+        "font": 14
+      },
+      "htmlSha256": "b415649f8ae46d4dc6083a6eb48dec4ccca8241cc3698aace27cc42e3c6305cb"
+    },
+    {
+      "label": "Walking remains available after journal and map navigation",
+      "pass": true,
+      "htmlSha256": "b415649f8ae46d4dc6083a6eb48dec4ccca8241cc3698aace27cc42e3c6305cb"
+    },
+    {
+      "label": "Cancelling return keeps village control available",
+      "pass": true,
+      "htmlSha256": "b415649f8ae46d4dc6083a6eb48dec4ccca8241cc3698aace27cc42e3c6305cb"
+    },
+    {
+      "label": "Confirmed return reaches the farm",
+      "pass": true,
+      "htmlSha256": "b415649f8ae46d4dc6083a6eb48dec4ccca8241cc3698aace27cc42e3c6305cb"
+    },
+    {
+      "label": "The journal opens with the actual TV-mode setting",
+      "pass": true,
+      "htmlSha256": "0ebe0c57436becfccd44f87b47bf36e1ab8e01b8edfc58421cf38be4a33ac786"
+    },
+    {
+      "label": "Injected DualSense Options, D-pad and Cross open and select real village menus",
+      "pass": true,
+      "actual": {
+        "source": "Standard Gamepad API mock, not physical Bluetooth",
+        "destination": "journal"
+      },
+      "htmlSha256": "0ebe0c57436becfccd44f87b47bf36e1ab8e01b8edfc58421cf38be4a33ac786"
+    },
+    {
+      "label": "The TV-focused reply has an opaque surface and readable label and note contrast",
+      "pass": true,
+      "actual": {
+        "pass": true,
+        "minimumContrast": 5.919165016885216,
+        "backgroundImage": "linear-gradient(110deg, rgb(255, 223, 170), rgb(239, 200, 137))",
+        "backgroundColour": "rgba(0, 0, 0, 0)",
+        "ink": "rgb(51, 35, 49)"
+      },
+      "htmlSha256": "0ebe0c57436becfccd44f87b47bf36e1ab8e01b8edfc58421cf38be4a33ac786"
+    },
+    {
+      "label": "Hovering the selected TV reply preserves readable action colours",
+      "pass": true,
+      "actual": {
+        "pass": true,
+        "minimumContrast": 5.919165016885216,
+        "backgroundImage": "linear-gradient(110deg, rgb(255, 223, 170), rgb(239, 200, 137))",
+        "backgroundColour": "rgba(255, 226, 176, 0.11)",
+        "ink": "rgb(51, 35, 49)"
+      },
+      "htmlSha256": "0ebe0c57436becfccd44f87b47bf36e1ab8e01b8edfc58421cf38be4a33ac786"
+    },
+    {
+      "label": "The neighbour greeting exposes one primary story action and an accessible story list",
+      "pass": true,
+      "htmlSha256": "0ebe0c57436becfccd44f87b47bf36e1ab8e01b8edfc58421cf38be4a33ac786"
+    },
+    {
+      "label": "Other stories opens the selected neighbour\u2019s journal without remote transactions",
+      "pass": true,
+      "htmlSha256": "0ebe0c57436becfccd44f87b47bf36e1ab8e01b8edfc58421cf38be4a33ac786"
+    },
+    {
+      "label": "Normal draws compiled every observed program without page, console or shader errors",
+      "pass": true,
+      "actual": {
+        "count": 91,
+        "failed": []
+      },
+      "htmlSha256": "0ebe0c57436becfccd44f87b47bf36e1ab8e01b8edfc58421cf38be4a33ac786"
+    }
+  ],
+  "final_exact_checks": 7,
+  "qa_harness_corrections": [
+    "Select direct story summary rather than its nested reward fold.",
+    "Classify story actions by stable quest choice ID, excluding the workshop icon."
+  ],
+  "preflight_report_sha256": "d043bb01e45eb1a01184684ebb175e3061512cfac0af09dea68bde80b1b89fb9",
+  "final_report": {
+    "file": "/tmp/Pumpkin-Patch-Mothlight-After-Dark.html",
+    "baseline": false,
+    "uiOnly": true,
+    "tvOnly": true,
+    "htmlSha256": "0ebe0c57436becfccd44f87b47bf36e1ab8e01b8edfc58421cf38be4a33ac786",
+    "bytes": 60582366,
+    "scope": "Normal SwiftShader renderer. Declared progressed save opens existing district/home gates for comparison, without completing the authored stories through play. place() stages matching views; clock staging tests display palettes only. UI choices and real keyboard input check the followed task, map route, menu release and confirmed return. No draw suppression, device FPS claim or physical controller certification.",
+    "checks": [
+      {
+        "label": "The journal opens with the actual TV-mode setting",
+        "pass": true
+      },
+      {
+        "label": "Injected DualSense Options, D-pad and Cross open and select real village menus",
+        "pass": true,
+        "actual": {
+          "source": "Standard Gamepad API mock, not physical Bluetooth",
+          "destination": "journal"
+        }
+      },
+      {
+        "label": "The TV-focused reply has an opaque surface and readable label and note contrast",
+        "pass": true,
+        "actual": {
+          "pass": true,
+          "minimumContrast": 5.919165016885216,
+          "backgroundImage": "linear-gradient(110deg, rgb(255, 223, 170), rgb(239, 200, 137))",
+          "backgroundColour": "rgba(0, 0, 0, 0)",
+          "ink": "rgb(51, 35, 49)"
+        }
+      },
+      {
+        "label": "Hovering the selected TV reply preserves readable action colours",
+        "pass": true,
+        "actual": {
+          "pass": true,
+          "minimumContrast": 5.919165016885216,
+          "backgroundImage": "linear-gradient(110deg, rgb(255, 223, 170), rgb(239, 200, 137))",
+          "backgroundColour": "rgba(255, 226, 176, 0.11)",
+          "ink": "rgb(51, 35, 49)"
+        }
+      },
+      {
+        "label": "The neighbour greeting exposes one primary story action and an accessible story list",
+        "pass": true
+      },
+      {
+        "label": "Other stories opens the selected neighbour\u2019s journal without remote transactions",
+        "pass": true
+      },
+      {
+        "label": "Normal draws compiled every observed program without page, console or shader errors",
+        "pass": true,
+        "actual": {
+          "count": 91,
+          "failed": []
+        }
+      }
+    ],
+    "errors": [],
+    "screenshots": [
+      "tv-journal.png",
+      "tv-neighbour-dialogue.png"
+    ],
+    "places": [],
+    "programs": {
+      "count": 91,
+      "failed": []
+    },
+    "passed": true
+  }
+}

@@ -1,0 +1,173 @@
+{
+  "date": "2026-11-08T08:06:02.347Z",
+  "sha256": "6cfd4e648a2f79ff499895f1957190a59fc3566415d98c9c4c214b94012fa9c8",
+  "scope": "The prior real-UI restoration checkpoint, with one stool bought and three legal placements prepared through model rules. This focused run selects the placed stool using the actual screen raycaster; no picker callback shortcut is used for that check.",
+  "checks": [
+    {
+      "pass": true,
+      "label": "Real-UI restoration checkpoint contains Rowan’s authored friendship costume"
+    },
+    {
+      "pass": true,
+      "label": "Friendship completion preserves farm stock, garden, equipped outfits and helping hands while retaining owned costumes",
+      "detail": {
+        "before": [
+          "natalie-base",
+          "shane-base",
+          "shane-scarecrow",
+          "natalie-wheelchair"
+        ],
+        "after": [
+          "natalie-base",
+          "shane-base",
+          "shane-scarecrow",
+          "natalie-wheelchair",
+          "natalie-batqueen"
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "Elowen’s completed chapter grants her authored rank-five costume"
+    },
+    {
+      "pass": true,
+      "label": "Projected screen tap selects the actual placed stool through view.tapAt",
+      "detail": {
+        "expected": "v1",
+        "selection": {
+          "instance": "v1",
+          "id": "stool",
+          "x": 80.1,
+          "z": 37.2,
+          "rotation": 0,
+          "pending": false,
+          "valid": true
+        },
+        "screen": {
+          "x": 648.9761341384336,
+          "y": 424.5259350663414
+        },
+        "insideScreen": true
+      }
+    },
+    {
+      "pass": true,
+      "label": "Cancel releases the ray-picked stool without moving it"
+    },
+    {
+      "pass": true,
+      "label": "Connected gate is reviewed from the landscape decorating camera"
+    },
+    {
+      "pass": true,
+      "label": "Focused screen-picking flow has no page errors",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "Focused full-game view needs no external assets",
+      "detail": []
+    }
+  ],
+  "screenshots": [
+    "desktop-moth-tree-plaza.png",
+    "desktop-reading-nook-detail.png",
+    "landscape-connected-gate.png"
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "residents": [
+    {
+      "id": "elowen",
+      "style": "sprite",
+      "ready": true,
+      "frame": 0,
+      "action": "idle",
+      "walking": false,
+      "height": 2.3,
+      "frames": {
+        "idle": [
+          0
+        ],
+        "walk": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "wave": [
+          5
+        ],
+        "talk": [
+          0
+        ]
+      },
+      "x": 74.4,
+      "z": 32.400000000000006,
+      "activity": "at the library",
+      "route": "elowen-library"
+    },
+    {
+      "id": "rowan",
+      "style": "sprite",
+      "ready": true,
+      "frame": 0,
+      "action": "idle",
+      "walking": false,
+      "height": 2.3,
+      "frames": {
+        "idle": [
+          0
+        ],
+        "walk": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "wave": [
+          5
+        ],
+        "talk": [
+          0
+        ]
+      },
+      "x": 98.85000000000001,
+      "z": 36.900000000000006,
+      "activity": "at his stall",
+      "route": "rowan-stall"
+    },
+    {
+      "id": "vesper",
+      "style": "sprite",
+      "ready": true,
+      "frame": 0,
+      "action": "idle",
+      "walking": false,
+      "height": 2.3,
+      "frames": {
+        "idle": [
+          0
+        ],
+        "walk": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "wave": [
+          5
+        ],
+        "talk": [
+          0
+        ]
+      },
+      "x": 150.3,
+      "z": 39,
+      "activity": "at their post",
+      "route": null
+    }
+  ],
+  "passed": true
+}

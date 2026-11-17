@@ -1,0 +1,1 @@
+The local duplicate standard smoke was deliberately stopped after GitHub CI completed the same unchanged standard suite successfully on runtime commit0fdeffa. Its partial stdout is retained for transparency; it is not labelled a passing complete local run. The authoritative standard-smoke result is standard-smoke-ci.json (the CI job includes npm test, build and npm run smoke).

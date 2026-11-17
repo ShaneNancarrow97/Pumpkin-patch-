@@ -1,0 +1,108 @@
+{
+  "version": 1,
+  "generator": "OpenAI image_gen",
+  "date": "2026-11-08",
+  "scope": "Authored eight-direction walking source sheets. Runtime baking and visual acceptance are separate.",
+  "directions": [
+    "front",
+    "frontRight",
+    "right",
+    "backRight",
+    "back",
+    "backLeft",
+    "left",
+    "frontLeft"
+  ],
+  "walkPhases": [
+    "left-contact",
+    "left-down",
+    "right-pass",
+    "right-up",
+    "right-contact",
+    "right-down",
+    "left-pass",
+    "left-up"
+  ],
+  "characters": [
+    {
+      "id": "mabel",
+      "source": "mabel.png",
+      "generatedFile": "/workspace/generated_images/exec-cbd4d89e-f928-4da9-bf8e-332a8fae4f9a.png",
+      "reference": "voxel/assets/village/mabel.webp",
+      "prompt": "Production WALK sprite sheet of exactly the SAME Mabel doll-like ghost seamstress as the supplied approved reference. Preserve her pale porcelain face, black bob with straight fringe, burgundy hair ribbon, burgundy ruffled dress, cream lace sewing apron with scissors embroidery, brown lace-up boots, small needle and thread in RIGHT hand and thread spool in LEFT hand. Preserve delicate premium hand-painted storybook game style, proportions, colour palette and identity. Transparent RGBA background. ONE perfectly regular 8 COLUMN by 8 ROW grid = exactly 64 isolated full-body figures, no text, lines, captions, arrows or ground shadows. Every cell has same scale, root alignment and camera elevation (10 degrees above horizontal), ample transparent margins. EVERY row has EIGHT successive different walking poses: column1 LEFT heel contact forward/right toe behind, 2 left weight down/right foot lifts, 3 right foot passes left with knee bent, 4 right foot swinging forward, 5 RIGHT heel contact forward/left toe behind, 6 right weight down/left foot lifts, 7 left foot passing right with bent knee, 8 left foot swinging forward. Actual anatomical leg motion and clear alternating boots, not sliding or repeating standing poses; raise skirt slightly to show boots, subtle sleeve and dress movement. Whole body and face turn together per row. CRITICAL DIRECTIONS FROM VIEWER: ROW1 directly FRONT walking TOWARD viewer. ROW2 diagonal FRONT toward RIGHT EDGE of the image, nose points right. ROW3 pure RIGHT PROFILE, nose and toes clearly point to RIGHT EDGE \u2192. ROW4 BACK-right diagonal walking AWAY TOWARD RIGHT EDGE, see back of hair and dress with only tiny cheek edge on RIGHT. ROW5 pure BACK view walking AWAY, absolutely NO FACE. ROW6 BACK-left diagonal walking AWAY TOWARD LEFT EDGE. ROW7 pure LEFT PROFILE, nose and toes clearly point to LEFT EDGE \u2190. ROW8 FRONT-left diagonal walking TOWARD viewer and LEFT EDGE. Thus rows2-4 face OPPOSITE directions to rows6-8. Do not make two left profiles. Accurate rear apron ties and hair ribbon. This is a whole eight-direction animated turnaround, NOT merely head rotation. Same height in every frame. Requested 2048x2048.",
+      "inspection": {
+        "grid": "8x8",
+        "rightProfile": true,
+        "leftProfile": true,
+        "back": true,
+        "distinctWalkSilhouettes": true,
+        "notes": "Rear diagonal body turn is subtle; skirt partly conceals upper legs. Boot poses and cloth change across all phases. Exact mathematical 45-degree accuracy is not measurable from this painted source."
+      },
+      "finalSourceSha256": "ac91cea15ec886f40499604ed4ba6121bb92c51c09b9481608df879339cc4684"
+    },
+    {
+      "id": "tansy",
+      "source": "tansy.png",
+      "generatedFile": "/workspace/generated_images/exec-e03cc9b9-d619-4714-a207-436233d75712.png",
+      "reference": "voxel/assets/village/tansy.webp",
+      "prompt": "Production WALK sprite sheet of exactly the SAME Tansy herbalist as supplied approved reference. Preserve her friendly young adult face, copper-red curly hair, olive-green witch hat with autumn leaves and purple herbs, flowing moss-green cape and dress embroidered with gold leaves, cream blouse sleeves, brown belt pouches and scissors, brown lace-up boots, wicker basket of lavender and herbs held with LEFT arm. Preserve exact delicate premium hand-painted storybook game style, proportions, colours and identity. Transparent RGBA background. ONE perfectly regular 8 COLUMN by 8 ROW grid = exactly 64 isolated full-body figures, no text, lines, captions, arrows or ground shadows. Every cell same scale, root alignment and camera elevation about10degrees above horizontal, generous transparent margins. EVERY row has EIGHT successive DIFFERENT walking poses: column1 LEFT heel contact forward/right toe behind, 2 left weight down/right foot lifts, 3 right foot passes left with knee bent, 4 right foot swinging forward, 5 RIGHT heel contact forward/left toe behind, 6 right weight down/left foot lifts, 7 left foot passing right with bent knee, 8 left foot swinging forward. Real anatomical leg motion and clear ALTERNATING BOOTS, not sliding or repeating standing poses. Skirt hem at calves lets both walking legs show; subtle sleeves/cape sway. Whole body and face turn TOGETHER per row. CRITICAL VIEWER DIRECTIONS: ROW1 FRONT walking TOWARD viewer, centered face. ROW2 diagonal FRONT toward RIGHT EDGE of image, nose points right. ROW3 pure RIGHT PROFILE, nose and toes clearly point to RIGHT EDGE \u2192. ROW4 BACK-right diagonal walking AWAY TOWARD RIGHT EDGE, see her BACK and only tiny cheek edge on RIGHT. ROW5 pure BACK walking AWAY, ABSOLUTELY NO FACE, back of hat and copper curls. ROW6 BACK-left diagonal walking AWAY TOWARD LEFT EDGE, distinct45degree angle from row5. ROW7 pure LEFT PROFILE, nose and toes point to LEFT EDGE \u2190. ROW8 FRONT-left diagonal walking TOWARD viewer and LEFT EDGE. Thus rows2,3,4 face OPPOSITE directions to rows6,7,8. Do not give two left profiles! Same basket stays in her left arm, correct occlusion in side/rear views, no mirroring anatomy. Full body angle changes not merely heads. Same height in every frame. Requested2048x2048.",
+      "inspection": {
+        "grid": "8x8",
+        "rightProfile": true,
+        "leftProfile": true,
+        "back": true,
+        "distinctWalkSilhouettes": true,
+        "notes": "Copper hair and cape preserve identity in rear views; basket changes occlusion. Skirt partly conceals upper legs. Exact mathematical 45-degree accuracy is not measurable from painted source. Original generated front row was withheld after enlarged review and replaced with focused image-generated repair; see frontRowRepair."
+      },
+      "finalSourceSha256": "8a4ea6330999b6ee82fad34bb96d581211959d4f17db3e9abbc9cbbe5192811c",
+      "frontRowRepair": {
+        "provenance": "provenance-copse-front-repairs.json",
+        "script": "repack-copse-fronts.py",
+        "packing": "tansy-front-repair-pack.json",
+        "status": "Source front contact/pass phases visually checked; runtime animation preview remains necessary."
+      },
+      "rejectedRepairs": [
+        {
+          "file": "exec-765bae08-d708-4f4f-87b1-438c760d0c47.png",
+          "reason": "Front still repeated lead foot; hem shortened too far."
+        },
+        {
+          "file": "exec-dfd66ced-bf94-428e-b4b0-c20693138873.png",
+          "reason": "Four-row half-sheet still repeated same front contact leg."
+        }
+      ]
+    },
+    {
+      "id": "opal",
+      "source": "opal.png",
+      "generatedFile": "/workspace/generated_images/exec-a6669179-835e-4275-b7c4-f7ba0c949d06.png",
+      "references": [
+        "voxel/assets/village/opal.webp",
+        "/workspace/generated_images/exec-7c03f40f-0bae-4040-824c-19d1ce487d8a.png"
+      ],
+      "prompt": "Create Opal's complete 64-frame walking sprite sheet. Reference image1 is the ONLY CHARACTER identity: silver-haired pale elf silversmith, red eyes, brown leather apron, black sleeves and shorts, boots, tools, hammer held in RIGHT hand. Preserve this exact character and painted style. Reference image2 is ONLY THE GRID AND VIEW DIRECTION GUIDE. Replace every witch figure in reference2 with Opal from reference1, using exactly the body view direction in each corresponding cell. No witch features, no hats/capes/books/lantern. Keep Opal's face/hair/outfit/hammer. 8columns\u00d78rows =64 full-body figures on transparent background. All equal scale and neat foot/root alignment, ample padding, no text or lines. Each row has 8 successive anatomical walking poses with alternating legs: left contact, down, right passing, right swing, right contact, down, left passing, left swing. Row1 front; row2 FRONT-right nose points toward RIGHT SIDE of image; row3 strict RIGHT SIDE PROFILE nose looks RIGHT \u2192; row4 BACK-right walking away toward right; row5 straight BACK no face; row6 BACK-left walking away toward left; row7 strict LEFT SIDE PROFILE nose looks LEFT \u2190; row8 FRONT-left. In particular row3 MUST HAVE THE FACE ON THE RIGHT SIDE OF THE HEAD and BACK OF HEAD ON THE LEFT, opposite to row7. This turnaround is vital: do not follow the left-facing reference1 angle for every row. Correct anatomy, bent knees and elbows, visible alternate planted/lifted feet, realistic looping walking movement. Preserve Opal's original hammer in her right hand with correct occlusion seen from both sides. Transparent image, requested2048square. Not two same profiles.",
+      "rejected": [
+        {
+          "generatedFile": "/workspace/generated_images/exec-72d59280-9ac8-4af6-8f88-d0cc84eb57b3.png",
+          "reason": "Row3 incorrectly faced left like row7; not used."
+        }
+      ],
+      "inspection": {
+        "grid": "8x8",
+        "rightProfile": true,
+        "leftProfile": true,
+        "back": true,
+        "distinctWalkSilhouettes": true,
+        "notes": "Rear-left yaw is subtler than desired. Original hammer remains prominent; small phase variations require in-game preview, not just rectangle checks. Exact mathematical 45-degree accuracy is not measurable from painted source. Original generated front row was withheld after enlarged review and replaced with focused image-generated repair; see frontRowRepair."
+      },
+      "finalSourceSha256": "78c7aa2c1d743dd6d32a1cf5226099a4402c61d0b53d656c0887fb62e55d2b7f",
+      "frontRowRepair": {
+        "provenance": "provenance-copse-front-repairs.json",
+        "script": "repack-copse-fronts.py",
+        "packing": "opal-front-repair-pack.json",
+        "status": "Corrected eight-step front gait and enlarged head matched against other angles; final source accepted by root visual review.",
+        "headMatch": "provenance-opal-head-match.json"
+      }
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "file": "Pumpkin-Patch-Living-Mothlight.html",
+    "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/ffbca45ef0fb1beae97ab56d78db5f0762860a4c/Pumpkin-Patch-Living-Mothlight.html",
+    "status": 200,
+    "bytes": 48455659,
+    "sha256": "6cfd4e648a2f79ff499895f1957190a59fc3566415d98c9c4c214b94012fa9c8",
+    "verified": true
+  },
+  {
+    "file": "Pumpkin-Patch-Living-Mothlight.zip",
+    "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/ffbca45ef0fb1beae97ab56d78db5f0762860a4c/Pumpkin-Patch-Living-Mothlight.zip",
+    "status": 200,
+    "bytes": 34828925,
+    "sha256": "fbbbe680d66f81ea8ef38f6163ab238918f8d7bcdd83e45bf1e903c5d7b4ec47",
+    "verified": true
+  },
+  {
+    "file": "Pumpkin-Patch-Living-Mothlight-Claude-Patch.zip",
+    "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/ffbca45ef0fb1beae97ab56d78db5f0762860a4c/Pumpkin-Patch-Living-Mothlight-Claude-Patch.zip",
+    "status": 200,
+    "bytes": 49503108,
+    "sha256": "436d07677d734e3321f2e0c7fe58321386c7b96fca67bf126595d6dff4650fff",
+    "verified": true
+  }
+]

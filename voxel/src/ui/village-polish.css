@@ -1,0 +1,21 @@
+/* Illustrated shortcuts stay familiar to the farm, with room for their names. */
+#village-game .vg-dock{gap:3px;padding:5px;border-radius:23px;background:#251c2ef5;border-color:#d5af782f;box-shadow:0 8px 28px #08041055}
+#village-game .vg-nav-button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:60px;min-width:60px;padding:5px 11px;border:1px solid transparent;border-radius:17px;background:transparent}
+#village-game .vg-nav-button b{font-size:12px;line-height:1.2;font-weight:500}
+#village-game .vg-nav-button[aria-current=page]{background:linear-gradient(145deg,#d4af6d24,#73507822);border-color:#e3bd7755;color:#ffe1a5}
+#vg-home{display:flex;align-items:center;gap:5px}
+.vg-navigation-hub{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#village-game .vg-nav-card{display:flex;align-items:center;gap:12px;min-height:90px;padding:13px;text-align:left;border:1px solid #d3b77c30;background:linear-gradient(135deg,#49334f55,#251c30);border-radius:17px;min-width:0;width:100%}
+.vg-nav-card>span:last-child{min-width:0}.vg-nav-card b{display:block;color:#ffe3b9;font-size:16px;font-weight:500}.vg-nav-card small{color:#d2c1d6;font-size:12px;line-height:1.35;margin-top:5px}
+#village-game .vg-nav-card:hover{background:#583e6255}
+#village-game .vg-action-button.is-ready{--ps5-ink:#674233;--ps5-accent:#674233;--ps5-frame:#674233}
+.vg-keycap:has(.ps5-icon){border:0!important;background:transparent!important;box-shadow:none!important;padding:0;min-width:28px;min-height:28px}
+.vg-legend-action.is-ready{--ps5-ink:#f2c276;--ps5-accent:#f2c276;--ps5-frame:#f2c276}
+@media(max-width:540px){#village-game .vg-nav-button{min-width:44px!important;min-height:60px;padding:5px 3px!important;flex:1}#village-game .vg-nav-button .village-ui-icon{--vg-ui-size:25px!important}#village-game .vg-dock{max-width:calc(100% - 20px);width:calc(100% - 20px)}.vg-navigation-hub{gap:8px}#village-game .vg-nav-card{flex-direction:column;align-items:flex-start;gap:7px;min-height:114px;padding:12px}.vg-nav-card b{font-size:15px}}
+@media(max-height:500px) and (orientation:landscape){#village-game .vg-nav-button{min-height:52px;padding:3px 5px!important}#village-game .vg-nav-button .village-ui-icon{--vg-ui-size:22px!important}#village-game .vg-dock{width:auto}.vg-navigation-hub{gap:7px}#village-game .vg-nav-card{min-height:76px;padding:10px;gap:8px}.vg-nav-card small{font-size:12px}}
+@media(prefers-reduced-motion:reduce){#village-game .vg-nav-button{transition:none}}
+
+.glyph.glyph-dualsense{border:0;background:transparent;box-shadow:none;padding:0;min-width:22px;min-height:22px;display:inline-flex;align-items:center;justify-content:center}.glyph-dualsense .ps5-icon{display:inline-flex;flex:none}
+
+/* A quiet periodic nudge, never an interruption or a second permanent HUD. */
+.vg-farm-reminder{position:absolute;left:50%;bottom:154px;transform:translateX(-50%);display:flex;align-items:center;gap:10px;max-width:calc(100% - 32px);padding:10px 16px;border:1px solid #d5b67b55;border-radius:17px;background:#302338f5;box-shadow:0 8px 26px #08041044;pointer-events:none;animation:vg-reminder-in 2.6s ease both;color:#ffe2b9;font-size:14px;box-sizing:border-box}.vg-farm-reminder[hidden]{display:none}.vg-farm-reminder small{display:block;font-size:12px;color:#d8c8df;margin-top:3px}.tv-mode .vg-farm-reminder{zoom:var(--vg-ui-zoom,1)}@keyframes vg-reminder-in{0%{opacity:0}8%,86%{opacity:1}100%{opacity:0}}@media(max-width:540px){.vg-farm-reminder{bottom:100px;width:max-content;font-size:13px}}@media(prefers-reduced-motion:reduce){.vg-farm-reminder{animation:none}}

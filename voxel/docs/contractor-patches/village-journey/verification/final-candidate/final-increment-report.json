@@ -1,0 +1,1564 @@
+{
+  "date": "2026-11-08T19:10:41.841Z",
+  "html": "/workspace/Pumpkin-Patch-Village-Journey.html",
+  "sha256": "f6a755b2b692f899d132df07b148dacba229711c8a1c67a7d8bcdeacaacf2edd",
+  "bytes": 57503178,
+  "sourceCommit": "e61180ffd2f7a9304a0af6feb330eff4b8f34c4b",
+  "checks": [
+    {
+      "pass": true,
+      "label": "Farm ground uses masked shared grass-detail shader",
+      "data": [
+        {
+          "name": "",
+          "detail": {
+            "worldUnits": 1.6,
+            "coverage": "base-map-alpha",
+            "sharedTexture": true
+          },
+          "map": [
+            480,
+            350
+          ]
+        },
+        {
+          "name": "",
+          "detail": {
+            "worldUnits": 1.6,
+            "coverage": "base-map-alpha",
+            "sharedTexture": true
+          },
+          "map": [
+            480,
+            350
+          ]
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "Settings exposes all26 tracks including five supplied MIDIs",
+      "data": [
+        {
+          "id": "lantern",
+          "name": "Lantern March"
+        },
+        {
+          "id": "thriller",
+          "name": "Thriller"
+        },
+        {
+          "id": "lullaby",
+          "name": "Lullaby for a Dead Man"
+        },
+        {
+          "id": "nightmare",
+          "name": "Nightmare"
+        },
+        {
+          "id": "ghostbusters",
+          "name": "Ghostbusters"
+        },
+        {
+          "id": "living-dead-girl",
+          "name": "Living Dead Girl"
+        },
+        {
+          "id": "skyla",
+          "name": "Skyla’s Midnight Market"
+        },
+        {
+          "id": "moon",
+          "name": "Moonlit Mischief"
+        },
+        {
+          "id": "parade",
+          "name": "Pumpkin Parade"
+        },
+        {
+          "id": "disasterology",
+          "name": "Disasterology"
+        },
+        {
+          "id": "crazy-train",
+          "name": "Crazy Train"
+        },
+        {
+          "id": "rebel-yell",
+          "name": "Rebel Yell"
+        },
+        {
+          "id": "nothing-else-matters",
+          "name": "Nothing Else Matters"
+        },
+        {
+          "id": "dont-fear-the-reaper",
+          "name": "(Don’t Fear) The Reaper"
+        },
+        {
+          "id": "gypsys-tramps-and-thieves",
+          "name": "Gypsys, Tramps & Thieves"
+        },
+        {
+          "id": "everybody",
+          "name": "Everybody (Backstreet’s Back)"
+        },
+        {
+          "id": "where-is-my-mind",
+          "name": "Where Is My Mind?"
+        },
+        {
+          "id": "zombie",
+          "name": "Zombie"
+        },
+        {
+          "id": "killer-queen",
+          "name": "Killer Queen"
+        },
+        {
+          "id": "creep",
+          "name": "Creep"
+        },
+        {
+          "id": "numb",
+          "name": "Numb (Tim Dawes remix)"
+        },
+        {
+          "id": "crossing-field",
+          "name": "Crossing Field"
+        },
+        {
+          "id": "billie-jean",
+          "name": "Billie Jean"
+        },
+        {
+          "id": "africa",
+          "name": "Africa"
+        },
+        {
+          "id": "still-dre",
+          "name": "Still D.R.E."
+        },
+        {
+          "id": "bohemian-rhapsody",
+          "name": "Bohemian Rhapsody"
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "New supplied track can be selected"
+    },
+    {
+      "pass": true,
+      "label": "shane: actual controller movement advances alternating authored left/right steps",
+      "data": {
+        "who": "shane",
+        "samples": [
+          {
+            "position": {
+              "x": 20.05142409884918,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 0,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 20.165391156836396,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 0,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 20.307460577865942,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 1,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 20.46215720457054,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 2,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 20.622527600520808,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 2,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 20.78544738532887,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 3,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 20.949512684391532,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 4,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 21.1140926961876,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 4,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 21.278903983322987,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 5,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 21.443819189167012,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 6,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 21.608781088696748,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 7,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 21.77376396905191,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 7,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 21.938756276699632,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 0,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 22.103752820302947,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 1,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 22.268751267243804,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 2,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 22.43375056940935,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 2,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 22.59875025585212,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 3,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 22.763750114961777,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 4,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 22.928750051655665,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 5,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 23.093750023210394,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 5,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 23.258750010429107,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 6,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 23.42375000468611,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 7,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 23.58875000210561,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 7,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 23.753750000946116,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 0,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784385149407926
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "shane: walking/idle has no watering prop"
+    },
+    {
+      "pass": true,
+      "label": "natalie: actual controller movement advances alternating authored left/right steps",
+      "data": {
+        "who": "natalie",
+        "samples": [
+          {
+            "position": {
+              "x": 20.05142409884918,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 0,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 20.165391156836396,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 0,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 20.307460577865942,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 1,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 20.46215720457054,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 2,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 20.622527600520808,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 2,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 20.78544738532887,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 3,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 20.949512684391532,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 4,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 21.1140926961876,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 4,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 21.278903983322987,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 5,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 21.443819189167012,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 6,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 21.608781088696748,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 7,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 21.77376396905191,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 7,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 21.938756276699632,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 0,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 22.103752820302947,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 1,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 22.268751267243804,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 2,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 22.43375056940935,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 2,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 22.59875025585212,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 3,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 22.763750114961777,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 4,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 22.928750051655665,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 5,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 23.093750023210394,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 5,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 23.258750010429107,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 6,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 23.42375000468611,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 7,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 23.58875000210561,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 7,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 23.753750000946116,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 0,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784368734298597
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "natalie: walking/idle has no watering prop"
+    },
+    {
+      "pass": true,
+      "label": "Visible fountain purchase costs£1500 exactly once"
+    },
+    {
+      "pass": true,
+      "label": "Nine free spaces explain fountain crop capacity without consuming it",
+      "data": {
+        "blocked": true,
+        "label": "A fountain pumpkin needs 10 free barn spaces"
+      }
+    },
+    {
+      "pass": true,
+      "label": "Actual harvest button awards10 same-variety pumpkins+£100 once",
+      "data": {
+        "paidBefore": {
+          "coins": 18500,
+          "stock": 0,
+          "popped": 0
+        },
+        "paid": {
+          "coins": 18600,
+          "stock": 10,
+          "popped": 1,
+          "phase": "empty",
+          "last": {
+            "type": "fountain-burst",
+            "index": 0,
+            "variety": 2,
+            "amount": 10,
+            "coins": 100,
+            "serial": 1,
+            "at": 3.9833999999999965
+          }
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "Subsequent update does not replay fountain payment",
+      "data": {
+        "coins": 18600,
+        "popped": 1
+      }
+    },
+    {
+      "pass": true,
+      "label": "Declared native starving guest fixture spawns"
+    },
+    {
+      "pass": true,
+      "label": "Real guest walks/queues/reaches hatch before any food payment",
+      "data": [
+        {
+          "phase": "approach",
+          "food": 30,
+          "income": 0,
+          "held": "held",
+          "money": 56
+        },
+        {
+          "phase": "queue",
+          "food": 30,
+          "income": 0,
+          "held": "held",
+          "money": 56
+        },
+        {
+          "phase": "to-hatch",
+          "food": 30,
+          "income": 0,
+          "held": "held",
+          "money": 56
+        },
+        {
+          "phase": "serving",
+          "food": 30,
+          "income": 0,
+          "held": "held",
+          "money": 56
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "Hatch service takes finite-wallet payment and stock once",
+      "data": {
+        "food": 25,
+        "income": 55,
+        "holds": [],
+        "receipts": [
+          {
+            "id": 5,
+            "recipe": "wedges",
+            "quantity": 5,
+            "amount": 55,
+            "at": 20.616600000000016
+          }
+        ],
+        "guest": {
+          "food": {
+            "recipe": "wedges",
+            "price": 11,
+            "quantity": 5,
+            "status": "paid",
+            "amount": 55
+          },
+          "spend": 55,
+          "takeaway": {
+            "phase": "leaving",
+            "place": 0,
+            "distance": 15.7,
+            "remaining": -0.03319999999999765,
+            "gone": true
+          },
+          "money": 1
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "Actual Workshop renders both furniture bundles and six matching pieces",
+      "data": [
+        {
+          "id": "moonlit-reading-set",
+          "w": 60,
+          "h": 60,
+          "image": "url(\"data:image/webp;base64,UklGRgBcAQBXRUJQVlA4TP"
+        },
+        {
+          "id": "midnight-reading-bench",
+          "w": 24,
+          "h": 24,
+          "image": "url(\"data:image/webp;base64,UklGRgBcAQBXRUJQVlA4TP"
+        },
+        {
+          "id": "shelf-floating",
+          "w": 24,
+          "h": 24,
+          "image": "url(\"data:image/webp;base64,UklGRgBcAQBXRUJQVlA4TP"
+        },
+        {
+          "id": "household-plum-mug",
+          "w": 24,
+          "h": 24,
+          "image": "url(\"data:image/webp;base64,UklGRgBcAQBXRUJQVlA4TP"
+        },
+        {
+          "id": "rattlewood-workshop-set",
+          "w": 60,
+          "h": 60,
+          "image": "url(\"data:image/webp;base64,UklGRgBcAQBXRUJQVlA4TP"
+        },
+        {
+          "id": "lantern-entry-console",
+          "w": 24,
+          "h": 24,
+          "image": "url(\"data:image/webp;base64,UklGRgBcAQBXRUJQVlA4TP"
+        },
+        {
+          "id": "household-coat-hooks",
+          "w": 24,
+          "h": 24,
+          "image": "url(\"data:image/webp;base64,UklGRgBcAQBXRUJQVlA4TP"
+        },
+        {
+          "id": "shelf-bracket",
+          "w": 24,
+          "h": 24,
+          "image": "url(\"data:image/webp;base64,UklGRgBcAQBXRUJQVlA4TP"
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "Village ground shares the masked grass-detail surface",
+      "data": [
+        {
+          "worldUnits": 1.6,
+          "coverage": "base-map-alpha",
+          "sharedTexture": true
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "Distant People selection guides to live neighbour instead of remote talk",
+      "data": {
+        "before": {
+          "position": {
+            "x": 87,
+            "z": -25.5
+          },
+          "friends": {
+            "elowen": {
+              "xp": 0,
+              "met": true,
+              "chatIn": 0,
+              "gifts": [],
+              "seen": []
+            },
+            "rowan": {
+              "xp": 0,
+              "met": false,
+              "chatIn": 0,
+              "gifts": [],
+              "seen": []
+            }
+          }
+        },
+        "remote": {
+          "active": true,
+          "inside": null,
+          "who": "natalie",
+          "position": {
+            "x": 87,
+            "z": -25.5
+          },
+          "panel": null,
+          "touring": false,
+          "surveying": false,
+          "decorating": false,
+          "input": "pointer",
+          "questExpanded": false,
+          "trackedQuest": "invitation",
+          "waypoint": {
+            "x": 80.69999999999999,
+            "z": 29.1,
+            "label": "Rowan",
+            "folkId": "rowan"
+          },
+          "gathering": null
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "Controller route exposes nearby contextual Talk action",
+      "data": {
+        "status": {
+          "active": true,
+          "inside": null,
+          "who": "natalie",
+          "position": {
+            "x": 80.73165789018296,
+            "z": 29.031285112498647
+          },
+          "panel": null,
+          "touring": false,
+          "surveying": false,
+          "decorating": false,
+          "input": "pad",
+          "questExpanded": false,
+          "trackedQuest": "invitation",
+          "waypoint": {
+            "x": 80.69999999999999,
+            "z": 29.1,
+            "label": "Rowan",
+            "folkId": "rowan"
+          },
+          "gathering": null
+        },
+        "target": "Talk"
+      }
+    },
+    {
+      "pass": true,
+      "label": "Actual nearby Talk opens resident interaction",
+      "data": {
+        "active": true,
+        "inside": null,
+        "who": "natalie",
+        "position": {
+          "x": 80.73165789018296,
+          "z": 29.031285112498647
+        },
+        "panel": null,
+        "touring": false,
+        "surveying": false,
+        "decorating": false,
+        "input": "pointer",
+        "questExpanded": false,
+        "trackedQuest": "invitation",
+        "waypoint": {
+          "x": 80.69999999999999,
+          "z": 29.1,
+          "label": "Rowan",
+          "folkId": "rowan"
+        },
+        "gathering": null
+      }
+    },
+    {
+      "pass": true,
+      "label": "Final increment has no browser/console errors",
+      "data": []
+    },
+    {
+      "pass": true,
+      "label": "Offline HTML makes no external asset requests",
+      "data": []
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "screenshots": [
+    "12-fountain-star.png",
+    "14-truck-hatch.png",
+    "15-furniture-menus.png"
+  ],
+  "scope": "Exact HTML served unchanged on loopback; software Chromium. Explicit level20/finished-tour fixture, finite-wallet native starving guest fixture, star-marked ready pumpkin fixture. Timers and steps accelerated through game diagnostics; late progression not earned in play. Viewports are emulation, not hardware certification.",
+  "renderPreferences": {
+    "glow": false,
+    "shadows": false,
+    "frameRate": "30"
+  },
+  "owners": [
+    {
+      "who": "shane",
+      "samples": [
+        {
+          "position": {
+            "x": 20.05142409884918,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 0,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 20.165391156836396,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 0,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 20.307460577865942,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 1,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 20.46215720457054,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 2,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 20.622527600520808,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 2,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 20.78544738532887,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 3,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 20.949512684391532,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 4,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 21.1140926961876,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 4,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 21.278903983322987,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 5,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 21.443819189167012,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 6,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 21.608781088696748,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 7,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 21.77376396905191,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 7,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 21.938756276699632,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 0,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 22.103752820302947,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 1,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 22.268751267243804,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 2,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 22.43375056940935,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 2,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 22.59875025585212,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 3,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 22.763750114961777,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 4,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 22.928750051655665,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 5,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 23.093750023210394,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 5,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 23.258750010429107,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 6,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 23.42375000468611,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 7,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 23.58875000210561,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 7,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 23.753750000946116,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 0,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784385149407926
+        }
+      ]
+    },
+    {
+      "who": "natalie",
+      "samples": [
+        {
+          "position": {
+            "x": 20.05142409884918,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 0,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 20.165391156836396,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 0,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 20.307460577865942,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 1,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 20.46215720457054,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 2,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 20.622527600520808,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 2,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 20.78544738532887,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 3,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 20.949512684391532,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 4,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 21.1140926961876,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 4,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 21.278903983322987,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 5,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 21.443819189167012,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 6,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 21.608781088696748,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 7,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 21.77376396905191,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 7,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 21.938756276699632,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 0,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 22.103752820302947,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 1,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 22.268751267243804,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 2,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 22.43375056940935,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 2,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 22.59875025585212,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 3,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 22.763750114961777,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 4,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 22.928750051655665,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 5,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 23.093750023210394,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 5,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 23.258750010429107,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 6,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 23.42375000468611,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 7,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 23.58875000210561,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 7,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 23.753750000946116,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 0,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784368734298597
+        }
+      ]
+    }
+  ],
+  "passed": true
+}

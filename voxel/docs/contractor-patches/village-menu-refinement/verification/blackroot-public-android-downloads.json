@@ -1,0 +1,25 @@
+{
+  "date": "2026-11-09T01:06:11.128066+00:00",
+  "artifactCommit": "fae745fe1892d47395ae94786e96f4d505095610",
+  "allPassed": true,
+  "files": [
+    {
+      "file": "Pumpkin-Patch-Village-Blackroot.apk",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/fae745fe1892d47395ae94786e96f4d505095610/Pumpkin-Patch-Village-Blackroot.apk",
+      "status": 200,
+      "contentType": "application/octet-stream",
+      "bytes": 42413038,
+      "sha256": "6865cf90dcc0cea68213f6ab45cc6c5d5e312dbead38dd1c2188cec84e963b0a",
+      "passed": true
+    },
+    {
+      "file": "Pumpkin-Patch-Village-Blackroot-Android-Patch.zip",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/fae745fe1892d47395ae94786e96f4d505095610/Pumpkin-Patch-Village-Blackroot-Android-Patch.zip",
+      "status": 200,
+      "contentType": "application/zip",
+      "bytes": 205980,
+      "sha256": "c8ba14b3995b8490bf1a1ae4d8cf00a1990a391fa0b0e09bab405fe792b9c9e8",
+      "passed": true
+    }
+  ]
+}

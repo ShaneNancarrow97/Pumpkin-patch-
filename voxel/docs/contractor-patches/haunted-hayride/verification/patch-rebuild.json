@@ -1,0 +1,10 @@
+{
+  "leadBase": "1abaff5386bbf563a5e0a8454ffdf125b5b94d8c",
+  "runtimeSourceCommit": "8597364531527ae79bdeb28f369c68f3487cd228",
+  "method": "Binary patch applied in an isolated worktree at exact lead base, followed by final view delta and pinned-dependency rebuild. Final full patch is checked against a clean index at the same base.",
+  "htmlSha256": "00452771188d0a6cdaf1a020f34c5ed21e610520f4f15ea09f82b757e8d1aa8d",
+  "rebuiltHtmlSha256": "00452771188d0a6cdaf1a020f34c5ed21e610520f4f15ea09f82b757e8d1aa8d",
+  "identical": true,
+  "root2DChanged": false,
+  "leadOwnedMazeRuntimeChanged": false
+}

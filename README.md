@@ -1,5 +1,7 @@
 # Shane & Natalie's Pumpkin Patch
 
+> **This branch (`voxel-reference`) also holds a from-scratch voxel version in [`voxel/`](voxel/README.md)**, built as a style reference from the game bible.
+
 A cosy Halloween farm, shop and home game starring Shane, Natalie and Skyla the cat. You grow pumpkins, serve ghostly visitors at the stall and in Skyla's shop, and spend the takings on upgrades, a four-room house, decor, books and costumes. It runs fully offline: the game is a single HTML file that opens in Safari or Chrome, and the same file runs inside a small Android app.
 
 This repository holds the source for **Midnight 2.10** (save schema 9). That is the build inside `Pumpkin_Patch_Midnight.apk`. See [What's in here](#whats-in-here) for how the source was recovered and what is missing.

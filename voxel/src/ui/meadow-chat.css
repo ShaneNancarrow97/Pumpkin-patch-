@@ -1,0 +1,33 @@
+/* Chats in the meadow: markers over talking groups, the speaker's bubble
+   close up, and the Overheard card (ui/chat-card.js). */
+#chat-layer { position: fixed; inset: 0; pointer-events: none; z-index: 6; }                 /* over the world, as #fx */
+.chat-marker { position: absolute; left: 0; top: 0; pointer-events: auto; display: flex; align-items: center; justify-content: center; gap: 3px; width: 36px; height: 28px; padding: 0; border: 1px solid var(--brass); border-radius: 14px 14px 14px 4px; background: var(--panel-glass); box-shadow: 0 4px 12px #0008; }
+.chat-marker[hidden], .chat-bubble[hidden] { display: none; }
+.chat-marker::before { content: ""; position: absolute; inset: -8px -4px; }          /* a 44px target */
+.chat-marker i { width: 5px; height: 5px; border-radius: 50%; background: var(--gold-bright); opacity: .55; }
+.chat-marker.new i { animation: chat-dots 1.2s ease-in-out; }
+.chat-marker.new i:nth-child(2) { animation-delay: .15s; } .chat-marker.new i:nth-child(3) { animation-delay: .3s; }
+@keyframes chat-dots { 0%, 100% { opacity: .55; transform: none; } 40% { opacity: 1; transform: translateY(-3px); } }
+.chat-bubble { position: absolute; left: 0; top: 0; margin: 0; max-width: 168px; padding: 4px 8px; border: 1px solid #f0d2a240; border-radius: 10px 10px 10px 3px; background: #241a2bd9; box-shadow: 0 3px 10px #0006; font: 500 12px/1.3 var(--body); color: var(--ink); text-shadow: none; pointer-events: none; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; animation: chat-bubble-in .18s ease-out; }
+@keyframes chat-bubble-in { from { opacity: 0; translate: 0 4px; } }
+.chat-card { position: fixed; z-index: 22; left: 12px; bottom: calc(var(--dock-h) + 58px); width: min(320px, calc(100% - 24px)); padding: 12px; border: 1px solid var(--edge-soft); border-radius: 15px; background: var(--panel-glass); box-shadow: 0 12px 36px #0007; }
+.chat-card[hidden] { display: none; }
+.chat-card header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.chat-card header > div { flex: 1; min-width: 0; }
+.chat-card header b { display: block; font: 600 15px var(--display); }
+.chat-card header small { display: block; margin-top: 4px; font-size: 12px; color: var(--ink-soft); }
+.chat-faces { display: flex; gap: 6px; margin: 0 0 10px; padding: 0; list-style: none; }
+.chat-faces button { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 52px; min-height: 44px; padding: 4px; border: 1px solid transparent; border-radius: 10px; background: #ffffff0d; font-size: 11px; color: var(--ink-soft); }
+.chat-faces button.away { opacity: .55; }
+.chat-faces img { height: 40px; width: auto; }
+.chat-lines { max-height: 180px; overflow-y: auto; margin: 0; padding: 4px 0 0; list-style: none; display: grid; gap: 7px; font-size: 13px; line-height: 1.4; -webkit-mask-image: linear-gradient(transparent, #000 14px); mask-image: linear-gradient(transparent, #000 14px); }
+.chat-lines b { color: var(--gold-bright); font-weight: 600; }
+.chat-lines .quiet { color: var(--ink-soft); font-style: italic; }
+.chat-topics { display: flex; flex-wrap: wrap; gap: 5px; margin: 10px 0 0; }
+.chat-topics:empty { display: none; }
+.chat-topics span { padding: 3px 8px; border: 1px solid var(--edge-soft); border-radius: 999px; font-size: 11px; color: var(--ink-soft); }
+@media (max-width: 520px) { .chat-lines { max-height: 140px; } }
+@media (max-height: 480px) { .chat-card { bottom: 12px; } .chat-lines { max-height: 96px; } }
+@media (prefers-reduced-motion: reduce) { .chat-marker.new i { animation: none; opacity: 1; } }
+.guest-listen { width: 100%; min-height: 44px; margin-top: 10px; border: 1px solid var(--edge); border-radius: 999px; background: #ffffff0f; font-weight: 600; font-size: 13px; }
+.guest-listen[hidden] { display: none; }

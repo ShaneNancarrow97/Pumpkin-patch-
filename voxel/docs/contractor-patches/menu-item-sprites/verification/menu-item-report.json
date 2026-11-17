@@ -1,0 +1,1961 @@
+{
+  "date": "2026-11-08T09:28:15.345Z",
+  "html": "Pumpkin-Patch-Menu-Sprites.html",
+  "sha256": "2d8f70d62c29d994eac21ab10d2d22811a26c53a9f652cb6e7bb959b6817619a",
+  "bytes": 55711025,
+  "sourceCommit": "fa3ce1616919d3e75b0488421d42c7df50f0df31",
+  "sourceHashes": {
+    "src/ui/village-item-art.js": "436adda836f918063ac1e7077ad57f0cdf64a49f249d31dab6af79fefae2ddf2",
+    "src/ui/village-item-markup.js": "bf5ce2d6330b345ae70723a9afbddc33f2e55ec9efa4ee588cb666df13ffd27a",
+    "src/ui/village-chapters.js": "ab91a118089535a6e058679f2b6af08537e6df0c63c6f887061b782c0e578912",
+    "src/ui/village-chapters.css": "bec577ecb562a72abc61ce6c53fd61840416b3343858da8c07a50005541e7197",
+    "src/ui/village-decorate.js": "9f7ac96a0c8ad72e504e1440070bdb447d41bc5dfa681aad7cf93fde782893c6",
+    "src/ui/village-decorate.css": "55f7cf4c1cd746b366e2a35e3bb5d160e37fbf7db4e445b412c6cc630eac95ea",
+    "src/village-game.js": "172f946ee138b9851be051330517077373d823c61657d2d9618c7d75b05caa79",
+    "src/content/village-item-icon-meta.js": "797086e6c9616032a71b5937e658f627321db73679b8eff7aad60d0af797f823",
+    "assets/menu-items/village-items.webp": "5c8dfec734351e56f8575b36d92dc96480d0d9824daad3713c52d526d30d5b8c",
+    "tools/menu-item-qa.mjs": "a69376ceda2a01caf9118b57c13c3767c4d9edc086d240fa255698155312d30d"
+  },
+  "scope": "Exact standalone HTML served on loopback. Declared high-level save with four gathered materials, completed Rowan unlocks, one active Elowen restoration and all eighteen native stored decorations. Actual visible UI buttons perform each purchase. Normal game rendering/settings for screenshots; muted audio only. Viewports emulate layouts, not physical Fold, Bluetooth or TV hardware. No gameplay/runtime source is modified.",
+  "fixture": {
+    "coins": 20150,
+    "materials": {
+      "logs": 32,
+      "stone": 32,
+      "fibre": 32,
+      "herbs": 32,
+      "hardwood": 0,
+      "moth-silk": 0,
+      "iron": 0,
+      "clay": 0,
+      "moonstone": 0,
+      "emberbloom": 0,
+      "star-amber": 0
+    },
+    "nativeDecor": [
+      "moth-lamp",
+      "toadstool-lamp",
+      "moth-lantern-string",
+      "signpost",
+      "market-crates",
+      "reading-stand",
+      "book-cart",
+      "stool",
+      "timber-gate",
+      "flower-barrow",
+      "sundial",
+      "bunting-posts",
+      "workbench",
+      "wheelbarrow",
+      "moth-statue",
+      "scarecrow-statue",
+      "pumpkin-arch",
+      "moon-gate"
+    ],
+    "stallRotation": 2
+  },
+  "checks": [
+    {
+      "pass": true,
+      "label": "Declared saved village opens through the actual More menu"
+    },
+    {
+      "pass": true,
+      "label": "Embedded atlas decodes at the declared dimensions",
+      "detail": {
+        "width": 768,
+        "height": 768,
+        "cells": [
+          {
+            "id": "logs",
+            "opaque": 6745
+          },
+          {
+            "id": "stone",
+            "opaque": 6419
+          },
+          {
+            "id": "fibre",
+            "opaque": 5884
+          },
+          {
+            "id": "herbs",
+            "opaque": 6684
+          },
+          {
+            "id": "hardwood",
+            "opaque": 6814
+          },
+          {
+            "id": "moth-silk",
+            "opaque": 6315
+          },
+          {
+            "id": "iron",
+            "opaque": 6286
+          },
+          {
+            "id": "clay",
+            "opaque": 6351
+          },
+          {
+            "id": "moonstone",
+            "opaque": 7632
+          },
+          {
+            "id": "emberbloom",
+            "opaque": 6532
+          },
+          {
+            "id": "star-amber",
+            "opaque": 7864
+          },
+          {
+            "id": "satchel",
+            "opaque": 7492
+          },
+          {
+            "id": "moth-lamp",
+            "opaque": 2614
+          },
+          {
+            "id": "toadstool-lamp",
+            "opaque": 6210
+          },
+          {
+            "id": "moth-lantern-string",
+            "opaque": 3084
+          },
+          {
+            "id": "signpost",
+            "opaque": 3070
+          },
+          {
+            "id": "market-crates",
+            "opaque": 7167
+          },
+          {
+            "id": "reading-stand",
+            "opaque": 5341
+          },
+          {
+            "id": "book-cart",
+            "opaque": 7472
+          },
+          {
+            "id": "stool",
+            "opaque": 5262
+          },
+          {
+            "id": "timber-gate",
+            "opaque": 7977
+          },
+          {
+            "id": "flower-barrow",
+            "opaque": 5528
+          },
+          {
+            "id": "sundial",
+            "opaque": 4927
+          },
+          {
+            "id": "bunting-posts",
+            "opaque": 2960
+          },
+          {
+            "id": "workbench",
+            "opaque": 6382
+          },
+          {
+            "id": "wheelbarrow",
+            "opaque": 5064
+          },
+          {
+            "id": "moth-statue",
+            "opaque": 6581
+          },
+          {
+            "id": "scarecrow-statue",
+            "opaque": 4074
+          },
+          {
+            "id": "pumpkin-arch",
+            "opaque": 5557
+          },
+          {
+            "id": "moon-gate",
+            "opaque": 4606
+          },
+          {
+            "id": "satchel-pockets",
+            "opaque": 7911
+          },
+          {
+            "id": "satchel-frame",
+            "opaque": 7917
+          },
+          {
+            "id": "gathering-kit",
+            "opaque": 6495
+          },
+          {
+            "id": "gathering-straps",
+            "opaque": 7031
+          },
+          {
+            "id": "almanac",
+            "opaque": 5991
+          },
+          {
+            "id": "wandering-letter",
+            "opaque": 5818
+          }
+        ],
+        "styleCount": 1,
+        "embedded": true
+      }
+    },
+    {
+      "pass": true,
+      "label": "All 36 declared atlas cells contain visible artwork"
+    },
+    {
+      "pass": true,
+      "label": "Four current satchel materials have their own 48px illustrations",
+      "detail": [
+        {
+          "id": "logs",
+          "w": 48,
+          "h": 48,
+          "background": true,
+          "position": "0% 0%",
+          "size": "600% 600%",
+          "hidden": "true",
+          "pointer": "none"
+        },
+        {
+          "id": "stone",
+          "w": 48,
+          "h": 48,
+          "background": true,
+          "position": "20% 0%",
+          "size": "600% 600%",
+          "hidden": "true",
+          "pointer": "none"
+        },
+        {
+          "id": "fibre",
+          "w": 48,
+          "h": 48,
+          "background": true,
+          "position": "40% 0%",
+          "size": "600% 600%",
+          "hidden": "true",
+          "pointer": "none"
+        },
+        {
+          "id": "herbs",
+          "w": 48,
+          "h": 48,
+          "background": true,
+          "position": "60% 0%",
+          "size": "600% 600%",
+          "hidden": "true",
+          "pointer": "none"
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "desktop-satchel: no horizontal overflow or clipped panel",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "desktop-satchel: 44px controls and readable text",
+      "detail": {
+        "targets": [],
+        "text": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "All four workshop cards display their own 60px illustration",
+      "detail": [
+        {
+          "id": "satchel-pockets",
+          "w": 60,
+          "h": 60,
+          "background": true,
+          "position": "0% 100%",
+          "size": "600% 600%",
+          "hidden": "true",
+          "pointer": "none"
+        },
+        {
+          "id": "satchel-frame",
+          "w": 60,
+          "h": 60,
+          "background": true,
+          "position": "20% 100%",
+          "size": "600% 600%",
+          "hidden": "true",
+          "pointer": "none"
+        },
+        {
+          "id": "gathering-kit",
+          "w": 60,
+          "h": 60,
+          "background": true,
+          "position": "40% 100%",
+          "size": "600% 600%",
+          "hidden": "true",
+          "pointer": "none"
+        },
+        {
+          "id": "gathering-straps",
+          "w": 60,
+          "h": 60,
+          "background": true,
+          "position": "60% 100%",
+          "size": "600% 600%",
+          "hidden": "true",
+          "pointer": "none"
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "One tap buys the gathering kit and charges its coins/materials exactly once"
+    },
+    {
+      "pass": true,
+      "label": "Owned workshop upgrade removes its buy button without changing farm earnings"
+    },
+    {
+      "pass": true,
+      "label": "Rowan\u2019s native stool and book cart use their matching item artwork",
+      "detail": [
+        {
+          "key": "village:lantern-post",
+          "native": [],
+          "garden": true,
+          "home": false,
+          "text": "Copper lanternAlways stocked \u00b7 1 storedA warm little beacon for the garden path.\u00a385"
+        },
+        {
+          "key": "village:stool",
+          "native": [
+            "stool"
+          ],
+          "garden": false,
+          "home": false,
+          "text": "Timber stoolAlways stocked \u00b7 1 storedThree legs, one seat, no wobble. Rowan swears.\u00a360"
+        },
+        {
+          "key": "village:picnic-table",
+          "native": [],
+          "garden": true,
+          "home": false,
+          "text": "Moonlit picnic table3 leftRoom for two, a gingham cloth and a basket of cocoa.\u00a3340"
+        },
+        {
+          "key": "village:crooked-tree",
+          "native": [],
+          "garden": true,
+          "home": false,
+          "text": "Crooked autumn tree3 leftCopper leaves, a crooked trunk and a few friendly bats.\u00a3650"
+        },
+        {
+          "key": "village:book-cart",
+          "native": [
+            "book-cart"
+          ],
+          "garden": false,
+          "home": false,
+          "text": "Book cart3 left \u00b7 1 storedA little wheeled cart of books, for reading wherever you stop.\u00a3180"
+        },
+        {
+          "key": "home:d03",
+          "native": [],
+          "garden": false,
+          "home": true,
+          "text": "Harvest lantern3 left\u00a375"
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "Existing garden item keeps its existing garden sprite"
+    },
+    {
+      "pass": true,
+      "label": "Farmhouse stock keeps its existing home artwork"
+    },
+    {
+      "pass": true,
+      "label": "One tap purchases exactly one native stool at its displayed price"
+    },
+    {
+      "pass": true,
+      "label": "All eighteen stored native pieces display their own 52px art in Decorate",
+      "detail": [
+        {
+          "id": "moth-lamp",
+          "w": 52,
+          "h": 52,
+          "background": true,
+          "position": "0% 40%",
+          "size": "600% 600%",
+          "hidden": "true",
+          "pointer": "none"
+        },
+        {
+          "id": "toadstool-lamp",
+          "w": 52,
+          "h": 52,
+          "background": true,
+          "position": "20% 40%",
+          "size": "600% 600%",
+          "hidden": "true",
+          "pointer": "none"
+        },
+        {
+          "id": "moth-lantern-string",
+          "w": 52,
+          "h": 52,
+          "background": true,
+          "position": "40% 40%",
+          "size": "600% 600%",
+          "hidden": "true",
+          "pointer": "none"
+        },
+        {
+          "id": "signpost",
+          "w": 52,
+          "h": 52,
+          "background": true,
+          "position": "60% 40%",
+          "size": "600% 600%",
+          "hidden": "true",
+          "pointer": "none"
+        },
+        {
+          "id": "market-crates",
+          "w": 52,
+          "h": 52,
+          "background": true,
+          "position": "80% 40%",
+          "size": "600% 600%",
+          "hidden": "true",
+          "pointer": "none"
+        },
+        {
+          "id": "reading-stand",
+          "w": 52,
+          "h": 52,
+          "background": true,
+          "position": "100% 40%",
+          "size": "600% 600%",
+          "hidden": "true",
+          "pointer": "none"
+        },
+        {
+          "id": "book-cart",
+          "w": 52,
+          "h": 52,
+          "background": true,
+          "position": "0% 60%",
+          "size": "600% 600%",
+          "hidden": "true",
+          "pointer": "none"
+        },
+        {
+          "id": "stool",
+          "w": 52,
+          "h": 52,
+          "background": true,
+          "position": "20% 60%",
+          "size": "600% 600%",
+          "hidden": "true",
+          "pointer": "none"
+        },
+        {
+          "id": "timber-gate",
+          "w": 52,
+          "h": 52,
+          "background": true,
+          "position": "40% 60%",
+          "size": "600% 600%",
+          "hidden": "true",
+          "pointer": "none"
+        },
+        {
+          "id": "flower-barrow",
+          "w": 52,
+          "h": 52,
+          "background": true,
+          "position": "60% 60%",
+          "size": "600% 600%",
+          "hidden": "true",
+          "pointer": "none"
+        },
+        {
+          "id": "sundial",
+          "w": 52,
+          "h": 52,
+          "background": true,
+          "position": "80% 60%",
+          "size": "600% 600%",
+          "hidden": "true",
+          "pointer": "none"
+        },
+        {
+          "id": "bunting-posts",
+          "w": 52,
+          "h": 52,
+          "background": true,
+          "position": "100% 60%",
+          "size": "600% 600%",
+          "hidden": "true",
+          "pointer": "none"
+        },
+        {
+          "id": "workbench",
+          "w": 52,
+          "h": 52,
+          "background": true,
+          "position": "0% 80%",
+          "size": "600% 600%",
+          "hidden": "true",
+          "pointer": "none"
+        },
+        {
+          "id": "wheelbarrow",
+          "w": 52,
+          "h": 52,
+          "background": true,
+          "position": "20% 80%",
+          "size": "600% 600%",
+          "hidden": "true",
+          "pointer": "none"
+        },
+        {
+          "id": "moth-statue",
+          "w": 52,
+          "h": 52,
+          "background": true,
+          "position": "40% 80%",
+          "size": "600% 600%",
+          "hidden": "true",
+          "pointer": "none"
+        },
+        {
+          "id": "scarecrow-statue",
+          "w": 52,
+          "h": 52,
+          "background": true,
+          "position": "60% 80%",
+          "size": "600% 600%",
+          "hidden": "true",
+          "pointer": "none"
+        },
+        {
+          "id": "pumpkin-arch",
+          "w": 52,
+          "h": 52,
+          "background": true,
+          "position": "80% 80%",
+          "size": "600% 600%",
+          "hidden": "true",
+          "pointer": "none"
+        },
+        {
+          "id": "moon-gate",
+          "w": 52,
+          "h": 52,
+          "background": true,
+          "position": "100% 80%",
+          "size": "600% 600%",
+          "hidden": "true",
+          "pointer": "none"
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "Decorate also preserves existing garden art"
+    },
+    {
+      "pass": true,
+      "label": "phone-upgrades: no horizontal overflow or clipped panel",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "phone-upgrades: 44px controls and readable text",
+      "detail": {
+        "targets": [],
+        "text": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "phone-materials: no horizontal overflow or clipped panel",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "phone-materials: 44px controls and readable text",
+      "detail": {
+        "targets": [],
+        "text": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "phone-journal: no horizontal overflow or clipped panel",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "phone-journal: 44px controls and readable text",
+      "detail": {
+        "targets": [],
+        "text": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "phone-stall: no horizontal overflow or clipped panel",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "phone-stall: 44px controls and readable text",
+      "detail": {
+        "targets": [],
+        "text": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "phone-decorate: no horizontal overflow or clipped panel",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "phone-decorate: 44px controls and readable text",
+      "detail": {
+        "targets": [],
+        "text": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "fold-decorate: no horizontal overflow or clipped panel",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "fold-decorate: 44px controls and readable text",
+      "detail": {
+        "targets": [],
+        "text": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "fold-materials: no horizontal overflow or clipped panel",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "fold-materials: 44px controls and readable text",
+      "detail": {
+        "targets": [],
+        "text": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "fold-upgrades: no horizontal overflow or clipped panel",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "fold-upgrades: 44px controls and readable text",
+      "detail": {
+        "targets": [],
+        "text": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "fold-journal: no horizontal overflow or clipped panel",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "fold-journal: 44px controls and readable text",
+      "detail": {
+        "targets": [],
+        "text": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "fold-stall: no horizontal overflow or clipped panel",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "fold-stall: 44px controls and readable text",
+      "detail": {
+        "targets": [],
+        "text": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "landscape-stall: no horizontal overflow or clipped panel",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "landscape-stall: 44px controls and readable text",
+      "detail": {
+        "targets": [],
+        "text": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "landscape-materials: no horizontal overflow or clipped panel",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "landscape-materials: 44px controls and readable text",
+      "detail": {
+        "targets": [],
+        "text": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "landscape-upgrades: no horizontal overflow or clipped panel",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "landscape-upgrades: 44px controls and readable text",
+      "detail": {
+        "targets": [],
+        "text": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "landscape-journal: no horizontal overflow or clipped panel",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "landscape-journal: 44px controls and readable text",
+      "detail": {
+        "targets": [],
+        "text": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "landscape-decorate: no horizontal overflow or clipped panel",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "landscape-decorate: 44px controls and readable text",
+      "detail": {
+        "targets": [],
+        "text": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "Quest material requirements retain readable labels with 24px decorative sprites",
+      "detail": [
+        {
+          "id": "logs",
+          "w": 24,
+          "h": 24,
+          "background": true,
+          "position": "0% 0%",
+          "size": "600% 600%",
+          "hidden": "true",
+          "pointer": "none"
+        },
+        {
+          "id": "stone",
+          "w": 24,
+          "h": 24,
+          "background": true,
+          "position": "20% 0%",
+          "size": "600% 600%",
+          "hidden": "true",
+          "pointer": "none"
+        },
+        {
+          "id": "fibre",
+          "w": 24,
+          "h": 24,
+          "background": true,
+          "position": "40% 0%",
+          "size": "600% 600%",
+          "hidden": "true",
+          "pointer": "none"
+        },
+        {
+          "id": "herbs",
+          "w": 24,
+          "h": 24,
+          "background": true,
+          "position": "60% 0%",
+          "size": "600% 600%",
+          "hidden": "true",
+          "pointer": "none"
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "The completion reward uses the matching 24px moth-statue chip",
+      "detail": [
+        {
+          "id": "moth-statue",
+          "w": 24,
+          "h": 24,
+          "background": true,
+          "position": "40% 80%",
+          "size": "600% 600%",
+          "hidden": "true",
+          "pointer": "none"
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "desktop-quest-chips: no horizontal overflow or clipped panel",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "desktop-quest-chips: 44px controls and readable text",
+      "detail": {
+        "targets": [],
+        "text": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "Live redraws and leaving/re-entering keep exactly one shared atlas stylesheet",
+      "detail": {
+        "count": 1,
+        "same": true,
+        "sameText": true,
+        "inlineData": false
+      }
+    },
+    {
+      "pass": true,
+      "label": "Menu art produces no page errors",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "Standalone menus request no external assets",
+      "detail": []
+    }
+  ],
+  "layouts": [
+    {
+      "name": "desktop-satchel",
+      "size": [
+        1280,
+        800
+      ],
+      "horizontalOverflow": false,
+      "smallTargets": [],
+      "smallText": [],
+      "clipped": [],
+      "panels": [
+        {
+          "id": "vg-panel",
+          "x": 836,
+          "y": 80,
+          "right": 1266,
+          "bottom": 710,
+          "scrollWidth": 428,
+          "clientWidth": 428
+        }
+      ]
+    },
+    {
+      "name": "phone-upgrades",
+      "size": [
+        390,
+        844
+      ],
+      "horizontalOverflow": false,
+      "smallTargets": [],
+      "smallText": [],
+      "clipped": [],
+      "panels": [
+        {
+          "id": "vg-panel",
+          "x": 10,
+          "y": 75,
+          "right": 380,
+          "bottom": 761,
+          "scrollWidth": 368,
+          "clientWidth": 368
+        }
+      ]
+    },
+    {
+      "name": "phone-materials",
+      "size": [
+        390,
+        844
+      ],
+      "horizontalOverflow": false,
+      "smallTargets": [],
+      "smallText": [],
+      "clipped": [],
+      "panels": [
+        {
+          "id": "vg-panel",
+          "x": 10,
+          "y": 75,
+          "right": 380,
+          "bottom": 761,
+          "scrollWidth": 368,
+          "clientWidth": 368
+        }
+      ]
+    },
+    {
+      "name": "phone-journal",
+      "size": [
+        390,
+        844
+      ],
+      "horizontalOverflow": false,
+      "smallTargets": [],
+      "smallText": [],
+      "clipped": [],
+      "panels": [
+        {
+          "id": "vg-panel",
+          "x": 10,
+          "y": 75,
+          "right": 380,
+          "bottom": 761,
+          "scrollWidth": 368,
+          "clientWidth": 368
+        }
+      ]
+    },
+    {
+      "name": "phone-stall",
+      "size": [
+        390,
+        844
+      ],
+      "horizontalOverflow": false,
+      "smallTargets": [],
+      "smallText": [],
+      "clipped": [],
+      "panels": [
+        {
+          "id": "vg-panel",
+          "x": 10,
+          "y": 75,
+          "right": 380,
+          "bottom": 761,
+          "scrollWidth": 368,
+          "clientWidth": 368
+        }
+      ]
+    },
+    {
+      "name": "phone-decorate",
+      "size": [
+        390,
+        844
+      ],
+      "horizontalOverflow": false,
+      "smallTargets": [],
+      "smallText": [],
+      "clipped": [],
+      "panels": [
+        {
+          "id": "vd-catalogue",
+          "x": 10,
+          "y": 344.484375,
+          "right": 380,
+          "bottom": 834,
+          "scrollWidth": 368,
+          "clientWidth": 368
+        }
+      ]
+    },
+    {
+      "name": "fold-decorate",
+      "size": [
+        864,
+        756
+      ],
+      "horizontalOverflow": false,
+      "smallTargets": [],
+      "smallText": [],
+      "clipped": [],
+      "panels": [
+        {
+          "id": "vd-catalogue",
+          "x": 460,
+          "y": 80,
+          "right": 850,
+          "bottom": 736,
+          "scrollWidth": 388,
+          "clientWidth": 388
+        }
+      ]
+    },
+    {
+      "name": "fold-materials",
+      "size": [
+        864,
+        756
+      ],
+      "horizontalOverflow": false,
+      "smallTargets": [],
+      "smallText": [],
+      "clipped": [],
+      "panels": [
+        {
+          "id": "vg-panel",
+          "x": 420,
+          "y": 80,
+          "right": 850,
+          "bottom": 666,
+          "scrollWidth": 428,
+          "clientWidth": 428
+        }
+      ]
+    },
+    {
+      "name": "fold-upgrades",
+      "size": [
+        864,
+        756
+      ],
+      "horizontalOverflow": false,
+      "smallTargets": [],
+      "smallText": [],
+      "clipped": [],
+      "panels": [
+        {
+          "id": "vg-panel",
+          "x": 420,
+          "y": 80,
+          "right": 850,
+          "bottom": 666,
+          "scrollWidth": 428,
+          "clientWidth": 428
+        }
+      ]
+    },
+    {
+      "name": "fold-journal",
+      "size": [
+        864,
+        756
+      ],
+      "horizontalOverflow": false,
+      "smallTargets": [],
+      "smallText": [],
+      "clipped": [],
+      "panels": [
+        {
+          "id": "vg-panel",
+          "x": 420,
+          "y": 80,
+          "right": 850,
+          "bottom": 666,
+          "scrollWidth": 428,
+          "clientWidth": 428
+        }
+      ]
+    },
+    {
+      "name": "fold-stall",
+      "size": [
+        864,
+        756
+      ],
+      "horizontalOverflow": false,
+      "smallTargets": [],
+      "smallText": [],
+      "clipped": [],
+      "panels": [
+        {
+          "id": "vg-panel",
+          "x": 420,
+          "y": 80,
+          "right": 850,
+          "bottom": 666,
+          "scrollWidth": 428,
+          "clientWidth": 428
+        }
+      ]
+    },
+    {
+      "name": "landscape-stall",
+      "size": [
+        844,
+        390
+      ],
+      "horizontalOverflow": false,
+      "smallTargets": [],
+      "smallText": [],
+      "clipped": [],
+      "panels": [
+        {
+          "id": "vg-panel",
+          "x": 390,
+          "y": 10,
+          "right": 830,
+          "bottom": 380,
+          "scrollWidth": 438,
+          "clientWidth": 438
+        }
+      ]
+    },
+    {
+      "name": "landscape-materials",
+      "size": [
+        844,
+        390
+      ],
+      "horizontalOverflow": false,
+      "smallTargets": [],
+      "smallText": [],
+      "clipped": [],
+      "panels": [
+        {
+          "id": "vg-panel",
+          "x": 390,
+          "y": 10,
+          "right": 830,
+          "bottom": 380,
+          "scrollWidth": 438,
+          "clientWidth": 438
+        }
+      ]
+    },
+    {
+      "name": "landscape-upgrades",
+      "size": [
+        844,
+        390
+      ],
+      "horizontalOverflow": false,
+      "smallTargets": [],
+      "smallText": [],
+      "clipped": [],
+      "panels": [
+        {
+          "id": "vg-panel",
+          "x": 390,
+          "y": 10,
+          "right": 830,
+          "bottom": 380,
+          "scrollWidth": 438,
+          "clientWidth": 438
+        }
+      ]
+    },
+    {
+      "name": "landscape-journal",
+      "size": [
+        844,
+        390
+      ],
+      "horizontalOverflow": false,
+      "smallTargets": [],
+      "smallText": [],
+      "clipped": [],
+      "panels": [
+        {
+          "id": "vg-panel",
+          "x": 390,
+          "y": 10,
+          "right": 830,
+          "bottom": 380,
+          "scrollWidth": 438,
+          "clientWidth": 438
+        }
+      ]
+    },
+    {
+      "name": "landscape-decorate",
+      "size": [
+        844,
+        390
+      ],
+      "horizontalOverflow": false,
+      "smallTargets": [],
+      "smallText": [],
+      "clipped": [],
+      "panels": [
+        {
+          "id": "vd-catalogue",
+          "x": 475,
+          "y": 10,
+          "right": 830,
+          "bottom": 380,
+          "scrollWidth": 353,
+          "clientWidth": 353
+        }
+      ]
+    },
+    {
+      "name": "desktop-quest-chips",
+      "size": [
+        1280,
+        800
+      ],
+      "horizontalOverflow": false,
+      "smallTargets": [],
+      "smallText": [],
+      "clipped": [],
+      "panels": [
+        {
+          "id": "vg-panel",
+          "x": 836,
+          "y": 80,
+          "right": 1266,
+          "bottom": 710,
+          "scrollWidth": 428,
+          "clientWidth": 428
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    "desktop-satchel.png",
+    "phone-upgrades.png",
+    "fold-decorate.png",
+    "landscape-stall.png",
+    "desktop-quest-chips.png"
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "atlas": {
+    "width": 768,
+    "height": 768,
+    "cells": [
+      {
+        "id": "logs",
+        "opaque": 6745
+      },
+      {
+        "id": "stone",
+        "opaque": 6419
+      },
+      {
+        "id": "fibre",
+        "opaque": 5884
+      },
+      {
+        "id": "herbs",
+        "opaque": 6684
+      },
+      {
+        "id": "hardwood",
+        "opaque": 6814
+      },
+      {
+        "id": "moth-silk",
+        "opaque": 6315
+      },
+      {
+        "id": "iron",
+        "opaque": 6286
+      },
+      {
+        "id": "clay",
+        "opaque": 6351
+      },
+      {
+        "id": "moonstone",
+        "opaque": 7632
+      },
+      {
+        "id": "emberbloom",
+        "opaque": 6532
+      },
+      {
+        "id": "star-amber",
+        "opaque": 7864
+      },
+      {
+        "id": "satchel",
+        "opaque": 7492
+      },
+      {
+        "id": "moth-lamp",
+        "opaque": 2614
+      },
+      {
+        "id": "toadstool-lamp",
+        "opaque": 6210
+      },
+      {
+        "id": "moth-lantern-string",
+        "opaque": 3084
+      },
+      {
+        "id": "signpost",
+        "opaque": 3070
+      },
+      {
+        "id": "market-crates",
+        "opaque": 7167
+      },
+      {
+        "id": "reading-stand",
+        "opaque": 5341
+      },
+      {
+        "id": "book-cart",
+        "opaque": 7472
+      },
+      {
+        "id": "stool",
+        "opaque": 5262
+      },
+      {
+        "id": "timber-gate",
+        "opaque": 7977
+      },
+      {
+        "id": "flower-barrow",
+        "opaque": 5528
+      },
+      {
+        "id": "sundial",
+        "opaque": 4927
+      },
+      {
+        "id": "bunting-posts",
+        "opaque": 2960
+      },
+      {
+        "id": "workbench",
+        "opaque": 6382
+      },
+      {
+        "id": "wheelbarrow",
+        "opaque": 5064
+      },
+      {
+        "id": "moth-statue",
+        "opaque": 6581
+      },
+      {
+        "id": "scarecrow-statue",
+        "opaque": 4074
+      },
+      {
+        "id": "pumpkin-arch",
+        "opaque": 5557
+      },
+      {
+        "id": "moon-gate",
+        "opaque": 4606
+      },
+      {
+        "id": "satchel-pockets",
+        "opaque": 7911
+      },
+      {
+        "id": "satchel-frame",
+        "opaque": 7917
+      },
+      {
+        "id": "gathering-kit",
+        "opaque": 6495
+      },
+      {
+        "id": "gathering-straps",
+        "opaque": 7031
+      },
+      {
+        "id": "almanac",
+        "opaque": 5991
+      },
+      {
+        "id": "wandering-letter",
+        "opaque": 5818
+      }
+    ],
+    "styleCount": 1,
+    "embedded": true
+  },
+  "materials": [
+    {
+      "id": "logs",
+      "w": 48,
+      "h": 48,
+      "background": true,
+      "position": "0% 0%",
+      "size": "600% 600%",
+      "hidden": "true",
+      "pointer": "none"
+    },
+    {
+      "id": "stone",
+      "w": 48,
+      "h": 48,
+      "background": true,
+      "position": "20% 0%",
+      "size": "600% 600%",
+      "hidden": "true",
+      "pointer": "none"
+    },
+    {
+      "id": "fibre",
+      "w": 48,
+      "h": 48,
+      "background": true,
+      "position": "40% 0%",
+      "size": "600% 600%",
+      "hidden": "true",
+      "pointer": "none"
+    },
+    {
+      "id": "herbs",
+      "w": 48,
+      "h": 48,
+      "background": true,
+      "position": "60% 0%",
+      "size": "600% 600%",
+      "hidden": "true",
+      "pointer": "none"
+    }
+  ],
+  "upgrades": [
+    {
+      "id": "satchel-pockets",
+      "w": 60,
+      "h": 60,
+      "background": true,
+      "position": "0% 100%",
+      "size": "600% 600%",
+      "hidden": "true",
+      "pointer": "none"
+    },
+    {
+      "id": "satchel-frame",
+      "w": 60,
+      "h": 60,
+      "background": true,
+      "position": "20% 100%",
+      "size": "600% 600%",
+      "hidden": "true",
+      "pointer": "none"
+    },
+    {
+      "id": "gathering-kit",
+      "w": 60,
+      "h": 60,
+      "background": true,
+      "position": "40% 100%",
+      "size": "600% 600%",
+      "hidden": "true",
+      "pointer": "none"
+    },
+    {
+      "id": "gathering-straps",
+      "w": 60,
+      "h": 60,
+      "background": true,
+      "position": "60% 100%",
+      "size": "600% 600%",
+      "hidden": "true",
+      "pointer": "none"
+    }
+  ],
+  "upgradePurchase": {
+    "before": {
+      "coins": 20150,
+      "materials": {
+        "logs": 32,
+        "stone": 32,
+        "fibre": 32,
+        "herbs": 32,
+        "hardwood": 0,
+        "moth-silk": 0,
+        "iron": 0,
+        "clay": 0,
+        "moonstone": 0,
+        "emberbloom": 0,
+        "star-amber": 0
+      },
+      "effects": [],
+      "decor": {
+        "lantern-post": 1,
+        "moth-lamp": 1,
+        "signpost": 1,
+        "toadstool-lamp": 1,
+        "moth-lantern-string": 1,
+        "market-crates": 1,
+        "reading-stand": 1,
+        "book-cart": 1,
+        "stool": 1,
+        "timber-gate": 1,
+        "flower-barrow": 1,
+        "sundial": 1,
+        "bunting-posts": 1,
+        "workbench": 1,
+        "wheelbarrow": 1,
+        "moth-statue": 1,
+        "scarecrow-statue": 1,
+        "pumpkin-arch": 1,
+        "moon-gate": 1
+      },
+      "bought": {},
+      "earnings": 3400150
+    },
+    "after": {
+      "coins": 19950,
+      "materials": {
+        "logs": 28,
+        "stone": 32,
+        "fibre": 28,
+        "herbs": 32,
+        "hardwood": 0,
+        "moth-silk": 0,
+        "iron": 0,
+        "clay": 0,
+        "moonstone": 0,
+        "emberbloom": 0,
+        "star-amber": 0
+      },
+      "effects": [
+        "upgrade:gathering-kit"
+      ],
+      "decor": {
+        "lantern-post": 1,
+        "moth-lamp": 1,
+        "signpost": 1,
+        "toadstool-lamp": 1,
+        "moth-lantern-string": 1,
+        "market-crates": 1,
+        "reading-stand": 1,
+        "book-cart": 1,
+        "stool": 1,
+        "timber-gate": 1,
+        "flower-barrow": 1,
+        "sundial": 1,
+        "bunting-posts": 1,
+        "workbench": 1,
+        "wheelbarrow": 1,
+        "moth-statue": 1,
+        "scarecrow-statue": 1,
+        "pumpkin-arch": 1,
+        "moon-gate": 1
+      },
+      "bought": {},
+      "earnings": 3400150
+    }
+  },
+  "stall": [
+    {
+      "key": "village:lantern-post",
+      "native": [],
+      "garden": true,
+      "home": false,
+      "text": "Copper lanternAlways stocked \u00b7 1 storedA warm little beacon for the garden path.\u00a385"
+    },
+    {
+      "key": "village:stool",
+      "native": [
+        "stool"
+      ],
+      "garden": false,
+      "home": false,
+      "text": "Timber stoolAlways stocked \u00b7 1 storedThree legs, one seat, no wobble. Rowan swears.\u00a360"
+    },
+    {
+      "key": "village:picnic-table",
+      "native": [],
+      "garden": true,
+      "home": false,
+      "text": "Moonlit picnic table3 leftRoom for two, a gingham cloth and a basket of cocoa.\u00a3340"
+    },
+    {
+      "key": "village:crooked-tree",
+      "native": [],
+      "garden": true,
+      "home": false,
+      "text": "Crooked autumn tree3 leftCopper leaves, a crooked trunk and a few friendly bats.\u00a3650"
+    },
+    {
+      "key": "village:book-cart",
+      "native": [
+        "book-cart"
+      ],
+      "garden": false,
+      "home": false,
+      "text": "Book cart3 left \u00b7 1 storedA little wheeled cart of books, for reading wherever you stop.\u00a3180"
+    },
+    {
+      "key": "home:d03",
+      "native": [],
+      "garden": false,
+      "home": true,
+      "text": "Harvest lantern3 left\u00a375"
+    }
+  ],
+  "decorPurchase": {
+    "price": 60,
+    "before": {
+      "coins": 19950,
+      "materials": {
+        "logs": 28,
+        "stone": 32,
+        "fibre": 28,
+        "herbs": 32,
+        "hardwood": 0,
+        "moth-silk": 0,
+        "iron": 0,
+        "clay": 0,
+        "moonstone": 0,
+        "emberbloom": 0,
+        "star-amber": 0
+      },
+      "effects": [
+        "upgrade:gathering-kit"
+      ],
+      "decor": {
+        "lantern-post": 1,
+        "moth-lamp": 1,
+        "signpost": 1,
+        "toadstool-lamp": 1,
+        "moth-lantern-string": 1,
+        "market-crates": 1,
+        "reading-stand": 1,
+        "book-cart": 1,
+        "stool": 1,
+        "timber-gate": 1,
+        "flower-barrow": 1,
+        "sundial": 1,
+        "bunting-posts": 1,
+        "workbench": 1,
+        "wheelbarrow": 1,
+        "moth-statue": 1,
+        "scarecrow-statue": 1,
+        "pumpkin-arch": 1,
+        "moon-gate": 1
+      },
+      "bought": {},
+      "earnings": 3400150
+    },
+    "after": {
+      "coins": 19890,
+      "materials": {
+        "logs": 28,
+        "stone": 32,
+        "fibre": 28,
+        "herbs": 32,
+        "hardwood": 0,
+        "moth-silk": 0,
+        "iron": 0,
+        "clay": 0,
+        "moonstone": 0,
+        "emberbloom": 0,
+        "star-amber": 0
+      },
+      "effects": [
+        "upgrade:gathering-kit"
+      ],
+      "decor": {
+        "lantern-post": 1,
+        "moth-lamp": 1,
+        "signpost": 1,
+        "toadstool-lamp": 1,
+        "moth-lantern-string": 1,
+        "market-crates": 1,
+        "reading-stand": 1,
+        "book-cart": 1,
+        "stool": 2,
+        "timber-gate": 1,
+        "flower-barrow": 1,
+        "sundial": 1,
+        "bunting-posts": 1,
+        "workbench": 1,
+        "wheelbarrow": 1,
+        "moth-statue": 1,
+        "scarecrow-statue": 1,
+        "pumpkin-arch": 1,
+        "moon-gate": 1
+      },
+      "bought": {
+        "village:stool": 1
+      },
+      "earnings": 3400150
+    }
+  },
+  "nativeDecor": [
+    {
+      "id": "moth-lamp",
+      "w": 52,
+      "h": 52,
+      "background": true,
+      "position": "0% 40%",
+      "size": "600% 600%",
+      "hidden": "true",
+      "pointer": "none"
+    },
+    {
+      "id": "toadstool-lamp",
+      "w": 52,
+      "h": 52,
+      "background": true,
+      "position": "20% 40%",
+      "size": "600% 600%",
+      "hidden": "true",
+      "pointer": "none"
+    },
+    {
+      "id": "moth-lantern-string",
+      "w": 52,
+      "h": 52,
+      "background": true,
+      "position": "40% 40%",
+      "size": "600% 600%",
+      "hidden": "true",
+      "pointer": "none"
+    },
+    {
+      "id": "signpost",
+      "w": 52,
+      "h": 52,
+      "background": true,
+      "position": "60% 40%",
+      "size": "600% 600%",
+      "hidden": "true",
+      "pointer": "none"
+    },
+    {
+      "id": "market-crates",
+      "w": 52,
+      "h": 52,
+      "background": true,
+      "position": "80% 40%",
+      "size": "600% 600%",
+      "hidden": "true",
+      "pointer": "none"
+    },
+    {
+      "id": "reading-stand",
+      "w": 52,
+      "h": 52,
+      "background": true,
+      "position": "100% 40%",
+      "size": "600% 600%",
+      "hidden": "true",
+      "pointer": "none"
+    },
+    {
+      "id": "book-cart",
+      "w": 52,
+      "h": 52,
+      "background": true,
+      "position": "0% 60%",
+      "size": "600% 600%",
+      "hidden": "true",
+      "pointer": "none"
+    },
+    {
+      "id": "stool",
+      "w": 52,
+      "h": 52,
+      "background": true,
+      "position": "20% 60%",
+      "size": "600% 600%",
+      "hidden": "true",
+      "pointer": "none"
+    },
+    {
+      "id": "timber-gate",
+      "w": 52,
+      "h": 52,
+      "background": true,
+      "position": "40% 60%",
+      "size": "600% 600%",
+      "hidden": "true",
+      "pointer": "none"
+    },
+    {
+      "id": "flower-barrow",
+      "w": 52,
+      "h": 52,
+      "background": true,
+      "position": "60% 60%",
+      "size": "600% 600%",
+      "hidden": "true",
+      "pointer": "none"
+    },
+    {
+      "id": "sundial",
+      "w": 52,
+      "h": 52,
+      "background": true,
+      "position": "80% 60%",
+      "size": "600% 600%",
+      "hidden": "true",
+      "pointer": "none"
+    },
+    {
+      "id": "bunting-posts",
+      "w": 52,
+      "h": 52,
+      "background": true,
+      "position": "100% 60%",
+      "size": "600% 600%",
+      "hidden": "true",
+      "pointer": "none"
+    },
+    {
+      "id": "workbench",
+      "w": 52,
+      "h": 52,
+      "background": true,
+      "position": "0% 80%",
+      "size": "600% 600%",
+      "hidden": "true",
+      "pointer": "none"
+    },
+    {
+      "id": "wheelbarrow",
+      "w": 52,
+      "h": 52,
+      "background": true,
+      "position": "20% 80%",
+      "size": "600% 600%",
+      "hidden": "true",
+      "pointer": "none"
+    },
+    {
+      "id": "moth-statue",
+      "w": 52,
+      "h": 52,
+      "background": true,
+      "position": "40% 80%",
+      "size": "600% 600%",
+      "hidden": "true",
+      "pointer": "none"
+    },
+    {
+      "id": "scarecrow-statue",
+      "w": 52,
+      "h": 52,
+      "background": true,
+      "position": "60% 80%",
+      "size": "600% 600%",
+      "hidden": "true",
+      "pointer": "none"
+    },
+    {
+      "id": "pumpkin-arch",
+      "w": 52,
+      "h": 52,
+      "background": true,
+      "position": "80% 80%",
+      "size": "600% 600%",
+      "hidden": "true",
+      "pointer": "none"
+    },
+    {
+      "id": "moon-gate",
+      "w": 52,
+      "h": 52,
+      "background": true,
+      "position": "100% 80%",
+      "size": "600% 600%",
+      "hidden": "true",
+      "pointer": "none"
+    }
+  ],
+  "questRequirements": [
+    {
+      "id": "logs",
+      "w": 24,
+      "h": 24,
+      "background": true,
+      "position": "0% 0%",
+      "size": "600% 600%",
+      "hidden": "true",
+      "pointer": "none"
+    },
+    {
+      "id": "stone",
+      "w": 24,
+      "h": 24,
+      "background": true,
+      "position": "20% 0%",
+      "size": "600% 600%",
+      "hidden": "true",
+      "pointer": "none"
+    },
+    {
+      "id": "fibre",
+      "w": 24,
+      "h": 24,
+      "background": true,
+      "position": "40% 0%",
+      "size": "600% 600%",
+      "hidden": "true",
+      "pointer": "none"
+    },
+    {
+      "id": "herbs",
+      "w": 24,
+      "h": 24,
+      "background": true,
+      "position": "60% 0%",
+      "size": "600% 600%",
+      "hidden": "true",
+      "pointer": "none"
+    }
+  ],
+  "questRewards": [
+    {
+      "id": "moth-statue",
+      "w": 24,
+      "h": 24,
+      "background": true,
+      "position": "40% 80%",
+      "size": "600% 600%",
+      "hidden": "true",
+      "pointer": "none"
+    }
+  ],
+  "passed": true,
+  "workingTreeWasDirty": true,
+  "sourceCommitMeaning": "Parent checked out at test time; exact tested changes identified by sourceHashes and HTML sha256"
+}

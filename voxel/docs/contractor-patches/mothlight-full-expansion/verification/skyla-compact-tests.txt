@@ -1,0 +1,16 @@
+✔ display choices show existing stock and sale prices without changing the farm (18.372474ms)
+✔ every enabled choice agrees with the real assignment rule, including empty and sold out (5.556559ms)
+✔ extra tables retain clear slot identity and unavailable duplicate assignments explain their location (0.611798ms)
+✔ every shop upgrade can be bought to its top tier at level 20, and no further (11.978157ms)
+✔ the late tiers wait for their levels (0.565278ms)
+✔ gift wrapping raises a new shopper's purse, and quicker browsing shortens the choosing (1.318439ms)
+✔ three premium till tiers keep legacy ownership and charge once for each faster checkout (3.480233ms)
+✔ premium till tiers respect affordability, level gates and pause without reducing owned tiers (0.476715ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 203.145023

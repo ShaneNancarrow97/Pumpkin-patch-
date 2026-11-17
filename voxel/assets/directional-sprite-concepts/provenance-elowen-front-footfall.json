@@ -1,0 +1,17 @@
+{
+  "id": "elowen",
+  "sourceBeforeSha256": "1ebafcad01417a7b79e021f6b24b74ba37ed1ba3c203a5c18b37d1e623820aaf",
+  "frontStrip": "elowen-front-repair.png",
+  "frontStripSha256": "47ebebba12105920fc246948d9fc57e8af90c282e15cf8d43d2d27c8d1c963e0",
+  "sharedStripScale": 0.438953488372093,
+  "sourceGridColumns": 8,
+  "sourceGridRows": 1,
+  "outputRow": 0,
+  "visibleHeight": 151,
+  "outputFootBaseline": 154,
+  "method": "Crop authored frames, uniform Lanczos scale shared across strip, foot anchor alignment, replace row0. No redraw/mirror/interpolation.",
+  "review": "Front0 uses screen-left lead, front4 screen-right lead; passing2 raises screen-right boot,passing6 screen-left boot. Both feet now visible under skirt.",
+  "initialAtlas": "elowen-before-front-repair.png",
+  "frontStripGenerated": "exec-40eccdb6-a709-4b87-83dc-25bc5ebd9cbf.png",
+  "normalizationReview": "Frontrow sharedscale adjusted from144 to151 to match150\u2013153px authored stature in theother7directions. All8frontframes sharethe same scalar; noindividualstretching."
+}

@@ -1,0 +1,158 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Sharp-QA.html",
+  "checks": [
+    {
+      "ok": true,
+      "label": "Sharp keeps Fold full scene and composer at 1748 × 1574",
+      "data": {
+        "quality": "sharp",
+        "pixelRatio": 2,
+        "postprocessRatio": 2,
+        "bufferWidth": 1748,
+        "bufferHeight": 1574,
+        "postprocessWidth": 1748,
+        "postprocessHeight": 1574,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.0005720823798627002,
+          0.0006353240152477764
+        ],
+        "touchDevice": true,
+        "calls": 70,
+        "triangles": 708572,
+        "geometries": 45,
+        "textures": 10
+      }
+    },
+    {
+      "ok": true,
+      "label": "enabling glow preserves full scene resolution and smooths offscreen edges",
+      "data": {
+        "quality": "sharp",
+        "pixelRatio": 2,
+        "postprocessRatio": 2,
+        "bufferWidth": 1748,
+        "bufferHeight": 1574,
+        "postprocessWidth": 1748,
+        "postprocessHeight": 1574,
+        "antialias": "FXAA",
+        "antialiasResolution": [
+          0.0005720823798627002,
+          0.0006353240152477764
+        ],
+        "touchDevice": true,
+        "calls": 70,
+        "triangles": 708572,
+        "geometries": 45,
+        "textures": 10
+      }
+    },
+    {
+      "ok": true,
+      "label": "FXAA samples the physical render buffer rather than CSS pixels",
+      "data": [
+        0.0005720823798627002,
+        0.0006353240152477764
+      ]
+    },
+    {
+      "ok": true,
+      "label": "Balanced is an explicit 1.5× scene choice",
+      "data": {
+        "quality": "balanced",
+        "pixelRatio": 1.5,
+        "postprocessRatio": 1.5,
+        "bufferWidth": 1311,
+        "bufferHeight": 1180,
+        "postprocessWidth": 1311,
+        "postprocessHeight": 1180.5,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.0007627765064836003,
+          0.000847457627118644
+        ],
+        "touchDevice": true,
+        "calls": 70,
+        "triangles": 708572,
+        "geometries": 45,
+        "textures": 10
+      }
+    },
+    {
+      "ok": true,
+      "label": "Performance is an explicit 1× scene choice",
+      "data": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 874,
+        "bufferHeight": 787,
+        "postprocessWidth": 874,
+        "postprocessHeight": 787,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.0011441647597254005,
+          0.0012706480304955528
+        ],
+        "touchDevice": true,
+        "calls": 70,
+        "triangles": 708572,
+        "geometries": 45,
+        "textures": 10
+      }
+    },
+    {
+      "ok": true,
+      "label": "render detail preference survives reload",
+      "data": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 874,
+        "bufferHeight": 787,
+        "postprocessWidth": 874,
+        "postprocessHeight": 787,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.0011441647597254005,
+          0.0012706480304955528
+        ],
+        "touchDevice": true,
+        "calls": 70,
+        "triangles": 708572,
+        "geometries": 45,
+        "textures": 10
+      }
+    },
+    {
+      "ok": true,
+      "label": "folding to a phone recalculates buffers without lowering chosen detail",
+      "data": {
+        "quality": "sharp",
+        "pixelRatio": 2,
+        "postprocessRatio": 2,
+        "bufferWidth": 780,
+        "bufferHeight": 1688,
+        "postprocessWidth": 780,
+        "postprocessHeight": 1688,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.001282051282051282,
+          0.0005924170616113745
+        ],
+        "touchDevice": true,
+        "calls": 56,
+        "triangles": 708522,
+        "geometries": 45,
+        "textures": 10
+      }
+    },
+    {
+      "ok": true,
+      "label": "room renders with no browser exceptions",
+      "data": []
+    }
+  ],
+  "errors": [],
+  "rendering": "Chromium/SwiftShader, Fold DPR2; core configuration checks bloom toggled, final room bloom on. No hardware FPS claim."
+}

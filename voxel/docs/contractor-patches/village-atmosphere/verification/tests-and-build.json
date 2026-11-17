@@ -1,0 +1,65 @@
+{
+  "runtime_source_head": "f7f15d3901d0ecd5af96248f6356e252e43c076e",
+  "world_render_candidate_head": "ccbfcbbfcf1040b7f9d986a4f39efd0e7ac80c26",
+  "base_source_head": "4ac1572f05e0db7a5858316c5ecb7bb083595461",
+  "save_version": 20,
+  "html": {
+    "bytes": 60582366,
+    "sha256": "0ebe0c57436becfccd44f87b47bf36e1ab8e01b8edfc58421cf38be4a33ac786"
+  },
+  "final_component_delta": {
+    "source_commit": "f7f15d3901d0ecd5af96248f6356e252e43c076e",
+    "path": "src/ui/village-conversation.css",
+    "scope": "Final component-only opaque gold gradient and hover precedence for focused TV dialogue replies. No scene, gameplay, renderer or route code changed after the world/performance candidate. Full tests, normal UI/controller/contrast and compatibility smoke cover the final HTML.",
+    "world_candidate_sha256": "b415649f8ae46d4dc6083a6eb48dec4ccca8241cc3698aace27cc42e3c6305cb",
+    "final_sha256": "0ebe0c57436becfccd44f87b47bf36e1ab8e01b8edfc58421cf38be4a33ac786"
+  },
+  "full_tests": {
+    "command": "npm test",
+    "passed": 1370,
+    "failed": 0,
+    "skipped": 0,
+    "duration_ms": 541758.212802,
+    "log_sha256": "fa2e197643844071f74160695bec7fec26c0e49a7aaf718446b43798d3fab7e8"
+  },
+  "normal_world_checks": 15,
+  "world_checks_scope": "Frozen world/render candidate before the final dialogue-only CSS correction; world-browser.json records both hashes.",
+  "normal_ui_checks": 17,
+  "final_exact_ui_checks": 7,
+  "ui_checks_scope": "Twelve candidate assertions and seven final exact HTML TV/controller/contrast assertions, with two duplicates removed; each check records its HTML hash.",
+  "baseline_normal_checks": 4,
+  "compatibility_checks": 54,
+  "compatibility_draws_held": true,
+  "source_rebuild_byte_identical": true,
+  "build_warnings": 0,
+  "build_log_sha256": "42f0d4b7093254a3d497ac62bba30037b2dec63e7f5381d3ab6dfc698b795756",
+  "smoke_log_sha256": "bba76ee7ca427dedacab85b04687672cc6d0b8563d621f8ed9e91747dd50e4b4",
+  "qa_harness_sha256": "0ef01bc6cb475629b31617965e2b19b51e42e7097b1a17af0b2f41c06f55e7ab",
+  "budgets": {
+    "ground_vertices": 44736,
+    "original_ground_vertices": 44032,
+    "ground_triangles": 87328,
+    "original_ground_triangles": 87210,
+    "cut_stair_footprints": 9,
+    "unchanged_terrain_work_boxes": 14766,
+    "contact_draws": 1,
+    "contact_capacity": 32,
+    "contact_max_triangles": 64,
+    "new_lights": 0,
+    "existing_light_pool": 8,
+    "water_new_meshes": 0,
+    "water_new_textures": 0,
+    "baron_room_boxes": 765,
+    "granny_room_boxes": 977,
+    "granny_exterior_boxes": 1432,
+    "original_granny_exterior_boxes": 1481,
+    "unchanged_resource_positions": 676,
+    "unified_story_entries": 77
+  },
+  "limitations": [
+    "Software-rendered QA and an injected standard Gamepad API verify flows, not physical Bluetooth/controller/phone/TV FPS.",
+    "World screenshots use a declared fully unlocked visual fixture.",
+    "Full B1 migration/new puzzle stories/secret rooms/costumes and animal contacts remain separate roadmap work.",
+    "No APK rebuilt."
+  ]
+}

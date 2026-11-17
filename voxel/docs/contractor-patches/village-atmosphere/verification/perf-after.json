@@ -1,0 +1,3702 @@
+{
+  "schema": 1,
+  "createdAt": "2026-11-13T10:02:52.118Z",
+  "file": "/tmp/Pumpkin-Patch-Mothlight-After-Dark.html",
+  "htmlSha256": "b415649f8ae46d4dc6083a6eb48dec4ccca8241cc3698aace27cc42e3c6305cb",
+  "htmlBytes": 60582082,
+  "sourceCommit": "ccbfcbbfcf1040b7f9d986a4f39efd0e7ac80c26",
+  "checkoutCommit": "ccbfcbbfcf1040b7f9d986a4f39efd0e7ac80c26",
+  "harnessSha256": "85ecb60704529cb6fd5fff3928b500e331044cb9a5e9f0efbab177033a383d5c",
+  "contract": {
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "deviceScaleFactor": 1,
+    "hasTouch": true,
+    "reducedMotion": "no-preference",
+    "preferences": {
+      "music": false,
+      "sound": false,
+      "voiceEnabled": false,
+      "renderQuality": "sharp",
+      "frameRate": "30",
+      "glow": true,
+      "shadows": true,
+      "voxelCharacters": false,
+      "mist": true,
+      "lakeLights": true,
+      "tvMode": false
+    },
+    "simulation": {
+      "stepSeconds": 0.1,
+      "stepsPerDraw": 18,
+      "sprint": true,
+      "dwellFrames": 12,
+      "tolerance": 0.16,
+      "maxFrames": 180
+    },
+    "fixedWallClock": "2026-11-13T21:00:00.000Z",
+    "randomSeed": 20261113
+  },
+  "fixture": {
+    "version": 20,
+    "coins": 30000,
+    "earned": 3400000,
+    "sold": 0,
+    "harvested": 0,
+    "taps": 0,
+    "time": 0,
+    "wholesale": 0,
+    "plots": [
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      }
+    ],
+    "plotLevels": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "plotCrops": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "pinata": {
+      "level": 0,
+      "popped": 0,
+      "items": 0,
+      "last": null
+    },
+    "fountain": {
+      "owned": false,
+      "planted": 0,
+      "popped": 0,
+      "pumpkins": 0,
+      "coins": 0,
+      "last": null
+    },
+    "carvingStand": {
+      "built": false,
+      "open": true,
+      "benches": 0,
+      "tools": 0,
+      "sign": 0,
+      "designs": [
+        "classic"
+      ],
+      "extras": [],
+      "carvers": [],
+      "next": 0,
+      "serial": 0,
+      "carved": 0,
+      "income": 0,
+      "tally": {},
+      "last": null
+    },
+    "upgrades": {
+      "tools": 0,
+      "yield": 0,
+      "auto": 0,
+      "plots": 0,
+      "sign": 0,
+      "storage": 0,
+      "cart": 0
+    },
+    "visitorUpgrades": {
+      "party": 0,
+      "lights": 0,
+      "cocoa": 0,
+      "loyalty": 0,
+      "crowd": 0,
+      "appetite": 0,
+      "janitor": 0
+    },
+    "helperTimer": 0,
+    "streak": {
+      "count": 0,
+      "until": 0,
+      "best": 0,
+      "bonusCoins": 0,
+      "nextBonusAt": 0,
+      "visitorBoost": 0,
+      "visitorBoostUntil": 0,
+      "last": -1
+    },
+    "farmWork": {
+      "version": 1,
+      "boost": {
+        "power": 0,
+        "cooling": 0,
+        "heat": 0,
+        "overheated": false,
+        "lastUse": -1
+      },
+      "helpers": {
+        "shane": {
+          "hired": false,
+          "plant": 0,
+          "water": 0,
+          "capacity": 0,
+          "timer": 0,
+          "cursor": 0,
+          "kind": null
+        },
+        "natalie": {
+          "hired": false,
+          "plant": 0,
+          "water": 0,
+          "capacity": 0,
+          "timer": 0,
+          "cursor": 0,
+          "kind": null
+        }
+      }
+    },
+    "stock": [
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "fresh": [
+      [],
+      [],
+      [],
+      [],
+      []
+    ],
+    "pumpkinAges": [
+      [],
+      [],
+      [],
+      [],
+      []
+    ],
+    "stockWaste": {
+      "discarded": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "lastAt": 0,
+      "lastCount": 0
+    },
+    "wanted": {
+      "variety": null,
+      "until": 0,
+      "serial": 0
+    },
+    "orders": {
+      "list": [],
+      "next": 0,
+      "serial": 0,
+      "filled": 0,
+      "missed": 0,
+      "income": 0,
+      "trust": {},
+      "board": 0
+    },
+    "holds": [],
+    "visitorEvents": {
+      "seed": 1298752622,
+      "rush": {
+        "level": 0,
+        "enabled": true,
+        "remaining": 300,
+        "event": 0,
+        "pending": null
+      },
+      "vip": {
+        "level": 0,
+        "enabled": true,
+        "remaining": 240,
+        "event": 0,
+        "pending": null
+      },
+      "ledger": {
+        "rushGroups": 0,
+        "rushGuests": 0,
+        "vipGroups": 0,
+        "vipGuests": 0
+      }
+    },
+    "stall": {
+      "income": 0,
+      "itemsSold": 0,
+      "served": 0,
+      "missedBudget": 0,
+      "missedStock": 0,
+      "cocoa": 0,
+      "receipts": []
+    },
+    "visitors": [],
+    "arriving": [],
+    "nextVisitor": 0,
+    "nextParty": 0,
+    "visitorTimer": 1000000000,
+    "shop": {
+      "unlocked": false,
+      "capacityLevel": 0,
+      "displayLevel": 0,
+      "checkoutLevel": 0,
+      "browseLevel": 0,
+      "wrapLevel": 0,
+      "displays": [
+        0,
+        1,
+        null,
+        null
+      ],
+      "customers": [],
+      "nextCustomer": 0,
+      "arrivalTimer": 1000000000,
+      "income": 0,
+      "itemsSold": 0,
+      "served": 0,
+      "invested": 0
+    },
+    "bigSpender": {
+      "timer": 110,
+      "seen": 0,
+      "spent": 0,
+      "pumpkins": 0
+    },
+    "festival": {
+      "meadow": false,
+      "comforts": [],
+      "cocoa": {
+        "level": 0,
+        "stock": 0,
+        "price": 4,
+        "open": true,
+        "courier": false,
+        "autoSupply": false,
+        "barista": false,
+        "bulkCourier": false,
+        "autoSpecials": [],
+        "sold": 0,
+        "gross": 0,
+        "supplies": 0,
+        "invested": 0,
+        "missed": 0,
+        "prices": {
+          "flake": 6,
+          "deluxe": 7,
+          "midnight": 9,
+          "smores": 5,
+          "ghost-wafer": 13,
+          "caramel-flake": 15,
+          "smores-platter": 12
+        },
+        "extras": {
+          "flake": {
+            "stock": 0,
+            "sold": 0,
+            "gross": 0,
+            "supplies": 0
+          },
+          "deluxe": {
+            "stock": 0,
+            "sold": 0,
+            "gross": 0,
+            "supplies": 0
+          },
+          "midnight": {
+            "stock": 0,
+            "sold": 0,
+            "gross": 0,
+            "supplies": 0
+          },
+          "smores": {
+            "stock": 0,
+            "sold": 0,
+            "gross": 0,
+            "supplies": 0
+          },
+          "ghost-wafer": {
+            "stock": 0,
+            "sold": 0,
+            "gross": 0,
+            "supplies": 0
+          },
+          "caramel-flake": {
+            "stock": 0,
+            "sold": 0,
+            "gross": 0,
+            "supplies": 0
+          },
+          "smores-platter": {
+            "stock": 0,
+            "sold": 0,
+            "gross": 0,
+            "supplies": 0
+          }
+        },
+        "lastSaleAt": -10
+      }
+    },
+    "customerCare": {
+      "bags": 0,
+      "tipJar": 0,
+      "serial": 0,
+      "invested": 0,
+      "tips": {
+        "stall": 0,
+        "shop": 0
+      },
+      "tipped": {
+        "stall": 0,
+        "shop": 0
+      },
+      "qualityTotal": 0,
+      "graded": 0,
+      "receipts": []
+    },
+    "house": {
+      "level": 0,
+      "activeRoom": "parlour",
+      "roomStyles": {
+        "parlour": "house-default",
+        "bedroom": "bedroom-base",
+        "kitchen": "kitchen-base",
+        "attic": "attic-base",
+        "bathroom": "bathroom-plum"
+      },
+      "ownedRoomStyles": [],
+      "owned": [
+        "f01",
+        "f11",
+        "b01"
+      ],
+      "copies": {
+        "f01": 1,
+        "f11": 1,
+        "b01": 1
+      },
+      "extensions": {
+        "bathroom": false
+      },
+      "wallpapers": {},
+      "nextInstance": 2,
+      "reading": {},
+      "placed": [
+        {
+          "instance": "piece-0",
+          "id": "f01",
+          "room": "parlour",
+          "x": 2,
+          "z": 3,
+          "flip": false,
+          "books": []
+        },
+        {
+          "instance": "piece-1",
+          "id": "f11",
+          "room": "parlour",
+          "x": 6,
+          "z": 0,
+          "flip": false,
+          "books": [
+            "b01"
+          ]
+        }
+      ]
+    },
+    "estate": {
+      "expansion": 0,
+      "finishes": {
+        "walls": "warm-timber",
+        "roof": "midnight-slate",
+        "trim": "old-brass",
+        "door": "plum-door",
+        "fence": "gothic-iron"
+      },
+      "ownedFinishes": [
+        "warm-timber",
+        "midnight-slate",
+        "old-brass",
+        "plum-door",
+        "gothic-iron"
+      ],
+      "ownedDecor": {
+        "lantern-post": 0,
+        "rose-bed": 0,
+        "pumpkin-pile": 0,
+        "stone-urn": 0,
+        "garden-bench": 0,
+        "bird-bath": 0,
+        "gargoyle": 0,
+        "crooked-tree": 0,
+        "moon-fountain": 0,
+        "coffin-planter": 0,
+        "rose-arch": 0,
+        "wishing-well": 0,
+        "bat-hedge": 0,
+        "mushroom-patch": 0,
+        "fire-pit": 0,
+        "ghost-scarecrow": 0,
+        "berry-patch": 0,
+        "herb-planter": 0,
+        "vegetable-bed": 0,
+        "apple-tree": 0,
+        "carving-bench": 0,
+        "hay-bales": 0,
+        "gravestones": 0,
+        "owl-perch": 0,
+        "witch-cauldron": 0,
+        "picnic-table": 0,
+        "lantern-garland": 0,
+        "lily-pond": 0,
+        "fishing-lake": 0
+      },
+      "nextInstance": 5,
+      "invested": 0,
+      "placed": [
+        {
+          "instance": "garden-0",
+          "id": "lantern-post",
+          "x": -3,
+          "z": 8,
+          "rotation": 0
+        },
+        {
+          "instance": "garden-1",
+          "id": "lantern-post",
+          "x": 3,
+          "z": 8,
+          "rotation": 0
+        },
+        {
+          "instance": "garden-2",
+          "id": "rose-bed",
+          "x": -10,
+          "z": -4,
+          "rotation": 0
+        },
+        {
+          "instance": "garden-3",
+          "id": "garden-bench",
+          "x": 10,
+          "z": 2,
+          "rotation": 0
+        },
+        {
+          "instance": "garden-4",
+          "id": "pumpkin-pile",
+          "x": 5.2,
+          "z": 9.3,
+          "rotation": 0
+        }
+      ]
+    },
+    "fishing": {
+      "rod": 0,
+      "bait": 0,
+      "trapTier": 0,
+      "traps": [],
+      "log": {},
+      "caught": 0,
+      "earned": 0,
+      "seed": 20261105,
+      "line": null
+    },
+    "village": {
+      "expansion": {
+        "revision": 1,
+        "area": "green",
+        "effects": [
+          "copse-restored"
+        ],
+        "completed": {},
+        "chapters": {},
+        "puzzles": {},
+        "gems": {
+          "lantern-amethyst": 0,
+          "ember-garnet": 0,
+          "hollow-opal": 0
+        },
+        "veins": {},
+        "pity": {
+          "cave-shallows": 0,
+          "cave-workings": 0,
+          "cave-cathedral": 0
+        },
+        "questItems": {},
+        "receipts": {},
+        "baselines": {},
+        "choices": {},
+        "tracked": null,
+        "seed": 20261109,
+        "gemIncome": 0,
+        "outfits": {},
+        "economy": {
+          "upgrades": [],
+          "invested": 0,
+          "wax": 0,
+          "waxJob": null,
+          "treated": {},
+          "commissions": {},
+          "income": 0,
+          "portions": 0,
+          "vipIn": 300,
+          "vipDue": false,
+          "vipGroups": 0,
+          "herbsProcessed": 0,
+          "waxCooked": 0,
+          "treatments": 0,
+          "treatedPumpkins": 0
+        },
+        "companions": {
+          "selected": null,
+          "jobs": [],
+          "gathered": {}
+        }
+      },
+      "invited": true,
+      "toured": true,
+      "visits": 0,
+      "seed": 20261105,
+      "clock": 0,
+      "quests": {
+        "invitation": {
+          "step": 3,
+          "base": null,
+          "done": true
+        },
+        "two-doorbells": {
+          "step": 3,
+          "base": null,
+          "done": true
+        }
+      },
+      "claims": {},
+      "unlocks": [],
+      "effects": [],
+      "built": {},
+      "found": {},
+      "friends": {
+        "elowen": {
+          "xp": 0,
+          "met": true,
+          "chatIn": 0,
+          "gifts": [],
+          "seen": []
+        },
+        "rowan": {
+          "xp": 0,
+          "met": false,
+          "chatIn": 0,
+          "gifts": [],
+          "seen": []
+        },
+        "mabel": {
+          "xp": 0,
+          "met": false,
+          "chatIn": 0,
+          "gifts": [],
+          "seen": []
+        },
+        "tansy": {
+          "xp": 0,
+          "met": false,
+          "chatIn": 0,
+          "gifts": [],
+          "seen": []
+        },
+        "opal": {
+          "xp": 0,
+          "met": false,
+          "chatIn": 0,
+          "gifts": [],
+          "seen": []
+        },
+        "cinder": {
+          "xp": 0,
+          "met": false,
+          "chatIn": 0,
+          "gifts": [],
+          "seen": []
+        },
+        "corvus": {
+          "xp": 0,
+          "met": false,
+          "chatIn": 0,
+          "gifts": [],
+          "seen": []
+        },
+        "baron": {
+          "xp": 0,
+          "met": false,
+          "chatIn": 0,
+          "gifts": [],
+          "seen": []
+        },
+        "granny": {
+          "xp": 0,
+          "met": false,
+          "chatIn": 0,
+          "gifts": [],
+          "seen": []
+        }
+      },
+      "materials": {
+        "logs": 0,
+        "stone": 0,
+        "fibre": 0,
+        "herbs": 0,
+        "hardwood": 0,
+        "moth-silk": 0,
+        "iron": 0,
+        "clay": 0,
+        "moonstone": 0,
+        "emberbloom": 0,
+        "star-amber": 0,
+        "cursed-spores": 0
+      },
+      "nodes": {
+        "logs-01": 0,
+        "logs-02": 0,
+        "logs-03": 0,
+        "logs-04": 0,
+        "logs-05": 0,
+        "logs-06": 0,
+        "logs-07": 0,
+        "logs-08": 0,
+        "stone-01": 0,
+        "stone-02": 0,
+        "stone-03": 0,
+        "stone-04": 0,
+        "stone-05": 0,
+        "stone-06": 0,
+        "fibre-01": 0,
+        "fibre-02": 0,
+        "fibre-03": 0,
+        "fibre-04": 0,
+        "fibre-05": 0,
+        "fibre-06": 0,
+        "herbs-01": 0,
+        "herbs-02": 0,
+        "herbs-03": 0,
+        "herbs-04": 0,
+        "logs-09": 0,
+        "logs-10": 0,
+        "stone-07": 0,
+        "stone-08": 0,
+        "fibre-07": 0,
+        "fibre-08": 0,
+        "herbs-05": 0,
+        "herbs-06": 0,
+        "hardwood-01": 0,
+        "hardwood-02": 0,
+        "hardwood-03": 0,
+        "hardwood-04": 0,
+        "moth_silk-01": 0,
+        "moth_silk-02": 0,
+        "iron-01": 0,
+        "iron-02": 0,
+        "iron-03": 0,
+        "clay-01": 0,
+        "clay-02": 0,
+        "clay-03": 0,
+        "moonstone-01": 0,
+        "moonstone-02": 0,
+        "emberbloom-01": 0,
+        "emberbloom-02": 0,
+        "emberbloom-03": 0,
+        "star_amber-01": 0,
+        "logs-11": 0,
+        "herbs-07": 0,
+        "stone-09": 0,
+        "fibre-09": 0,
+        "logs-12": 0,
+        "herbs-08": 0,
+        "stone-10": 0,
+        "fibre-10": 0,
+        "logs-13": 0,
+        "stone-11": 0,
+        "herbs-09": 0,
+        "fibre-11": 0,
+        "logs-14": 0,
+        "herbs-10": 0,
+        "stone-12": 0,
+        "logs-15": 0,
+        "fibre-12": 0,
+        "herbs-11": 0,
+        "stone-13": 0,
+        "fibre-13": 0,
+        "logs-16": 0,
+        "herbs-12": 0,
+        "stone-14": 0,
+        "fibre-14": 0,
+        "blight-green-01": 0,
+        "blight-green-02": 0,
+        "blight-green-03": 0,
+        "blight-green-04": 0,
+        "blight-green-05": 0,
+        "blight-green-06": 0,
+        "blight-green-07": 0,
+        "blight-green-08": 0,
+        "blight-green-09": 0,
+        "blight-green-10": 0,
+        "blight-green-11": 0,
+        "blight-green-12": 0,
+        "blight-green-13": 0,
+        "blight-green-14": 0,
+        "blight-green-15": 0,
+        "blight-green-16": 0,
+        "blight-green-17": 0,
+        "blight-green-18": 0,
+        "blight-green-19": 0,
+        "blight-green-20": 0,
+        "blight-green-21": 0,
+        "blight-green-22": 0,
+        "blight-green-23": 0,
+        "blight-green-24": 0,
+        "blight-green-25": 0,
+        "blight-green-26": 0,
+        "blight-green-27": 0,
+        "blight-green-28": 0,
+        "blight-green-29": 0,
+        "blight-green-30": 0,
+        "blight-green-31": 0,
+        "blight-green-32": 0,
+        "blight-copse-01": 0,
+        "blight-copse-02": 0,
+        "blight-quarry-01": 0,
+        "blight-quarry-02": 0
+      },
+      "gatherCycles": {},
+      "stall": {
+        "rotation": 0,
+        "refreshIn": 900,
+        "bought": {}
+      },
+      "discount": 0,
+      "decor": {
+        "owned": {},
+        "placed": [],
+        "next": 1
+      },
+      "favours": {
+        "elowen": {
+          "id": null,
+          "readyIn": 0,
+          "done": 0
+        },
+        "rowan": {
+          "id": null,
+          "readyIn": 0,
+          "done": 0
+        },
+        "mabel": {
+          "id": null,
+          "readyIn": 0,
+          "done": 0
+        },
+        "tansy": {
+          "id": null,
+          "readyIn": 0,
+          "done": 0
+        },
+        "opal": {
+          "id": null,
+          "readyIn": 0,
+          "done": 0
+        },
+        "cinder": {
+          "id": null,
+          "readyIn": 0,
+          "done": 0
+        },
+        "corvus": {
+          "id": null,
+          "readyIn": 0,
+          "done": 0
+        },
+        "baron": {
+          "id": null,
+          "readyIn": 0,
+          "done": 0
+        },
+        "granny": {
+          "id": null,
+          "readyIn": 0,
+          "done": 0
+        }
+      },
+      "almanac": {
+        "page": [],
+        "pages": 0,
+        "prize": 0
+      },
+      "stats": {
+        "chats": 0,
+        "gathered": 0,
+        "gifts": 0,
+        "favours": 0,
+        "placed": 0
+      }
+    },
+    "hollowHouse": {
+      "purchased": false,
+      "status": "derelict",
+      "restoreRemaining": 0,
+      "tier": 1,
+      "open": false,
+      "ticketPrice": 6,
+      "invested": 0,
+      "ticketsSold": 0,
+      "income": 0,
+      "completed": 0,
+      "missed": 0,
+      "runHome": 0,
+      "repeatVisits": 0,
+      "haunts": {
+        "owned": [],
+        "active": []
+      },
+      "nextVisit": 0,
+      "receipts": [],
+      "lastEvent": null,
+      "foyer": {
+        "ownedDecor": {
+          "velvet-bench": 0,
+          "spectral-sofa": 0,
+          "parlour-table": 0,
+          "gothic-cabinet": 0,
+          "skull-plinth": 0,
+          "pumpkin-cluster": 0,
+          "book-stack": 0,
+          "standing-lantern": 0,
+          "candle-cluster": 0,
+          "haunted-portrait": 0,
+          "cobweb": 0,
+          "ghost-orb": 0,
+          "fog-cauldron": 0,
+          "grand-chandelier": 0,
+          "curtain-arch": 0,
+          "ticket-sign": 0
+        },
+        "placed": [
+          {
+            "instance": "foyer-0",
+            "id": "velvet-bench",
+            "x": -3,
+            "z": 2.7,
+            "rotation": 0
+          },
+          {
+            "instance": "foyer-1",
+            "id": "parlour-table",
+            "x": 3.2,
+            "z": 2.9,
+            "rotation": 0
+          },
+          {
+            "instance": "foyer-2",
+            "id": "pumpkin-cluster",
+            "x": 3.8,
+            "z": 1.8,
+            "rotation": 0
+          }
+        ],
+        "finishes": {
+          "floor": "wooden-boards",
+          "walls": "old-wallpaper",
+          "reception": "wood-counter",
+          "lighting": "candle-glow",
+          "entrance": "gothic-door",
+          "effects": "quiet-air"
+        },
+        "ownedFinishes": [
+          "wooden-boards",
+          "old-wallpaper",
+          "wood-counter",
+          "candle-glow",
+          "gothic-door",
+          "quiet-air"
+        ],
+        "nextInstance": 3
+      }
+    },
+    "hayride": {
+      "purchased": false,
+      "tier": 1,
+      "open": false,
+      "ticketPrice": 8,
+      "invested": 0,
+      "ticketsSold": 0,
+      "income": 0,
+      "completed": 0,
+      "missed": 0,
+      "runHome": 0,
+      "departures": 0,
+      "partyAt": null,
+      "nextVisit": 0,
+      "nextRun": 1,
+      "receipts": [],
+      "haunts": {
+        "owned": [],
+        "active": []
+      },
+      "convoy": {
+        "phase": "loading",
+        "elapsed": 0,
+        "progress": 0,
+        "loadWait": 0,
+        "runId": "hayride-run-0",
+        "manifest": []
+      },
+      "secondConvoy": null,
+      "fleet": 0,
+      "dispatch": 0,
+      "routeLevel": 0,
+      "lastEvent": null
+    },
+    "kitchen": {
+      "diners": [],
+      "cookAnimations": [],
+      "revision": 2,
+      "purchased": false,
+      "pantry": {
+        "flour": 0,
+        "sugar": 0,
+        "milk": 0,
+        "butter": 0,
+        "cocoa": 0,
+        "apples": 0,
+        "marshmallows": 0,
+        "vegetables": 0,
+        "meat": 0,
+        "chicken": 0,
+        "stock": 0,
+        "herbs": 0,
+        "spices": 0,
+        "berries": 0,
+        "seeds": 0,
+        "fish": 0,
+        "crayfish": 0
+      },
+      "food": {
+        "wedges": 0,
+        "soup": 0,
+        "toffee-apples": 0,
+        "pumpkin-jam": 0,
+        "ghost-cookies": 0,
+        "pumpkin-pie": 0,
+        "cocoa-brownies": 0,
+        "moonlight-tart": 0,
+        "garden-skillet": 0,
+        "harvest-broth": 0,
+        "spiced-roast": 0,
+        "moonfire-chicken": 0,
+        "haunted-pie": 0,
+        "pumpkin-spice-biscuits": 0,
+        "bramble-crumble": 0,
+        "toasted-seeds": 0,
+        "seed-brittle": 0,
+        "bramble-apple-pie": 0,
+        "fish-supper": 0,
+        "crayfish-boil": 0,
+        "witchs-fish-pie": 0,
+        "cinders-lantern-stew": 0,
+        "grannys-bramble-pudding": 0
+      },
+      "recipes": [],
+      "prices": {
+        "wedges": 11,
+        "soup": 13,
+        "toffee-apples": 8,
+        "pumpkin-jam": 22,
+        "ghost-cookies": 4,
+        "pumpkin-pie": 27,
+        "cocoa-brownies": 7,
+        "moonlight-tart": 27,
+        "garden-skillet": 12,
+        "harvest-broth": 14,
+        "spiced-roast": 19,
+        "moonfire-chicken": 18,
+        "haunted-pie": 26,
+        "pumpkin-spice-biscuits": 8,
+        "bramble-crumble": 15,
+        "toasted-seeds": 6,
+        "seed-brittle": 9,
+        "bramble-apple-pie": 27,
+        "fish-supper": 16,
+        "crayfish-boil": 18,
+        "witchs-fish-pie": 25,
+        "cinders-lantern-stew": 20,
+        "grannys-bramble-pudding": 18
+      },
+      "displays": [
+        null,
+        null
+      ],
+      "sellAt": "truck",
+      "orders": [],
+      "jobs": {
+        "truck": null,
+        "home": null
+      },
+      "upgrades": {
+        "pantry": 0,
+        "storage": 0,
+        "speed": 0,
+        "truck-oven": 0,
+        "truck-spices": 0,
+        "chef": 0
+      },
+      "chefRecipe": null,
+      "ledger": {
+        "ingredientSpend": 0,
+        "researchSpend": 0,
+        "foodIncome": 0,
+        "foodSold": 0,
+        "invested": 0,
+        "deliveryFees": 0,
+        "batchesCooked": 0,
+        "receipts": []
+      },
+      "nextOrder": 1,
+      "nextJob": 1,
+      "delivered": [],
+      "foodHolds": []
+    },
+    "wardrobe": {
+      "owned": [
+        "natalie-base",
+        "shane-base",
+        "natalie-wheelchair"
+      ],
+      "equipped": {
+        "natalie": "natalie-base",
+        "shane": "shane-base"
+      }
+    },
+    "looks": {
+      "natalie": "olive",
+      "shane": "black",
+      "owned": [
+        "olive",
+        "black"
+      ]
+    },
+    "claimed": [],
+    "memories": [],
+    "progression": {
+      "claimed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "pending": [],
+      "receipts": {},
+      "bonusEarned": 0,
+      "levelCredit": 0,
+      "observedTrade": 0,
+      "homeVersion": 1,
+      "homeLegacyThrough": 1,
+      "homeActivities": {
+        "visit": 0,
+        "wardrobe": 0,
+        "cook": 0,
+        "decorate": 0,
+        "plant": 0,
+        "water": 0,
+        "harvest": 0
+      },
+      "pace": 3,
+      "floorLevel": 1,
+      "floorFrom": 0
+    },
+    "paused": false,
+    "introSeen": true,
+    "cleanliness": {
+      "litter": [],
+      "nextId": 0,
+      "seenSales": 0,
+      "cleaned": 0,
+      "janitors": []
+    },
+    "carving": {
+      "lanterns": [],
+      "current": null,
+      "made": 0,
+      "sold": 0,
+      "nextId": 1
+    },
+    "hollowVisitors": [],
+    "hayrideVisitors": []
+  },
+  "fixtureSha256": "9daa278b1bbf27456f7e29a3cc66973a3c7582a0b91a389b1552b4311cf95951",
+  "route": [
+    {
+      "name": "Green",
+      "points": [
+        {
+          "x": 87,
+          "z": 12
+        },
+        {
+          "x": 91.2,
+          "z": 32.4
+        },
+        {
+          "x": 98,
+          "z": 46
+        }
+      ]
+    },
+    {
+      "name": "Moonclock Square",
+      "points": [
+        {
+          "x": 87,
+          "z": 60
+        },
+        {
+          "x": 94.8,
+          "z": 87
+        },
+        {
+          "x": 88.8,
+          "z": 107.4
+        },
+        {
+          "x": 87,
+          "z": 111
+        }
+      ]
+    },
+    {
+      "name": "Quarry",
+      "points": [
+        {
+          "x": 87,
+          "z": 138
+        },
+        {
+          "x": 87,
+          "z": 156
+        }
+      ]
+    }
+  ],
+  "routeSha256": "9a27984ea0a63cbc6e1415f24e07470e8976f4b46bddeaeb9a7993506588645e",
+  "contractSha256": "b11089d2e0c3cbc3f97cec5786bcaf19dfd2291e38c086de50772e222233d6aa",
+  "method": "Exact HTML bytes served unchanged over loopback. Native requestAnimationFrame and real renderer/composer execute throughout. Native Gamepad API mock drives the actual owner/collision/camera route. Eighteen fixed 0.1s controller/view simulation steps per drawn frame accelerate the walk, identically in both builds; 12 stationary actual draws at each of three destinations provide 36 steady samples per traversal. This simulation workload is intentionally accelerated and is not normal gameplay CPU cost. Frame metrics only include RAF callbacks that drew the active village; no held draws, manual renders, readPixels, gl.finish or hardware FPS claim. Renderer.info aggregates every real render pass within each composer draw. First-use and warmed second traversal are separate; the second traversal restores the same saved fixture without clearing GPU resources. Wall clock and Math.random are fixed; animation follows the fixed simulation clock. CPU draw duration excludes asynchronous GPU completion; drawnFrameIntervalMs measures wall time between actual drawn RAF callbacks, including software GPU/browser scheduling. SwiftShader is a relative same-environment comparison, not phone or LG TV performance certification.",
+  "errors": [],
+  "consoleErrors": [],
+  "externalRequests": [],
+  "passes": [
+    {
+      "phase": "first-use",
+      "rows": [
+        {
+          "drawMs": 3887.400000002235,
+          "calls": 226,
+          "triangles": 1284642,
+          "intervalMs": null,
+          "callbackMs": 5303.39999999851,
+          "newPrograms": 31,
+          "uploads": 9,
+          "phase": "first-use",
+          "leg": "Green",
+          "stage": "walk",
+          "position": {
+            "x": 87,
+            "z": -17.155024390243895
+          }
+        },
+        {
+          "drawMs": 2047.800000000745,
+          "calls": 233,
+          "triangles": 1325512,
+          "intervalMs": 5326.599999997765,
+          "callbackMs": 2140.699999999255,
+          "newPrograms": 2,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Green",
+          "stage": "walk",
+          "position": {
+            "x": 87,
+            "z": -8.81004878048779
+          }
+        },
+        {
+          "drawMs": 1021.7000000029802,
+          "calls": 232,
+          "triangles": 1485308,
+          "intervalMs": 2156,
+          "callbackMs": 1120.800000000745,
+          "newPrograms": 1,
+          "uploads": 3,
+          "phase": "first-use",
+          "leg": "Green",
+          "stage": "walk",
+          "position": {
+            "x": 87,
+            "z": -0.46507317073168686
+          }
+        },
+        {
+          "drawMs": 74.39999999850988,
+          "calls": 230,
+          "triangles": 1425478,
+          "intervalMs": 1124.4000000022352,
+          "callbackMs": 190.29999999701977,
+          "newPrograms": 0,
+          "uploads": 2,
+          "phase": "first-use",
+          "leg": "Green",
+          "stage": "walk",
+          "position": {
+            "x": 87,
+            "z": 7.8799024390244155
+          }
+        },
+        {
+          "drawMs": 7.5,
+          "calls": 229,
+          "triangles": 1430334,
+          "intervalMs": 2487.599999997765,
+          "callbackMs": 165.10000000149012,
+          "newPrograms": 0,
+          "uploads": 1,
+          "phase": "first-use",
+          "leg": "Green",
+          "stage": "walk",
+          "position": {
+            "x": 87.84038124141182,
+            "z": 16.061346277930287
+          }
+        },
+        {
+          "drawMs": 8.600000001490116,
+          "calls": 226,
+          "triangles": 1419900,
+          "intervalMs": 2519.300000000745,
+          "callbackMs": 180.69999999925494,
+          "newPrograms": 0,
+          "uploads": 1,
+          "phase": "first-use",
+          "leg": "Green",
+          "stage": "walk",
+          "position": {
+            "x": 89.52114372423546,
+            "z": 24.235308316241714
+          }
+        },
+        {
+          "drawMs": 7,
+          "calls": 221,
+          "triangles": 1402324,
+          "intervalMs": 2443.39999999851,
+          "callbackMs": 124.5,
+          "newPrograms": 0,
+          "uploads": 1,
+          "phase": "first-use",
+          "leg": "Green",
+          "stage": "walk",
+          "position": {
+            "x": 91.19673474438068,
+            "z": 32.38412025747218
+          }
+        },
+        {
+          "drawMs": 6.599999997764826,
+          "calls": 216,
+          "triangles": 1367078,
+          "intervalMs": 2523.300000000745,
+          "callbackMs": 95.5,
+          "newPrograms": 0,
+          "uploads": 1,
+          "phase": "first-use",
+          "leg": "Green",
+          "stage": "walk",
+          "position": {
+            "x": 94.92667083871436,
+            "z": 39.849118225295655
+          }
+        },
+        {
+          "drawMs": 5.199999999254942,
+          "calls": 204,
+          "triangles": 1338798,
+          "intervalMs": 2345.900000002235,
+          "callbackMs": 128.89999999850988,
+          "newPrograms": 0,
+          "uploads": 1,
+          "phase": "first-use",
+          "leg": "Green",
+          "stage": "dwell",
+          "position": {
+            "x": 97.98601020498006,
+            "z": 45.97200118480511
+          }
+        },
+        {
+          "drawMs": 3.800000000745058,
+          "calls": 204,
+          "triangles": 1338798,
+          "intervalMs": 1980.2999999970198,
+          "callbackMs": 83.80000000074506,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Green",
+          "stage": "dwell",
+          "position": {
+            "x": 97.98601020498006,
+            "z": 45.97200118480511
+          }
+        },
+        {
+          "drawMs": 5.800000000745058,
+          "calls": 204,
+          "triangles": 1338798,
+          "intervalMs": 1759.1000000014901,
+          "callbackMs": 296.30000000074506,
+          "newPrograms": 0,
+          "uploads": 1,
+          "phase": "first-use",
+          "leg": "Green",
+          "stage": "dwell",
+          "position": {
+            "x": 97.98601020498006,
+            "z": 45.97200118480511
+          }
+        },
+        {
+          "drawMs": 3.400000002235174,
+          "calls": 204,
+          "triangles": 1338798,
+          "intervalMs": 1895.6000000014901,
+          "callbackMs": 106,
+          "newPrograms": 0,
+          "uploads": 1,
+          "phase": "first-use",
+          "leg": "Green",
+          "stage": "dwell",
+          "position": {
+            "x": 97.98601020498006,
+            "z": 45.97200118480511
+          }
+        },
+        {
+          "drawMs": 3.5,
+          "calls": 204,
+          "triangles": 1338798,
+          "intervalMs": 1828.5999999977648,
+          "callbackMs": 110.60000000149012,
+          "newPrograms": 0,
+          "uploads": 1,
+          "phase": "first-use",
+          "leg": "Green",
+          "stage": "dwell",
+          "position": {
+            "x": 97.98601020498006,
+            "z": 45.97200118480511
+          }
+        },
+        {
+          "drawMs": 3.7000000029802322,
+          "calls": 204,
+          "triangles": 1338798,
+          "intervalMs": 1798.199999999255,
+          "callbackMs": 102.20000000298023,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Green",
+          "stage": "dwell",
+          "position": {
+            "x": 97.98601020498006,
+            "z": 45.97200118480511
+          }
+        },
+        {
+          "drawMs": 6.300000000745058,
+          "calls": 204,
+          "triangles": 1338798,
+          "intervalMs": 1750,
+          "callbackMs": 67.70000000298023,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Green",
+          "stage": "dwell",
+          "position": {
+            "x": 97.98601020498006,
+            "z": 45.97200118480511
+          }
+        },
+        {
+          "drawMs": 4.5,
+          "calls": 204,
+          "triangles": 1338798,
+          "intervalMs": 1675.1000000014901,
+          "callbackMs": 245.30000000074506,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Green",
+          "stage": "dwell",
+          "position": {
+            "x": 97.98601020498006,
+            "z": 45.97200118480511
+          }
+        },
+        {
+          "drawMs": 4.100000001490116,
+          "calls": 204,
+          "triangles": 1338798,
+          "intervalMs": 246.5,
+          "callbackMs": 58.5,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Green",
+          "stage": "dwell",
+          "position": {
+            "x": 97.98601020498006,
+            "z": 45.97200118480511
+          }
+        },
+        {
+          "drawMs": 5.400000002235174,
+          "calls": 204,
+          "triangles": 1338798,
+          "intervalMs": 1758.800000000745,
+          "callbackMs": 154.30000000074506,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Green",
+          "stage": "dwell",
+          "position": {
+            "x": 97.98601020498006,
+            "z": 45.97200118480511
+          }
+        },
+        {
+          "drawMs": 4.100000001490116,
+          "calls": 204,
+          "triangles": 1338798,
+          "intervalMs": 1871,
+          "callbackMs": 120.59999999776483,
+          "newPrograms": 0,
+          "uploads": 1,
+          "phase": "first-use",
+          "leg": "Green",
+          "stage": "dwell",
+          "position": {
+            "x": 97.98601020498006,
+            "z": 45.97200118480511
+          }
+        },
+        {
+          "drawMs": 3.7999999970197678,
+          "calls": 204,
+          "triangles": 1338798,
+          "intervalMs": 1773.300000000745,
+          "callbackMs": 101.79999999701977,
+          "newPrograms": 0,
+          "uploads": 1,
+          "phase": "first-use",
+          "leg": "Green",
+          "stage": "dwell",
+          "position": {
+            "x": 97.98601020498006,
+            "z": 45.97200118480511
+          }
+        },
+        {
+          "drawMs": 4.599999997764826,
+          "calls": 214,
+          "triangles": 1376036,
+          "intervalMs": 1715.699999999255,
+          "callbackMs": 115,
+          "newPrograms": 0,
+          "uploads": 1,
+          "phase": "first-use",
+          "leg": "Moonclock Square",
+          "stage": "walk",
+          "position": {
+            "x": 92.84073251027144,
+            "z": 52.54198865600769
+          }
+        },
+        {
+          "drawMs": 4.600000001490116,
+          "calls": 199,
+          "triangles": 1214036,
+          "intervalMs": 1740.5,
+          "callbackMs": 87,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Moonclock Square",
+          "stage": "walk",
+          "position": {
+            "x": 87.69545481556281,
+            "z": 59.11197612721008
+          }
+        },
+        {
+          "drawMs": 4.800000000745058,
+          "calls": 194,
+          "triangles": 1172790,
+          "intervalMs": 1713.5999999977648,
+          "callbackMs": 125.70000000298023,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Moonclock Square",
+          "stage": "walk",
+          "position": {
+            "x": 88.96051572498179,
+            "z": 66.6283659561499
+          }
+        },
+        {
+          "drawMs": 7.800000000745058,
+          "calls": 186,
+          "triangles": 1144126,
+          "intervalMs": 1679.9000000022352,
+          "callbackMs": 112.5,
+          "newPrograms": 0,
+          "uploads": 1,
+          "phase": "first-use",
+          "leg": "Moonclock Square",
+          "stage": "walk",
+          "position": {
+            "x": 91.25997944901829,
+            "z": 74.6502787273825
+          }
+        },
+        {
+          "drawMs": 5,
+          "calls": 186,
+          "triangles": 1066248,
+          "intervalMs": 1566.199999999255,
+          "callbackMs": 131.5,
+          "newPrograms": 0,
+          "uploads": 1,
+          "phase": "first-use",
+          "leg": "Moonclock Square",
+          "stage": "walk",
+          "position": {
+            "x": 93.55944317305479,
+            "z": 82.67219149861508
+          }
+        },
+        {
+          "drawMs": 3.900000002235174,
+          "calls": 187,
+          "triangles": 1049908,
+          "intervalMs": 1620.300000000745,
+          "callbackMs": 105,
+          "newPrograms": 0,
+          "uploads": 1,
+          "phase": "first-use",
+          "leg": "Moonclock Square",
+          "stage": "walk",
+          "position": {
+            "x": 93.7453765263144,
+            "z": 90.51745090373905
+          }
+        },
+        {
+          "drawMs": 3.699999999254942,
+          "calls": 179,
+          "triangles": 923858,
+          "intervalMs": 1728.699999999255,
+          "callbackMs": 92.80000000074506,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Moonclock Square",
+          "stage": "walk",
+          "position": {
+            "x": 91.39947328019625,
+            "z": 98.52590617846477
+          }
+        },
+        {
+          "drawMs": 4,
+          "calls": 176,
+          "triangles": 936924,
+          "intervalMs": 1790.3999999985099,
+          "callbackMs": 90.20000000298023,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Moonclock Square",
+          "stage": "walk",
+          "position": {
+            "x": 89.05357003407809,
+            "z": 106.53436145319048
+          }
+        },
+        {
+          "drawMs": 8.300000000745058,
+          "calls": 174,
+          "triangles": 935372,
+          "intervalMs": 1585.5,
+          "callbackMs": 112.10000000149012,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Moonclock Square",
+          "stage": "dwell",
+          "position": {
+            "x": 87.01887460677108,
+            "z": 110.96216907221773
+          }
+        },
+        {
+          "drawMs": 5.300000000745058,
+          "calls": 174,
+          "triangles": 935372,
+          "intervalMs": 1858.9000000022352,
+          "callbackMs": 147,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Moonclock Square",
+          "stage": "dwell",
+          "position": {
+            "x": 87.01887460677108,
+            "z": 110.96216907221773
+          }
+        },
+        {
+          "drawMs": 5.399999998509884,
+          "calls": 174,
+          "triangles": 935372,
+          "intervalMs": 1934.0999999977648,
+          "callbackMs": 92,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Moonclock Square",
+          "stage": "dwell",
+          "position": {
+            "x": 87.01887460677108,
+            "z": 110.96216907221773
+          }
+        },
+        {
+          "drawMs": 4.900000002235174,
+          "calls": 174,
+          "triangles": 935372,
+          "intervalMs": 1695.1000000014901,
+          "callbackMs": 186.30000000074506,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Moonclock Square",
+          "stage": "dwell",
+          "position": {
+            "x": 87.01887460677108,
+            "z": 110.96216907221773
+          }
+        },
+        {
+          "drawMs": 4.199999999254942,
+          "calls": 174,
+          "triangles": 935372,
+          "intervalMs": 1594.300000000745,
+          "callbackMs": 89.59999999776483,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Moonclock Square",
+          "stage": "dwell",
+          "position": {
+            "x": 87.01887460677108,
+            "z": 110.96216907221773
+          }
+        },
+        {
+          "drawMs": 4.699999999254942,
+          "calls": 174,
+          "triangles": 935372,
+          "intervalMs": 2928.099999997765,
+          "callbackMs": 138,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Moonclock Square",
+          "stage": "dwell",
+          "position": {
+            "x": 87.01887460677108,
+            "z": 110.96216907221773
+          }
+        },
+        {
+          "drawMs": 3.300000000745058,
+          "calls": 174,
+          "triangles": 935372,
+          "intervalMs": 179.20000000298023,
+          "callbackMs": 85.39999999850988,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Moonclock Square",
+          "stage": "dwell",
+          "position": {
+            "x": 87.01887460677108,
+            "z": 110.96216907221773
+          }
+        },
+        {
+          "drawMs": 5.400000002235174,
+          "calls": 174,
+          "triangles": 935372,
+          "intervalMs": 2984.199999999255,
+          "callbackMs": 101.5,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Moonclock Square",
+          "stage": "dwell",
+          "position": {
+            "x": 87.01887460677108,
+            "z": 110.96216907221773
+          }
+        },
+        {
+          "drawMs": 5,
+          "calls": 174,
+          "triangles": 935372,
+          "intervalMs": 1621.300000000745,
+          "callbackMs": 112.29999999701977,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Moonclock Square",
+          "stage": "dwell",
+          "position": {
+            "x": 87.01887460677108,
+            "z": 110.96216907221773
+          }
+        },
+        {
+          "drawMs": 3.600000001490116,
+          "calls": 174,
+          "triangles": 935372,
+          "intervalMs": 1504,
+          "callbackMs": 80.79999999701977,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Moonclock Square",
+          "stage": "dwell",
+          "position": {
+            "x": 87.01887460677108,
+            "z": 110.96216907221773
+          }
+        },
+        {
+          "drawMs": 3.900000002235174,
+          "calls": 174,
+          "triangles": 935372,
+          "intervalMs": 1659.3999999985099,
+          "callbackMs": 55.80000000074506,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Moonclock Square",
+          "stage": "dwell",
+          "position": {
+            "x": 87.01887460677108,
+            "z": 110.96216907221773
+          }
+        },
+        {
+          "drawMs": 3.400000002235174,
+          "calls": 174,
+          "triangles": 935372,
+          "intervalMs": 1306.5,
+          "callbackMs": 50.100000001490116,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Moonclock Square",
+          "stage": "dwell",
+          "position": {
+            "x": 87.01887460677108,
+            "z": 110.96216907221773
+          }
+        },
+        {
+          "drawMs": 4.399999998509884,
+          "calls": 170,
+          "triangles": 958646,
+          "intervalMs": 1418.199999999255,
+          "callbackMs": 89.69999999925494,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Quarry",
+          "stage": "walk",
+          "position": {
+            "x": 87.01304913596351,
+            "z": 119.30714264864801
+          }
+        },
+        {
+          "drawMs": 4.599999997764826,
+          "calls": 164,
+          "triangles": 934146,
+          "intervalMs": 1579.1000000014901,
+          "callbackMs": 154,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Quarry",
+          "stage": "walk",
+          "position": {
+            "x": 87.00722366515595,
+            "z": 127.65211622507829
+          }
+        },
+        {
+          "drawMs": 26.899999998509884,
+          "calls": 167,
+          "triangles": 884132,
+          "intervalMs": 1699.300000000745,
+          "callbackMs": 87.79999999701977,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Quarry",
+          "stage": "walk",
+          "position": {
+            "x": 87.00139819434838,
+            "z": 135.99708980150857
+          }
+        },
+        {
+          "drawMs": 6.800000000745058,
+          "calls": 160,
+          "triangles": 877402,
+          "intervalMs": 1520.5999999977648,
+          "callbackMs": 89.40000000223517,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Quarry",
+          "stage": "walk",
+          "position": {
+            "x": 87.0000665780548,
+            "z": 144.34206495930854
+          }
+        },
+        {
+          "drawMs": 3.400000002235174,
+          "calls": 156,
+          "triangles": 842986,
+          "intervalMs": 1724.800000000745,
+          "callbackMs": 79.89999999850988,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Quarry",
+          "stage": "walk",
+          "position": {
+            "x": 87.00001892019417,
+            "z": 152.68704056892844
+          }
+        },
+        {
+          "drawMs": 3.699999999254942,
+          "calls": 153,
+          "triangles": 840368,
+          "intervalMs": 1989.8999999985099,
+          "callbackMs": 79.90000000223517,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Quarry",
+          "stage": "dwell",
+          "position": {
+            "x": 87.00000038658172,
+            "z": 155.9323088615584
+          }
+        },
+        {
+          "drawMs": 3.600000001490116,
+          "calls": 151,
+          "triangles": 840304,
+          "intervalMs": 2207.5,
+          "callbackMs": 79.40000000223517,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Quarry",
+          "stage": "dwell",
+          "position": {
+            "x": 87.00000038658172,
+            "z": 155.9323088615584
+          }
+        },
+        {
+          "drawMs": 6.399999998509884,
+          "calls": 151,
+          "triangles": 840304,
+          "intervalMs": 2114.300000000745,
+          "callbackMs": 80.30000000074506,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Quarry",
+          "stage": "dwell",
+          "position": {
+            "x": 87.00000038658172,
+            "z": 155.9323088615584
+          }
+        },
+        {
+          "drawMs": 4.5,
+          "calls": 153,
+          "triangles": 840368,
+          "intervalMs": 2268.5,
+          "callbackMs": 91.69999999925494,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Quarry",
+          "stage": "dwell",
+          "position": {
+            "x": 87.00000038658172,
+            "z": 155.9323088615584
+          }
+        },
+        {
+          "drawMs": 3.600000001490116,
+          "calls": 153,
+          "triangles": 840368,
+          "intervalMs": 2273.10000000149,
+          "callbackMs": 56,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Quarry",
+          "stage": "dwell",
+          "position": {
+            "x": 87.00000038658172,
+            "z": 155.9323088615584
+          }
+        },
+        {
+          "drawMs": 4.300000000745058,
+          "calls": 153,
+          "triangles": 840368,
+          "intervalMs": 1991.5,
+          "callbackMs": 55.399999998509884,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Quarry",
+          "stage": "dwell",
+          "position": {
+            "x": 87.00000038658172,
+            "z": 155.9323088615584
+          }
+        },
+        {
+          "drawMs": 7.599999997764826,
+          "calls": 151,
+          "triangles": 840304,
+          "intervalMs": 1944.199999999255,
+          "callbackMs": 76,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Quarry",
+          "stage": "dwell",
+          "position": {
+            "x": 87.00000038658172,
+            "z": 155.9323088615584
+          }
+        },
+        {
+          "drawMs": 6.399999998509884,
+          "calls": 151,
+          "triangles": 840304,
+          "intervalMs": 1997.3999999985099,
+          "callbackMs": 112.90000000223517,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Quarry",
+          "stage": "dwell",
+          "position": {
+            "x": 87.00000038658172,
+            "z": 155.9323088615584
+          }
+        },
+        {
+          "drawMs": 4.399999998509884,
+          "calls": 153,
+          "triangles": 840368,
+          "intervalMs": 2033.2000000029802,
+          "callbackMs": 144.69999999925494,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Quarry",
+          "stage": "dwell",
+          "position": {
+            "x": 87.00000038658172,
+            "z": 155.9323088615584
+          }
+        },
+        {
+          "drawMs": 8.5,
+          "calls": 153,
+          "triangles": 840368,
+          "intervalMs": 2182,
+          "callbackMs": 106.59999999776483,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Quarry",
+          "stage": "dwell",
+          "position": {
+            "x": 87.00000038658172,
+            "z": 155.9323088615584
+          }
+        },
+        {
+          "drawMs": 6.600000001490116,
+          "calls": 153,
+          "triangles": 840368,
+          "intervalMs": 2059,
+          "callbackMs": 120.79999999701977,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Quarry",
+          "stage": "dwell",
+          "position": {
+            "x": 87.00000038658172,
+            "z": 155.9323088615584
+          }
+        },
+        {
+          "drawMs": 5.800000000745058,
+          "calls": 151,
+          "triangles": 840304,
+          "intervalMs": 2049.89999999851,
+          "callbackMs": 73.10000000149012,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "first-use",
+          "leg": "Quarry",
+          "stage": "dwell",
+          "position": {
+            "x": 87.00000038658172,
+            "z": 155.9323088615584
+          }
+        }
+      ],
+      "drawTicks": 57,
+      "failure": null,
+      "finalStatus": {
+        "area": "quarry",
+        "expansionTracked": null,
+        "returnPrompt": false,
+        "returnPathArmed": true,
+        "panelDepth": 0,
+        "panelParent": null,
+        "proximity": {
+          "visible": true,
+          "rings": [],
+          "limit": 12,
+          "lights": 0
+        },
+        "wanderers": {
+          "count": 2,
+          "maximum": 3,
+          "people": [
+            {
+              "id": "village-stroll-0",
+              "kind": "ghost",
+              "lane": "lantern-common",
+              "x": 148.35650497197676,
+              "z": 87,
+              "walking": true,
+              "wait": 0,
+              "distance": 77.85650497197203,
+              "visible": true
+            },
+            {
+              "id": "village-stroll-1",
+              "kind": "werewolf",
+              "lane": "green-avenue",
+              "x": 86.025,
+              "z": 17.700000000000003,
+              "walking": false,
+              "wait": 0.8916836068034149,
+              "distance": 66.28292256115893,
+              "visible": true
+            }
+          ]
+        },
+        "active": true,
+        "inside": null,
+        "who": "shane",
+        "position": {
+          "x": 87.00000038658172,
+          "z": 155.9323088615584
+        },
+        "panel": null,
+        "panelId": null,
+        "touring": false,
+        "surveying": false,
+        "decorating": false,
+        "input": "pad",
+        "questExpanded": false,
+        "trackedQuest": null,
+        "waypoint": null,
+        "gathering": null
+      },
+      "summary": {
+        "frames": 57,
+        "drawnFrameIntervalMs": {
+          "n": 56,
+          "p50": 1790.4,
+          "p95": 2928.1,
+          "max": 5326.6
+        },
+        "rafCallbackCpuMs": {
+          "n": 57,
+          "p50": 105,
+          "p95": 1120.8,
+          "max": 5303.4
+        },
+        "drawCpuMs": {
+          "n": 57,
+          "p50": 4.8,
+          "p95": 1021.7,
+          "max": 3887.4
+        },
+        "drawCalls": {
+          "n": 57,
+          "p50": 174,
+          "p95": 230,
+          "max": 233
+        },
+        "triangles": {
+          "n": 57,
+          "p50": 935372,
+          "p95": 1425478,
+          "max": 1485308
+        },
+        "newPrograms": 34,
+        "largeTextureUploads": 28
+      },
+      "legs": {
+        "Green": {
+          "frames": 20,
+          "drawnFrameIntervalMs": {
+            "n": 19,
+            "p50": 1871,
+            "p95": 5326.6,
+            "max": 5326.6
+          },
+          "rafCallbackCpuMs": {
+            "n": 20,
+            "p50": 124.5,
+            "p95": 2140.7,
+            "max": 5303.4
+          },
+          "drawCpuMs": {
+            "n": 20,
+            "p50": 5.4,
+            "p95": 2047.8,
+            "max": 3887.4
+          },
+          "drawCalls": {
+            "n": 20,
+            "p50": 204,
+            "p95": 232,
+            "max": 233
+          },
+          "triangles": {
+            "n": 20,
+            "p50": 1338798,
+            "p95": 1430334,
+            "max": 1485308
+          },
+          "newPrograms": 34,
+          "largeTextureUploads": 24
+        },
+        "Moonclock Square": {
+          "frames": 20,
+          "drawnFrameIntervalMs": {
+            "n": 20,
+            "p50": 1679.9,
+            "p95": 2928.1,
+            "max": 2984.2
+          },
+          "rafCallbackCpuMs": {
+            "n": 20,
+            "p50": 101.5,
+            "p95": 147,
+            "max": 186.3
+          },
+          "drawCpuMs": {
+            "n": 20,
+            "p50": 4.6,
+            "p95": 7.8,
+            "max": 8.3
+          },
+          "drawCalls": {
+            "n": 20,
+            "p50": 174,
+            "p95": 199,
+            "max": 214
+          },
+          "triangles": {
+            "n": 20,
+            "p50": 935372,
+            "p95": 1214036,
+            "max": 1376036
+          },
+          "newPrograms": 0,
+          "largeTextureUploads": 4
+        },
+        "Quarry": {
+          "frames": 17,
+          "drawnFrameIntervalMs": {
+            "n": 17,
+            "p50": 1997.4,
+            "p95": 2273.1,
+            "max": 2273.1
+          },
+          "rafCallbackCpuMs": {
+            "n": 17,
+            "p50": 87.8,
+            "p95": 154,
+            "max": 154
+          },
+          "drawCpuMs": {
+            "n": 17,
+            "p50": 4.6,
+            "p95": 26.9,
+            "max": 26.9
+          },
+          "drawCalls": {
+            "n": 17,
+            "p50": 153,
+            "p95": 170,
+            "max": 170
+          },
+          "triangles": {
+            "n": 17,
+            "p50": 840368,
+            "p95": 958646,
+            "max": 958646
+          },
+          "newPrograms": 0,
+          "largeTextureUploads": 0
+        }
+      },
+      "steady": {
+        "frames": 36,
+        "drawnFrameIntervalMs": {
+          "n": 36,
+          "p50": 1871,
+          "p95": 2928.1,
+          "max": 2984.2
+        },
+        "rafCallbackCpuMs": {
+          "n": 36,
+          "p50": 101.5,
+          "p95": 245.3,
+          "max": 296.3
+        },
+        "drawCpuMs": {
+          "n": 36,
+          "p50": 4.5,
+          "p95": 8.3,
+          "max": 8.5
+        },
+        "drawCalls": {
+          "n": 36,
+          "p50": 174,
+          "p95": 204,
+          "max": 204
+        },
+        "triangles": {
+          "n": 36,
+          "p50": 935372,
+          "p95": 1338798,
+          "max": 1338798
+        },
+        "newPrograms": 0,
+        "largeTextureUploads": 6
+      }
+    },
+    {
+      "phase": "warmed",
+      "rows": [
+        {
+          "drawMs": 1618.6000000014901,
+          "calls": 226,
+          "triangles": 1284642,
+          "intervalMs": null,
+          "callbackMs": 1808.5,
+          "newPrograms": 3,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Green",
+          "stage": "walk",
+          "position": {
+            "x": 87,
+            "z": -17.155024390243895
+          }
+        },
+        {
+          "drawMs": 6.299999997019768,
+          "calls": 231,
+          "triangles": 1325380,
+          "intervalMs": 1813.5999999977648,
+          "callbackMs": 91.90000000223517,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Green",
+          "stage": "walk",
+          "position": {
+            "x": 87,
+            "z": -8.81004878048779
+          }
+        },
+        {
+          "drawMs": 4.800000000745058,
+          "calls": 232,
+          "triangles": 1485308,
+          "intervalMs": 2190.699999999255,
+          "callbackMs": 146,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Green",
+          "stage": "walk",
+          "position": {
+            "x": 87,
+            "z": -0.46507317073168686
+          }
+        },
+        {
+          "drawMs": 5.899999998509884,
+          "calls": 230,
+          "triangles": 1425478,
+          "intervalMs": 1947.300000000745,
+          "callbackMs": 99.30000000074506,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Green",
+          "stage": "walk",
+          "position": {
+            "x": 87,
+            "z": 7.8799024390244155
+          }
+        },
+        {
+          "drawMs": 4.200000002980232,
+          "calls": 229,
+          "triangles": 1430334,
+          "intervalMs": 2271.5,
+          "callbackMs": 128.60000000149012,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Green",
+          "stage": "walk",
+          "position": {
+            "x": 87.84038124141182,
+            "z": 16.061346277930287
+          }
+        },
+        {
+          "drawMs": 6.300000000745058,
+          "calls": 226,
+          "triangles": 1419900,
+          "intervalMs": 2646.300000000745,
+          "callbackMs": 156.10000000149012,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Green",
+          "stage": "walk",
+          "position": {
+            "x": 89.52114372423546,
+            "z": 24.235308316241714
+          }
+        },
+        {
+          "drawMs": 4.5,
+          "calls": 221,
+          "triangles": 1402324,
+          "intervalMs": 2724.10000000149,
+          "callbackMs": 126.79999999701977,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Green",
+          "stage": "walk",
+          "position": {
+            "x": 91.19673474438068,
+            "z": 32.38412025747218
+          }
+        },
+        {
+          "drawMs": 3.7999999970197678,
+          "calls": 216,
+          "triangles": 1367078,
+          "intervalMs": 2395.099999997765,
+          "callbackMs": 60.80000000074506,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Green",
+          "stage": "walk",
+          "position": {
+            "x": 94.92667083871436,
+            "z": 39.849118225295655
+          }
+        },
+        {
+          "drawMs": 4.199999999254942,
+          "calls": 204,
+          "triangles": 1338798,
+          "intervalMs": 2166.900000002235,
+          "callbackMs": 82.79999999701977,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Green",
+          "stage": "dwell",
+          "position": {
+            "x": 97.98601020498006,
+            "z": 45.97200118480511
+          }
+        },
+        {
+          "drawMs": 3.7000000029802322,
+          "calls": 204,
+          "triangles": 1338798,
+          "intervalMs": 1786.2999999970198,
+          "callbackMs": 86.30000000074506,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Green",
+          "stage": "dwell",
+          "position": {
+            "x": 97.98601020498006,
+            "z": 45.97200118480511
+          }
+        },
+        {
+          "drawMs": 4.400000002235174,
+          "calls": 204,
+          "triangles": 1338798,
+          "intervalMs": 1866.6000000014901,
+          "callbackMs": 95.10000000149012,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Green",
+          "stage": "dwell",
+          "position": {
+            "x": 97.98601020498006,
+            "z": 45.97200118480511
+          }
+        },
+        {
+          "drawMs": 3.7999999970197678,
+          "calls": 204,
+          "triangles": 1338798,
+          "intervalMs": 1717.300000000745,
+          "callbackMs": 82.30000000074506,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Green",
+          "stage": "dwell",
+          "position": {
+            "x": 97.98601020498006,
+            "z": 45.97200118480511
+          }
+        },
+        {
+          "drawMs": 5.200000002980232,
+          "calls": 204,
+          "triangles": 1338798,
+          "intervalMs": 1800.3999999985099,
+          "callbackMs": 212.80000000074506,
+          "newPrograms": 0,
+          "uploads": 1,
+          "phase": "warmed",
+          "leg": "Green",
+          "stage": "dwell",
+          "position": {
+            "x": 97.98601020498006,
+            "z": 45.97200118480511
+          }
+        },
+        {
+          "drawMs": 3.7999999970197678,
+          "calls": 204,
+          "triangles": 1338798,
+          "intervalMs": 1794,
+          "callbackMs": 182.19999999925494,
+          "newPrograms": 0,
+          "uploads": 1,
+          "phase": "warmed",
+          "leg": "Green",
+          "stage": "dwell",
+          "position": {
+            "x": 97.98601020498006,
+            "z": 45.97200118480511
+          }
+        },
+        {
+          "drawMs": 3.399999998509884,
+          "calls": 204,
+          "triangles": 1338798,
+          "intervalMs": 2024.5,
+          "callbackMs": 89.30000000074506,
+          "newPrograms": 0,
+          "uploads": 1,
+          "phase": "warmed",
+          "leg": "Green",
+          "stage": "dwell",
+          "position": {
+            "x": 97.98601020498006,
+            "z": 45.97200118480511
+          }
+        },
+        {
+          "drawMs": 4.800000000745058,
+          "calls": 204,
+          "triangles": 1338798,
+          "intervalMs": 2035.1000000014901,
+          "callbackMs": 223.09999999776483,
+          "newPrograms": 0,
+          "uploads": 1,
+          "phase": "warmed",
+          "leg": "Green",
+          "stage": "dwell",
+          "position": {
+            "x": 97.98601020498006,
+            "z": 45.97200118480511
+          }
+        },
+        {
+          "drawMs": 4.800000000745058,
+          "calls": 204,
+          "triangles": 1338798,
+          "intervalMs": 1978,
+          "callbackMs": 236.80000000074506,
+          "newPrograms": 0,
+          "uploads": 1,
+          "phase": "warmed",
+          "leg": "Green",
+          "stage": "dwell",
+          "position": {
+            "x": 97.98601020498006,
+            "z": 45.97200118480511
+          }
+        },
+        {
+          "drawMs": 5.399999998509884,
+          "calls": 204,
+          "triangles": 1338798,
+          "intervalMs": 2037.5999999977648,
+          "callbackMs": 156.5,
+          "newPrograms": 0,
+          "uploads": 1,
+          "phase": "warmed",
+          "leg": "Green",
+          "stage": "dwell",
+          "position": {
+            "x": 97.98601020498006,
+            "z": 45.97200118480511
+          }
+        },
+        {
+          "drawMs": 4.800000000745058,
+          "calls": 204,
+          "triangles": 1338798,
+          "intervalMs": 2005.800000000745,
+          "callbackMs": 102.10000000149012,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Green",
+          "stage": "dwell",
+          "position": {
+            "x": 97.98601020498006,
+            "z": 45.97200118480511
+          }
+        },
+        {
+          "drawMs": 4.700000002980232,
+          "calls": 204,
+          "triangles": 1338798,
+          "intervalMs": 1996.199999999255,
+          "callbackMs": 53.20000000298023,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Green",
+          "stage": "dwell",
+          "position": {
+            "x": 97.98601020498006,
+            "z": 45.97200118480511
+          }
+        },
+        {
+          "drawMs": 5.899999998509884,
+          "calls": 215,
+          "triangles": 1376038,
+          "intervalMs": 1760.2000000029802,
+          "callbackMs": 153.39999999850988,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Moonclock Square",
+          "stage": "walk",
+          "position": {
+            "x": 92.84073251027144,
+            "z": 52.54198865600769
+          }
+        },
+        {
+          "drawMs": 4.899999998509884,
+          "calls": 199,
+          "triangles": 1214036,
+          "intervalMs": 1865.3999999985099,
+          "callbackMs": 121.69999999925494,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Moonclock Square",
+          "stage": "walk",
+          "position": {
+            "x": 87.69545481556281,
+            "z": 59.11197612721008
+          }
+        },
+        {
+          "drawMs": 3.5,
+          "calls": 194,
+          "triangles": 1172790,
+          "intervalMs": 1793.6000000014901,
+          "callbackMs": 92.79999999701977,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Moonclock Square",
+          "stage": "walk",
+          "position": {
+            "x": 88.96051572498179,
+            "z": 66.6283659561499
+          }
+        },
+        {
+          "drawMs": 5.800000000745058,
+          "calls": 188,
+          "triangles": 1144130,
+          "intervalMs": 1746.699999999255,
+          "callbackMs": 138.89999999850988,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Moonclock Square",
+          "stage": "walk",
+          "position": {
+            "x": 91.25997944901829,
+            "z": 74.6502787273825
+          }
+        },
+        {
+          "drawMs": 3.699999999254942,
+          "calls": 186,
+          "triangles": 1066248,
+          "intervalMs": 1570.3999999985099,
+          "callbackMs": 84.10000000149012,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Moonclock Square",
+          "stage": "walk",
+          "position": {
+            "x": 93.55944317305479,
+            "z": 82.67219149861508
+          }
+        },
+        {
+          "drawMs": 6.600000001490116,
+          "calls": 187,
+          "triangles": 1049908,
+          "intervalMs": 1667,
+          "callbackMs": 117.40000000223517,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Moonclock Square",
+          "stage": "walk",
+          "position": {
+            "x": 93.7453765263144,
+            "z": 90.51745090373905
+          }
+        },
+        {
+          "drawMs": 5.199999999254942,
+          "calls": 179,
+          "triangles": 923858,
+          "intervalMs": 1762.6000000014901,
+          "callbackMs": 156.09999999776483,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Moonclock Square",
+          "stage": "walk",
+          "position": {
+            "x": 91.39947328019625,
+            "z": 98.52590617846477
+          }
+        },
+        {
+          "drawMs": 3.900000002235174,
+          "calls": 176,
+          "triangles": 936924,
+          "intervalMs": 1692,
+          "callbackMs": 86.5,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Moonclock Square",
+          "stage": "walk",
+          "position": {
+            "x": 89.05357003407809,
+            "z": 106.53436145319048
+          }
+        },
+        {
+          "drawMs": 3.5,
+          "calls": 174,
+          "triangles": 935372,
+          "intervalMs": 1589.300000000745,
+          "callbackMs": 76,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Moonclock Square",
+          "stage": "dwell",
+          "position": {
+            "x": 87.01887460677108,
+            "z": 110.96216907221773
+          }
+        },
+        {
+          "drawMs": 7.099999997764826,
+          "calls": 174,
+          "triangles": 935372,
+          "intervalMs": 1507.8999999985099,
+          "callbackMs": 175.5,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Moonclock Square",
+          "stage": "dwell",
+          "position": {
+            "x": 87.01887460677108,
+            "z": 110.96216907221773
+          }
+        },
+        {
+          "drawMs": 3.100000001490116,
+          "calls": 174,
+          "triangles": 935372,
+          "intervalMs": 1492,
+          "callbackMs": 71.60000000149012,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Moonclock Square",
+          "stage": "dwell",
+          "position": {
+            "x": 87.01887460677108,
+            "z": 110.96216907221773
+          }
+        },
+        {
+          "drawMs": 29.599999997764826,
+          "calls": 174,
+          "triangles": 935372,
+          "intervalMs": 1448,
+          "callbackMs": 98,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Moonclock Square",
+          "stage": "dwell",
+          "position": {
+            "x": 87.01887460677108,
+            "z": 110.96216907221773
+          }
+        },
+        {
+          "drawMs": 3.800000000745058,
+          "calls": 174,
+          "triangles": 935372,
+          "intervalMs": 1516.5,
+          "callbackMs": 83.60000000149012,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Moonclock Square",
+          "stage": "dwell",
+          "position": {
+            "x": 87.01887460677108,
+            "z": 110.96216907221773
+          }
+        },
+        {
+          "drawMs": 3.600000001490116,
+          "calls": 174,
+          "triangles": 935372,
+          "intervalMs": 1483.8999999985099,
+          "callbackMs": 50.30000000074506,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Moonclock Square",
+          "stage": "dwell",
+          "position": {
+            "x": 87.01887460677108,
+            "z": 110.96216907221773
+          }
+        },
+        {
+          "drawMs": 4.599999997764826,
+          "calls": 174,
+          "triangles": 935372,
+          "intervalMs": 1500.1000000014901,
+          "callbackMs": 60.19999999925494,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Moonclock Square",
+          "stage": "dwell",
+          "position": {
+            "x": 87.01887460677108,
+            "z": 110.96216907221773
+          }
+        },
+        {
+          "drawMs": 4.300000000745058,
+          "calls": 174,
+          "triangles": 935372,
+          "intervalMs": 1547,
+          "callbackMs": 96.39999999850988,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Moonclock Square",
+          "stage": "dwell",
+          "position": {
+            "x": 87.01887460677108,
+            "z": 110.96216907221773
+          }
+        },
+        {
+          "drawMs": 4.399999998509884,
+          "calls": 174,
+          "triangles": 935372,
+          "intervalMs": 1577.5,
+          "callbackMs": 118.60000000149012,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Moonclock Square",
+          "stage": "dwell",
+          "position": {
+            "x": 87.01887460677108,
+            "z": 110.96216907221773
+          }
+        },
+        {
+          "drawMs": 5.5,
+          "calls": 174,
+          "triangles": 935372,
+          "intervalMs": 1628.3999999985099,
+          "callbackMs": 105.80000000074506,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Moonclock Square",
+          "stage": "dwell",
+          "position": {
+            "x": 87.01887460677108,
+            "z": 110.96216907221773
+          }
+        },
+        {
+          "drawMs": 4.900000002235174,
+          "calls": 174,
+          "triangles": 935372,
+          "intervalMs": 1850.9000000022352,
+          "callbackMs": 118.30000000074506,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Moonclock Square",
+          "stage": "dwell",
+          "position": {
+            "x": 87.01887460677108,
+            "z": 110.96216907221773
+          }
+        },
+        {
+          "drawMs": 3.800000000745058,
+          "calls": 174,
+          "triangles": 935372,
+          "intervalMs": 1853.3999999985099,
+          "callbackMs": 96.10000000149012,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Moonclock Square",
+          "stage": "dwell",
+          "position": {
+            "x": 87.01887460677108,
+            "z": 110.96216907221773
+          }
+        },
+        {
+          "drawMs": 3.599999997764826,
+          "calls": 170,
+          "triangles": 958646,
+          "intervalMs": 1582,
+          "callbackMs": 93.60000000149012,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Quarry",
+          "stage": "walk",
+          "position": {
+            "x": 87.01304913596351,
+            "z": 119.30714264864801
+          }
+        },
+        {
+          "drawMs": 4.899999998509884,
+          "calls": 164,
+          "triangles": 934146,
+          "intervalMs": 1662.4000000022352,
+          "callbackMs": 112,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Quarry",
+          "stage": "walk",
+          "position": {
+            "x": 87.00722366515595,
+            "z": 127.65211622507829
+          }
+        },
+        {
+          "drawMs": 4.100000001490116,
+          "calls": 167,
+          "triangles": 884132,
+          "intervalMs": 1762.8999999985099,
+          "callbackMs": 160.69999999925494,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Quarry",
+          "stage": "walk",
+          "position": {
+            "x": 87.00139819434838,
+            "z": 135.99708980150857
+          }
+        },
+        {
+          "drawMs": 5,
+          "calls": 160,
+          "triangles": 877402,
+          "intervalMs": 1863.5,
+          "callbackMs": 101.30000000074506,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Quarry",
+          "stage": "walk",
+          "position": {
+            "x": 87.0000665780548,
+            "z": 144.34206495930854
+          }
+        },
+        {
+          "drawMs": 3.300000000745058,
+          "calls": 153,
+          "triangles": 842920,
+          "intervalMs": 1687.3999999985099,
+          "callbackMs": 87.5,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Quarry",
+          "stage": "walk",
+          "position": {
+            "x": 87.00001892019417,
+            "z": 152.68704056892844
+          }
+        },
+        {
+          "drawMs": 5.100000001490116,
+          "calls": 151,
+          "triangles": 840304,
+          "intervalMs": 2210.800000000745,
+          "callbackMs": 101.80000000074506,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Quarry",
+          "stage": "dwell",
+          "position": {
+            "x": 87.00000038658172,
+            "z": 155.9323088615584
+          }
+        },
+        {
+          "drawMs": 30.700000002980232,
+          "calls": 153,
+          "triangles": 840368,
+          "intervalMs": 2577.699999999255,
+          "callbackMs": 93.5,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Quarry",
+          "stage": "dwell",
+          "position": {
+            "x": 87.00000038658172,
+            "z": 155.9323088615584
+          }
+        },
+        {
+          "drawMs": 7,
+          "calls": 153,
+          "triangles": 840368,
+          "intervalMs": 2028.800000000745,
+          "callbackMs": 94.5,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Quarry",
+          "stage": "dwell",
+          "position": {
+            "x": 87.00000038658172,
+            "z": 155.9323088615584
+          }
+        },
+        {
+          "drawMs": 3.600000001490116,
+          "calls": 151,
+          "triangles": 840304,
+          "intervalMs": 2184.5,
+          "callbackMs": 101.80000000074506,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Quarry",
+          "stage": "dwell",
+          "position": {
+            "x": 87.00000038658172,
+            "z": 155.9323088615584
+          }
+        },
+        {
+          "drawMs": 10.200000002980232,
+          "calls": 151,
+          "triangles": 840304,
+          "intervalMs": 2432.60000000149,
+          "callbackMs": 94.80000000074506,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Quarry",
+          "stage": "dwell",
+          "position": {
+            "x": 87.00000038658172,
+            "z": 155.9323088615584
+          }
+        },
+        {
+          "drawMs": 3.899999998509884,
+          "calls": 151,
+          "triangles": 840304,
+          "intervalMs": 2312.39999999851,
+          "callbackMs": 86.80000000074506,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Quarry",
+          "stage": "dwell",
+          "position": {
+            "x": 87.00000038658172,
+            "z": 155.9323088615584
+          }
+        },
+        {
+          "drawMs": 2.800000000745058,
+          "calls": 153,
+          "triangles": 840368,
+          "intervalMs": 1982.6000000014901,
+          "callbackMs": 73.5,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Quarry",
+          "stage": "dwell",
+          "position": {
+            "x": 87.00000038658172,
+            "z": 155.9323088615584
+          }
+        },
+        {
+          "drawMs": 4.199999999254942,
+          "calls": 153,
+          "triangles": 840368,
+          "intervalMs": 2064.800000000745,
+          "callbackMs": 91.29999999701977,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Quarry",
+          "stage": "dwell",
+          "position": {
+            "x": 87.00000038658172,
+            "z": 155.9323088615584
+          }
+        },
+        {
+          "drawMs": 4.099999997764826,
+          "calls": 151,
+          "triangles": 840304,
+          "intervalMs": 2025.8999999985099,
+          "callbackMs": 188.30000000074506,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Quarry",
+          "stage": "dwell",
+          "position": {
+            "x": 87.00000038658172,
+            "z": 155.9323088615584
+          }
+        },
+        {
+          "drawMs": 3.100000001490116,
+          "calls": 151,
+          "triangles": 840304,
+          "intervalMs": 2060,
+          "callbackMs": 65,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Quarry",
+          "stage": "dwell",
+          "position": {
+            "x": 87.00000038658172,
+            "z": 155.9323088615584
+          }
+        },
+        {
+          "drawMs": 3.699999999254942,
+          "calls": 151,
+          "triangles": 840304,
+          "intervalMs": 2057,
+          "callbackMs": 90.89999999850988,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Quarry",
+          "stage": "dwell",
+          "position": {
+            "x": 87.00000038658172,
+            "z": 155.9323088615584
+          }
+        },
+        {
+          "drawMs": 6.300000000745058,
+          "calls": 153,
+          "triangles": 840368,
+          "intervalMs": 1960.8999999985099,
+          "callbackMs": 94.90000000223517,
+          "newPrograms": 0,
+          "uploads": 0,
+          "phase": "warmed",
+          "leg": "Quarry",
+          "stage": "dwell",
+          "position": {
+            "x": 87.00000038658172,
+            "z": 155.9323088615584
+          }
+        }
+      ],
+      "drawTicks": 57,
+      "failure": null,
+      "finalStatus": {
+        "area": "quarry",
+        "expansionTracked": null,
+        "returnPrompt": false,
+        "returnPathArmed": true,
+        "panelDepth": 0,
+        "panelParent": null,
+        "proximity": {
+          "visible": true,
+          "rings": [],
+          "limit": 12,
+          "lights": 0
+        },
+        "wanderers": {
+          "count": 2,
+          "maximum": 3,
+          "people": [
+            {
+              "id": "village-stroll-0",
+              "kind": "ghost",
+              "lane": "lantern-common",
+              "x": 148.35650497197676,
+              "z": 87,
+              "walking": true,
+              "wait": 0,
+              "distance": 77.85650497197203,
+              "visible": true
+            },
+            {
+              "id": "village-stroll-1",
+              "kind": "werewolf",
+              "lane": "green-avenue",
+              "x": 86.025,
+              "z": 17.700000000000003,
+              "walking": false,
+              "wait": 0.8916836068034149,
+              "distance": 66.28292256115893,
+              "visible": true
+            }
+          ]
+        },
+        "active": true,
+        "inside": null,
+        "who": "shane",
+        "position": {
+          "x": 87.00000038658172,
+          "z": 155.9323088615584
+        },
+        "panel": null,
+        "panelId": null,
+        "touring": false,
+        "surveying": false,
+        "decorating": false,
+        "input": "pad",
+        "questExpanded": false,
+        "trackedQuest": null,
+        "waypoint": null,
+        "gathering": null
+      },
+      "summary": {
+        "frames": 57,
+        "drawnFrameIntervalMs": {
+          "n": 56,
+          "p50": 1853.4,
+          "p95": 2577.7,
+          "max": 2724.1
+        },
+        "rafCallbackCpuMs": {
+          "n": 57,
+          "p50": 96.4,
+          "p95": 223.1,
+          "max": 1808.5
+        },
+        "drawCpuMs": {
+          "n": 57,
+          "p50": 4.5,
+          "p95": 29.6,
+          "max": 1618.6
+        },
+        "drawCalls": {
+          "n": 57,
+          "p50": 174,
+          "p95": 230,
+          "max": 232
+        },
+        "triangles": {
+          "n": 57,
+          "p50": 935372,
+          "p95": 1425478,
+          "max": 1485308
+        },
+        "newPrograms": 3,
+        "largeTextureUploads": 6
+      },
+      "legs": {
+        "Green": {
+          "frames": 20,
+          "drawnFrameIntervalMs": {
+            "n": 19,
+            "p50": 2005.8,
+            "p95": 2724.1,
+            "max": 2724.1
+          },
+          "rafCallbackCpuMs": {
+            "n": 20,
+            "p50": 102.1,
+            "p95": 236.8,
+            "max": 1808.5
+          },
+          "drawCpuMs": {
+            "n": 20,
+            "p50": 4.7,
+            "p95": 6.3,
+            "max": 1618.6
+          },
+          "drawCalls": {
+            "n": 20,
+            "p50": 204,
+            "p95": 231,
+            "max": 232
+          },
+          "triangles": {
+            "n": 20,
+            "p50": 1338798,
+            "p95": 1430334,
+            "max": 1485308
+          },
+          "newPrograms": 3,
+          "largeTextureUploads": 6
+        },
+        "Moonclock Square": {
+          "frames": 20,
+          "drawnFrameIntervalMs": {
+            "n": 20,
+            "p50": 1589.3,
+            "p95": 1853.4,
+            "max": 1865.4
+          },
+          "rafCallbackCpuMs": {
+            "n": 20,
+            "p50": 96.4,
+            "p95": 156.1,
+            "max": 175.5
+          },
+          "drawCpuMs": {
+            "n": 20,
+            "p50": 4.4,
+            "p95": 7.1,
+            "max": 29.6
+          },
+          "drawCalls": {
+            "n": 20,
+            "p50": 174,
+            "p95": 199,
+            "max": 215
+          },
+          "triangles": {
+            "n": 20,
+            "p50": 935372,
+            "p95": 1214036,
+            "max": 1376038
+          },
+          "newPrograms": 0,
+          "largeTextureUploads": 0
+        },
+        "Quarry": {
+          "frames": 17,
+          "drawnFrameIntervalMs": {
+            "n": 17,
+            "p50": 2028.8,
+            "p95": 2577.7,
+            "max": 2577.7
+          },
+          "rafCallbackCpuMs": {
+            "n": 17,
+            "p50": 94.5,
+            "p95": 188.3,
+            "max": 188.3
+          },
+          "drawCpuMs": {
+            "n": 17,
+            "p50": 4.1,
+            "p95": 30.7,
+            "max": 30.7
+          },
+          "drawCalls": {
+            "n": 17,
+            "p50": 153,
+            "p95": 170,
+            "max": 170
+          },
+          "triangles": {
+            "n": 17,
+            "p50": 840368,
+            "p95": 958646,
+            "max": 958646
+          },
+          "newPrograms": 0,
+          "largeTextureUploads": 0
+        }
+      },
+      "steady": {
+        "frames": 36,
+        "drawnFrameIntervalMs": {
+          "n": 36,
+          "p50": 1960.9,
+          "p95": 2432.6,
+          "max": 2577.7
+        },
+        "rafCallbackCpuMs": {
+          "n": 36,
+          "p50": 94.8,
+          "p95": 223.1,
+          "max": 236.8
+        },
+        "drawCpuMs": {
+          "n": 36,
+          "p50": 4.3,
+          "p95": 29.6,
+          "max": 30.7
+        },
+        "drawCalls": {
+          "n": 36,
+          "p50": 174,
+          "p95": 204,
+          "max": 204
+        },
+        "triangles": {
+          "n": 36,
+          "p50": 935372,
+          "p95": 1338798,
+          "max": 1338798
+        },
+        "newPrograms": 0,
+        "largeTextureUploads": 6
+      }
+    }
+  ],
+  "screenshots": [],
+  "browserVersion": "154.0.8037.57",
+  "context": {
+    "vendor": "WebKit",
+    "renderer": "WebKit WebGL",
+    "unmaskedVendor": "Google Inc. (Google)",
+    "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "shadingLanguage": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+    "timerQueryAvailable": true,
+    "dpr": 1,
+    "drawingBuffer": {
+      "width": 390,
+      "height": 844
+    },
+    "pixelRatio": 1
+  },
+  "ok": true
+}

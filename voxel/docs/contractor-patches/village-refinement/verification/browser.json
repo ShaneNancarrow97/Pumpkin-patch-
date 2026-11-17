@@ -1,0 +1,1243 @@
+{
+  "html": "/tmp/Pumpkin-Patch-Village-Refined.html",
+  "sha256": "e34c817796fa9e9fe0175357dfe8827f5d91ec587da2e8c0708553a86f6401fc",
+  "bytes": 60541720,
+  "scope": "Normal SwiftShader rendering of exact offline HTML. Declared progressed save; place() and elevated follow camera stage sightlines. Short view ticks settle fades; screenshots compile and draw actual shaders. Keyboard and real DOM choices check movement, wayfinding and return. Not a physical controller or device performance test.",
+  "checks": [
+    {
+      "label": "Native scene retains 6,232 boxes, three batches, 29 overhead groups and eight pooled lights",
+      "pass": true,
+      "actual": {
+        "boxes": 6232,
+        "meshes": 3,
+        "addedLights": 0
+      }
+    },
+    {
+      "label": "Elevated orchard follow camera clears a local crown while retaining other crowns",
+      "pass": true,
+      "actual": {
+        "mode": "per-instance-alpha-hash",
+        "blockers": 29,
+        "faded": 1,
+        "fullShadows": true,
+        "worldUnits": true
+      }
+    },
+    {
+      "label": "Fresh actual-world atlas restores play fade, camera, render target and save",
+      "pass": true,
+      "actual": {
+        "width": 1280,
+        "height": 800,
+        "cached": true,
+        "unchanged": true,
+        "fadeRestored": true,
+        "cameraRestored": true,
+        "targetRestored": true
+      }
+    },
+    {
+      "label": "Leaving follow mode immediately restores all native crowns",
+      "pass": true
+    },
+    {
+      "label": "The pavilion roof can clear without removing its posts and furniture",
+      "pass": true
+    },
+    {
+      "label": "Five garden shortcuts live inside the existing folded landmark list, without extra resident pins",
+      "pass": true,
+      "actual": {
+        "folded": true,
+        "gardens": 5,
+        "pins": 0
+      }
+    },
+    {
+      "label": "390×844 garden list scrolls vertically with comfortable targets",
+      "pass": true,
+      "actual": {
+        "overflow": 0,
+        "minTarget": 126.53125
+      }
+    },
+    {
+      "label": "844×390 garden list scrolls vertically with comfortable targets",
+      "pass": true,
+      "actual": {
+        "overflow": 0,
+        "minTarget": 64
+      }
+    },
+    {
+      "label": "A map choice creates a walking guide, closes Map and preserves position and coins",
+      "pass": true,
+      "actual": {
+        "panel": null,
+        "surveying": false,
+        "waypoint": {
+          "x": 0,
+          "z": 76.5,
+          "label": "Cider Orchard",
+          "placeId": "cider-orchard",
+          "realm": "surface",
+          "name": "Cider Orchard",
+          "area": "green"
+        },
+        "unchangedPosition": true,
+        "unchangedCoins": true
+      }
+    },
+    {
+      "label": "Local name reads Cider Orchard",
+      "pass": true
+    },
+    {
+      "label": "Local name reads Lantern Commons",
+      "pass": true
+    },
+    {
+      "label": "Local name reads Community Beds",
+      "pass": true
+    },
+    {
+      "label": "Local name reads Reading Court",
+      "pass": true
+    },
+    {
+      "label": "Local name reads Rowan’s Workyard",
+      "pass": true
+    },
+    {
+      "label": "Movement remains available after choosing a garden destination",
+      "pass": true
+    },
+    {
+      "label": "Interior name takes precedence over an outdoor place",
+      "pass": true
+    },
+    {
+      "label": "Farm return still requires confirmation",
+      "pass": true
+    },
+    {
+      "label": "Cancel keeps the village active and unblocked",
+      "pass": true
+    },
+    {
+      "label": "Confirmed return reaches the farm",
+      "pass": true
+    },
+    {
+      "label": "Ordinary renderer compiled every observed program without shader or page errors",
+      "pass": true,
+      "actual": {
+        "count": 97,
+        "failed": []
+      }
+    }
+  ],
+  "errors": [],
+  "screenshots": [
+    "orchard-follow-sightline.png",
+    "village-world-atlas.png",
+    "lantern-pavilion-sightline.png",
+    "fold-garden-map.png",
+    "fold-garden-shortcuts.png",
+    "phone-garden-shortcuts.png",
+    "landscape-garden-shortcuts.png",
+    "orchard-walk.png",
+    "lantern-common.png"
+  ],
+  "neighbourhoods": {
+    "marks": {},
+    "spread": "native",
+    "activeIDs": [
+      "cider-orchard-south",
+      "cider-orchard-north",
+      "market-orchard",
+      "community-pumpkin-garden",
+      "community-herb-garden",
+      "orchard-moonflower-border",
+      "market-moonflower-border",
+      "orchard-walk",
+      "orchard-loop",
+      "lantern-pergola",
+      "lantern-picnic",
+      "lantern-flower-garden",
+      "lantern-meadow",
+      "lantern-south-border",
+      "lantern-north-border",
+      "lantern-grove",
+      "lantern-walk",
+      "lantern-loop",
+      "library-reading-court",
+      "rowan-workyard",
+      "flax-edge-meadow",
+      "moonflower-edge-meadow"
+    ],
+    "paths": [
+      {
+        "points": [
+          [
+            -21,
+            51
+          ],
+          [
+            0,
+            51
+          ],
+          [
+            23,
+            51
+          ],
+          [
+            35,
+            54
+          ],
+          [
+            39,
+            58
+          ]
+        ],
+        "width": 2.6
+      },
+      {
+        "points": [
+          [
+            0,
+            51
+          ],
+          [
+            0,
+            68
+          ],
+          [
+            1,
+            70
+          ],
+          [
+            11,
+            72
+          ],
+          [
+            19,
+            72
+          ]
+        ],
+        "width": 2.2
+      },
+      {
+        "points": [
+          [
+            -21,
+            51
+          ],
+          [
+            -18,
+            51
+          ],
+          [
+            -18,
+            56
+          ],
+          [
+            -21,
+            61
+          ],
+          [
+            -21,
+            66
+          ],
+          [
+            -12,
+            76
+          ],
+          [
+            11,
+            76
+          ],
+          [
+            17,
+            76
+          ],
+          [
+            17,
+            72
+          ],
+          [
+            19,
+            72
+          ]
+        ],
+        "width": 2.4
+      },
+      {
+        "points": [
+          [
+            77,
+            58
+          ],
+          [
+            100,
+            58
+          ],
+          [
+            124,
+            58
+          ],
+          [
+            141,
+            49
+          ],
+          [
+            141,
+            37
+          ]
+        ],
+        "width": 2.6
+      },
+      {
+        "points": [
+          [
+            95,
+            58
+          ],
+          [
+            95,
+            62
+          ]
+        ],
+        "width": 2.2
+      },
+      {
+        "points": [
+          [
+            124,
+            58
+          ],
+          [
+            124,
+            59.5
+          ]
+        ],
+        "width": 2.2
+      },
+      {
+        "points": [
+          [
+            78,
+            58
+          ],
+          [
+            83,
+            72
+          ],
+          [
+            106,
+            74
+          ],
+          [
+            124,
+            74
+          ],
+          [
+            128,
+            76
+          ],
+          [
+            134,
+            76
+          ],
+          [
+            139,
+            72
+          ],
+          [
+            141,
+            67
+          ],
+          [
+            141,
+            61
+          ],
+          [
+            139,
+            56
+          ],
+          [
+            139,
+            53
+          ],
+          [
+            139,
+            50
+          ]
+        ],
+        "width": 2.4
+      },
+      {
+        "points": [
+          [
+            33,
+            22.2
+          ],
+          [
+            33,
+            24
+          ]
+        ],
+        "width": 2.2
+      },
+      {
+        "points": [
+          [
+            82,
+            16
+          ],
+          [
+            82,
+            17.5
+          ]
+        ],
+        "width": 2.2
+      }
+    ],
+    "obstacles": [
+      {
+        "x": -16,
+        "z": 44,
+        "r": 0.45
+      },
+      {
+        "x": -7,
+        "z": 43,
+        "r": 0.45
+      },
+      {
+        "x": 4,
+        "z": 46,
+        "r": 0.45
+      },
+      {
+        "x": -16,
+        "z": 57,
+        "r": 0.45
+      },
+      {
+        "x": -3,
+        "z": 60,
+        "r": 0.45
+      },
+      {
+        "x": -11,
+        "z": 56,
+        "r": 0.45
+      },
+      {
+        "x": 7,
+        "z": 56,
+        "r": 0.45
+      },
+      {
+        "x": -12,
+        "z": 71,
+        "r": 0.45
+      },
+      {
+        "x": 2,
+        "z": 72,
+        "r": 0.45
+      },
+      {
+        "x": -5,
+        "z": 68,
+        "r": 0.45
+      },
+      {
+        "x": 20,
+        "z": 44,
+        "r": 0.45
+      },
+      {
+        "x": 32,
+        "z": 44,
+        "r": 0.45
+      },
+      {
+        "x": 33,
+        "z": 61,
+        "r": 0.45
+      },
+      {
+        "x": 13,
+        "z": 42,
+        "r": 0.45
+      },
+      {
+        "x": 25,
+        "z": 47,
+        "r": 0.45
+      },
+      {
+        "x": 37,
+        "z": 42,
+        "r": 0.45
+      },
+      {
+        "x": 19,
+        "z": 56,
+        "r": 0.45
+      },
+      {
+        "x": 37,
+        "z": 74,
+        "r": 0.45
+      },
+      {
+        "x0": 19,
+        "z0": 75.225,
+        "x1": 33,
+        "z1": 75.775
+      },
+      {
+        "x0": 32.725,
+        "z0": 67.5,
+        "x1": 33.275,
+        "z1": 75.5
+      },
+      {
+        "x0": 5.5,
+        "z0": 69.225,
+        "x1": 18.5,
+        "z1": 69.775
+      },
+      {
+        "x0": -20.225,
+        "z0": 52.775,
+        "x1": -19.775,
+        "z1": 53.225
+      },
+      {
+        "x0": -1.225,
+        "z0": 69.775,
+        "x1": -0.775,
+        "z1": 70.225
+      },
+      {
+        "x0": 33.775,
+        "z0": 50.775,
+        "x1": 34.225,
+        "z1": 51.225
+      },
+      {
+        "x0": 119.44,
+        "z0": 67.08999999999999,
+        "x1": 119.96000000000001,
+        "z1": 67.61
+      },
+      {
+        "x0": 119.44,
+        "z0": 60.39,
+        "x1": 119.96000000000001,
+        "z1": 60.91
+      },
+      {
+        "x0": 128.04000000000002,
+        "z0": 67.08999999999999,
+        "x1": 128.56,
+        "z1": 67.61
+      },
+      {
+        "x0": 128.04000000000002,
+        "z0": 60.39,
+        "x1": 128.56,
+        "z1": 60.91
+      },
+      {
+        "x0": 121.7,
+        "z0": 63.53999999999999,
+        "x1": 126.3,
+        "z1": 64.66
+      },
+      {
+        "x0": 121.625,
+        "z0": 64.935,
+        "x1": 126.375,
+        "z1": 65.42500000000001
+      },
+      {
+        "x0": 121.625,
+        "z0": 62.775000000000006,
+        "x1": 126.375,
+        "z1": 63.265
+      },
+      {
+        "x0": 117,
+        "z0": 69.725,
+        "x1": 131,
+        "z1": 70.275
+      },
+      {
+        "x0": 130.725,
+        "z0": 62,
+        "x1": 131.275,
+        "z1": 70
+      },
+      {
+        "x0": 92.7,
+        "z0": 65.53999999999999,
+        "x1": 97.3,
+        "z1": 66.66
+      },
+      {
+        "x0": 92.625,
+        "z0": 66.935,
+        "x1": 97.375,
+        "z1": 67.42500000000001
+      },
+      {
+        "x0": 92.625,
+        "z0": 64.77499999999999,
+        "x1": 97.375,
+        "z1": 65.265
+      },
+      {
+        "x": 132,
+        "z": 44,
+        "r": 0.45
+      },
+      {
+        "x": 138,
+        "z": 64,
+        "r": 0.45
+      },
+      {
+        "x": 130,
+        "z": 73,
+        "r": 0.45
+      },
+      {
+        "x": 88,
+        "z": 42,
+        "r": 0.45
+      },
+      {
+        "x": 100,
+        "z": 42,
+        "r": 0.45
+      },
+      {
+        "x": 112,
+        "z": 47,
+        "r": 0.45
+      },
+      {
+        "x": 124,
+        "z": 47,
+        "r": 0.45
+      },
+      {
+        "x": 88,
+        "z": 63,
+        "r": 0.45
+      },
+      {
+        "x": 106,
+        "z": 63,
+        "r": 0.45
+      },
+      {
+        "x": 112,
+        "z": 69,
+        "r": 0.45
+      },
+      {
+        "x0": 81.775,
+        "z0": 60.775,
+        "x1": 82.225,
+        "z1": 61.225
+      },
+      {
+        "x0": 109.775,
+        "z0": 59.775,
+        "x1": 110.225,
+        "z1": 60.225
+      },
+      {
+        "x0": 135.775,
+        "z0": 53.775,
+        "x1": 136.225,
+        "z1": 54.225
+      },
+      {
+        "x0": 31.86,
+        "z0": 25.75,
+        "x1": 34.14,
+        "z1": 26.950000000000003
+      },
+      {
+        "x0": 29.14,
+        "z0": 28.875,
+        "x1": 30.86,
+        "z1": 29.825000000000003
+      },
+      {
+        "x0": 34.8,
+        "z0": 28.950000000000003,
+        "x1": 36.7,
+        "z1": 29.75
+      },
+      {
+        "x0": 34.52,
+        "z0": 25.87,
+        "x1": 35.38,
+        "z1": 26.73
+      },
+      {
+        "x0": 35.05,
+        "z0": 24.91,
+        "x1": 35.75,
+        "z1": 25.49
+      },
+      {
+        "x0": 37.175,
+        "z0": 28.974999999999998,
+        "x1": 37.625,
+        "z1": 29.425
+      },
+      {
+        "x0": 80.55,
+        "z0": 14.25,
+        "x1": 83.45,
+        "z1": 15.45
+      },
+      {
+        "x0": 78.15,
+        "z0": 10.85,
+        "x1": 80.35,
+        "z1": 12.65
+      },
+      {
+        "x0": 83.475,
+        "z0": 10.850000000000001,
+        "x1": 85.65,
+        "z1": 11.75
+      },
+      {
+        "x0": 86.275,
+        "z0": 8.775,
+        "x1": 86.725,
+        "z1": 9.225
+      }
+    ],
+    "featureBoxes": {
+      "cider-orchard-south": 483,
+      "cider-orchard-north": 207,
+      "market-orchard": 552,
+      "community-pumpkin-garden": 431,
+      "community-herb-garden": 527,
+      "orchard-moonflower-border": 147,
+      "market-moonflower-border": 149,
+      "orchard-walk": 394,
+      "orchard-loop": 191,
+      "lantern-pergola": 470,
+      "lantern-picnic": 52,
+      "lantern-flower-garden": 265,
+      "lantern-meadow": 164,
+      "lantern-south-border": 162,
+      "lantern-north-border": 124,
+      "lantern-grove": 690,
+      "lantern-walk": 362,
+      "lantern-loop": 323,
+      "library-reading-court": 167,
+      "rowan-workyard": 141,
+      "flax-edge-meadow": 109,
+      "moonflower-edge-meadow": 122
+    },
+    "viewBlockers": [
+      {
+        "id": 1,
+        "kind": "crown",
+        "bounds": {
+          "min": [
+            -17.89333715449572,
+            2.343239052593708,
+            -45.798045433023574
+          ],
+          "max": [
+            -14.156651945292948,
+            4.317906129206531,
+            -42.259754463607074
+          ]
+        }
+      },
+      {
+        "id": 2,
+        "kind": "crown",
+        "bounds": {
+          "min": [
+            -9.054073126410723,
+            2.5421697109043597,
+            -44.95069155816728
+          ],
+          "max": [
+            -5.0001598274219035,
+            4.6844773110310545,
+            -41.1120152947017
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "kind": "crown",
+        "bounds": {
+          "min": [
+            2.026006936966419,
+            2.443060721576214,
+            -47.874641927022815
+          ],
+          "max": [
+            5.921874434306622,
+            4.501848350487837,
+            -44.185620237442734
+          ]
+        }
+      },
+      {
+        "id": 4,
+        "kind": "crown",
+        "bounds": {
+          "min": [
+            -17.772505030083657,
+            2.193694344162941,
+            -58.683294793421034
+          ],
+          "max": [
+            -14.27429378259182,
+            4.042338848775253,
+            -55.37081633373499
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "kind": "crown",
+        "bounds": {
+          "min": [
+            -4.93743098274994,
+            2.4874757681216644,
+            -61.83992001744652
+          ],
+          "max": [
+            -1.113722310523987,
+            4.508130761217658,
+            -58.21922597790146
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "kind": "crown",
+        "bounds": {
+          "min": [
+            -12.941060360071898,
+            2.4023024258315564,
+            -57.843366728088085
+          ],
+          "max": [
+            -9.110188758345842,
+            4.426742699266691,
+            -54.215890065082434
+          ]
+        }
+      },
+      {
+        "id": 7,
+        "kind": "crown",
+        "bounds": {
+          "min": [
+            5.173531670264006,
+            2.260480606108904,
+            -57.734542118420904
+          ],
+          "max": [
+            8.778244743472339,
+            4.1654064502152615,
+            -54.32121640319645
+          ]
+        }
+      },
+      {
+        "id": 8,
+        "kind": "crown",
+        "bounds": {
+          "min": [
+            -13.893317622814893,
+            2.343214879721403,
+            -72.79802688437289
+          ],
+          "max": [
+            -10.15667096128583,
+            4.317861585653294,
+            -69.25977241599357
+          ]
+        }
+      },
+      {
+        "id": 9,
+        "kind": "crown",
+        "bounds": {
+          "min": [
+            0.16293169714212397,
+            2.3632645306314872,
+            -73.74460859454572
+          ],
+          "max": [
+            3.7885648493170736,
+            4.279245678800863,
+            -70.31147352361083
+          ]
+        }
+      },
+      {
+        "id": 10,
+        "kind": "crown",
+        "bounds": {
+          "min": [
+            -6.892850303896427,
+            2.3477772715235647,
+            -69.797583085631
+          ],
+          "max": [
+            -3.157125941751003,
+            4.381365408162522,
+            -66.26020194839883
+          ]
+        }
+      },
+      {
+        "id": 11,
+        "kind": "crown",
+        "bounds": {
+          "min": [
+            18.106701908865926,
+            2.3431907068490982,
+            -45.7980083357222
+          ],
+          "max": [
+            21.843310022721294,
+            4.317817042100057,
+            -42.25979036838007
+          ]
+        }
+      },
+      {
+        "id": 12,
+        "kind": "crown",
+        "bounds": {
+          "min": [
+            30.240762355479003,
+            2.1772743125259875,
+            -45.67069515581161
+          ],
+          "max": [
+            33.71278912585378,
+            4.012081519644242,
+            -42.38301094389736
+          ]
+        }
+      },
+      {
+        "id": 13,
+        "kind": "crown",
+        "bounds": {
+          "min": [
+            31.153371902458193,
+            2.2854308137893677,
+            -62.75368724444771
+          ],
+          "max": [
+            34.79787224018097,
+            4.21138240582645,
+            -59.30268671562576
+          ]
+        }
+      },
+      {
+        "id": 14,
+        "kind": "crown",
+        "bounds": {
+          "min": [
+            11.24603441456604,
+            2.1707494869232176,
+            -43.66568843963242
+          ],
+          "max": [
+            14.707656263046264,
+            4.000058169132471,
+            -40.38785671437836
+          ]
+        }
+      },
+      {
+        "id": 15,
+        "kind": "crown",
+        "bounds": {
+          "min": [
+            23.119980917616843,
+            2.326756290078163,
+            -48.78539765991998
+          ],
+          "max": [
+            26.83038161486149,
+            4.287533205362783,
+            -45.27199566190195
+          ]
+        }
+      },
+      {
+        "id": 16,
+        "kind": "crown",
+        "bounds": {
+          "min": [
+            35.18830395092392,
+            2.2421980805397035,
+            -43.720513327134135
+          ],
+          "max": [
+            38.763862490024565,
+            4.131717087994516,
+            -40.33479422551918
+          ]
+        }
+      },
+      {
+        "id": 17,
+        "kind": "crown",
+        "bounds": {
+          "min": [
+            17.229890853063107,
+            2.1907291422486304,
+            -57.68101949515212
+          ],
+          "max": [
+            20.723373591902256,
+            4.036874846497737,
+            -54.373018490356685
+          ]
+        }
+      },
+      {
+        "id": 18,
+        "kind": "crown",
+        "bounds": {
+          "min": [
+            35.0497934576571,
+            2.413621958345175,
+            -75.85205258270354
+          ],
+          "max": [
+            38.89871594056487,
+            4.447601296158973,
+            -72.20748342560232
+          ]
+        }
+      },
+      {
+        "id": 19,
+        "kind": "pavilion",
+        "bounds": {
+          "min": [
+            119,
+            2.63,
+            -68
+          ],
+          "max": [
+            129,
+            4.199999999999999,
+            -60
+          ]
+        }
+      },
+      {
+        "id": 20,
+        "kind": "crown",
+        "bounds": {
+          "min": [
+            130.10691778035738,
+            2.3429235391616823,
+            -45.79780332905006
+          ],
+          "max": [
+            133.8430998508072,
+            4.317324729976058,
+            -42.259988784915926
+          ]
+        }
+      },
+      {
+        "id": 21,
+        "kind": "crown",
+        "bounds": {
+          "min": [
+            136.2057133899987,
+            2.2206517450511454,
+            -65.70398010570258
+          ],
+          "max": [
+            139.7469127061069,
+            4.092013476036954,
+            -62.35079597067535
+          ]
+        }
+      },
+      {
+        "id": 22,
+        "kind": "crown",
+        "bounds": {
+          "min": [
+            128.0603425664444,
+            2.4005661306381225,
+            -74.84203441090966
+          ],
+          "max": [
+            131.88844535610198,
+            4.423543213644623,
+            -71.21717955364609
+          ]
+        }
+      },
+      {
+        "id": 23,
+        "kind": "crown",
+        "bounds": {
+          "min": [
+            86.19728527535987,
+            2.2310825800001624,
+            -43.71198403305346
+          ],
+          "max": [
+            89.75511829626679,
+            4.111234462521132,
+            -40.34304933725321
+          ]
+        }
+      },
+      {
+        "id": 24,
+        "kind": "crown",
+        "bounds": {
+          "min": [
+            98.07460132410716,
+            2.3829191533327103,
+            -43.82849329699064
+          ],
+          "max": [
+            101.8745630672884,
+            4.391024981505797,
+            -40.23028537545824
+          ]
+        }
+      },
+      {
+        "id": 25,
+        "kind": "crown",
+        "bounds": {
+          "min": [
+            110.01358055847955,
+            2.4584399028718473,
+            -48.88644288547033
+          ],
+          "max": [
+            113.93397272359252,
+            4.530187696021143,
+            -45.174198632133844
+          ]
+        }
+      },
+      {
+        "id": 26,
+        "kind": "crown",
+        "bounds": {
+          "min": [
+            122.03762259758471,
+            2.4286849039793013,
+            -48.863610882986784
+          ],
+          "max": [
+            125.91056545779706,
+            4.475357911603524,
+            -45.19629667797804
+          ]
+        }
+      },
+      {
+        "id": 27,
+        "kind": "crown",
+        "bounds": {
+          "min": [
+            86.20064873137116,
+            2.226919886916876,
+            -64.70878985989422
+          ],
+          "max": [
+            89.75184364437462,
+            4.103563833287452,
+            -61.34614083064974
+          ]
+        }
+      },
+      {
+        "id": 28,
+        "kind": "crown",
+        "bounds": {
+          "min": [
+            104.00760075006247,
+            2.465840655863285,
+            -64.89212172993243
+          ],
+          "max": [
+            107.93979464927911,
+            4.5438251252314075,
+            -61.168702339578864
+          ]
+        }
+      },
+      {
+        "id": 29,
+        "kind": "crown",
+        "bounds": {
+          "min": [
+            110.20722789081455,
+            2.2187773628532885,
+            -70.70254182976277
+          ],
+          "max": [
+            113.74543819211125,
+            4.088559536341112,
+            -67.3521880118543
+          ]
+        }
+      }
+    ],
+    "visualBudget": {
+      "boxes": 6232,
+      "meshes": 3,
+      "addedLights": 0
+    },
+    "neighbourhoodVisibility": {
+      "mode": "per-instance-alpha-hash",
+      "blockers": 29,
+      "faded": 0,
+      "fullShadows": true,
+      "worldUnits": true
+    }
+  },
+  "programs": {
+    "count": 97,
+    "failed": []
+  },
+  "passed": true
+}

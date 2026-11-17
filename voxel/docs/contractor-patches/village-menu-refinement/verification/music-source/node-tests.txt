@@ -1,0 +1,14 @@
+✔ MIDI endings advance shuffle automatically; mute and repeat remain reliable (302.381448ms)
+✔ every bundled original and supplied MIDI decodes into finite timed notes (176.715719ms)
+✔ five new supplied songs retain their own source tempo and PPQ note timing (49.634352ms)
+✔ running-status MIDI respects changing tempo instead of using a fixed BPM (0.445448ms)
+✔ a short riff loops on its own length into a track (0.30657ms)
+✔ supplied songs with long end markers finish after their notes, preserving source timing (11.065945ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 677.503089

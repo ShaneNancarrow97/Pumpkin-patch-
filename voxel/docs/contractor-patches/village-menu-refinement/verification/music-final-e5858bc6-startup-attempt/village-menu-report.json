@@ -1,0 +1,19 @@
+{
+  "date": "2026-11-09T00:17:05.542Z",
+  "baseline": false,
+  "levelDelta": false,
+  "contrastOnly": false,
+  "musicDelta": true,
+  "html": "/workspace/Pumpkin-Patch-Village-Menu-Refinement.html",
+  "sha256": "e5858bc666dbf4f8160e5d964249044eddfe2e70dc7bc1d0cc9bbfd175c7c4e0",
+  "bytes": 58911354,
+  "checks": [],
+  "errors": [
+    "page.evaluate: ReferenceError: musicDelta is not defined\n    at eval (eval at evaluate (:234:30), <anonymous>:1:29)\n    at UtilityScript.evaluate (<anonymous>:236:17)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at /workspace/village-menu-refinement/voxel/tools/village-menu-refinement-qa.mjs:64:173"
+  ],
+  "externalRequests": [],
+  "screenshots": [],
+  "observations": [],
+  "scope": "Exact unchanged final offline HTML music-data delta. Actual Settings selector, Shuffle and Next song buttons, native WebAudio status and bounded voices; finite note counts are from the separately stored same-source MIDI audit. No repeated UI photos.",
+  "passed": false
+}

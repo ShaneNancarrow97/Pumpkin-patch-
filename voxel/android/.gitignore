@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+build/
+output/
+*.apk
+*.idsig
+*.p12
+*.jks
+*.keystore
+local.properties

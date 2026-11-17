@@ -1,0 +1,23 @@
+[
+  {
+    "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/5c5707e3975d123eab7298c1d286f191b1caba83/Pumpkin-Patch-Mothlight-Recovery.html",
+    "http": 200,
+    "bytes": 61805422,
+    "sha256": "4476b90884a37b4cf86c0009fb856281f9fed3e3b5551e02968f59596901dd5c",
+    "matchesLocal": true
+  },
+  {
+    "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/5c5707e3975d123eab7298c1d286f191b1caba83/Pumpkin-Patch-Mothlight-Recovery.zip",
+    "http": 200,
+    "bytes": 43993292,
+    "sha256": "33e0337029a4dc0c430a4c1560b187a6137253249a5334f4eed7c1c25a5d74a9",
+    "matchesLocal": true
+  },
+  {
+    "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/5c5707e3975d123eab7298c1d286f191b1caba83/release-receipt.json",
+    "http": 200,
+    "bytes": 2403,
+    "sha256": "44c48414fdee0d7c674184db96a71c2fbd96f0a0e6d2d0eb349e1e96de6181c6",
+    "matchesLocal": true
+  }
+]

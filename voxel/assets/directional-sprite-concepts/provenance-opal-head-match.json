@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "date": "2026-11-08",
+  "selectedGeneratedFile": "exec-f39a4955-aa9b-4bc6-930e-d38732b24daf.png",
+  "selectedSource": "opal-front-repair.png",
+  "previousSource": "opal-front-before-head-match.png",
+  "prompt": "Correct the character proportions of this eight-figure FRONT WALK STRIP to match the approved Opal reference (image2). Image1 has the CORRECT EIGHT LEG/ARM/PROP POSES; preserve exactly every boot position, knee bend, leg occlusion, hand, hammer and apron pose. But its HEAD IS MUCH TOO SMALL. In ALL EIGHT figures enlarge the HEAD INCLUDING SILVER HAIR, FACE AND POINTED EARS by about 40 percent relative to body width and height. The new front head including hair should occupy approximately ONE THIRD of the whole character's head-to-foot height, matching the charming exaggerated storybook proportions of approved image2. Not a realistic small adult head. Keep face identity/pale complexion/red eyes/swept white hair EXACT as approved reference2. Keep all faces FRONT. Preserve the full-body height and consistent scale across eight frames; adjust neck joining naturally, keep original correct leg poses. Large expressive head must not touch neighbouring cells. Do not change the correct walking sequence:1viewer-leftboot forward,2viewer-right knee beginninglift,3viewer-right knee raised,4viewer-right boot reaches,5viewer-right boot forward,6viewer-left knee beginninglift withrightfootplanted,7viewer-left knee raised,8viewer-left boot reaches. No change to costume, tools or anatomy other than head size/proportion correction. Eight evenly-spaced figures in ONE horizontal row on TRANSPARENT background, no floor or cast shadows, no text. Exact same style as image2, head-to-body scale consistent with image2 side-view sprites.",
+  "reference": "voxel/assets/village/opal.webp",
+  "review": "Root reviewed side-by-side equal-body-height proof /tmp/opal-head-candidate-review.png and accepted: head height matches diagonal/profile, front face is naturally wider, roundness/eyes/hair match approved style. Eight walking steps preserved. No code-based body-part resizing used.",
+  "notSelected": {
+    "generatedFile": "exec-fd9bd883-9faa-475b-a359-f2e400d9e467.png",
+    "reason": "A requested 10% smaller-head follow-up finished while root was approving first candidate; root explicitly accepted first candidate with no further refinement. This later image is not used."
+  },
+  "packingScript": "repack-copse-fronts.py",
+  "packingReport": "opal-front-repair-pack.json"
+}

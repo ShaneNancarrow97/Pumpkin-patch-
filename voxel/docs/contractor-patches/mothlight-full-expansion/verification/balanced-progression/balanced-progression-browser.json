@@ -1,0 +1,215 @@
+{
+  "html": "/workspace/Pumpkin-Patch-Balanced-Progression.html",
+  "sha256": "7b30a357bba2a262000a71c1424d829ae90bd3b518bfab43d65123d33503542c",
+  "bytes": 60332365,
+  "checks": [
+    {
+      "pass": true,
+      "label": "Loaded game keeps coins and bounds banked progress",
+      "detail": {
+        "version": 20,
+        "coins": 9000000,
+        "earned": 10000000,
+        "level": 5,
+        "at": 9000,
+        "name": "Lantern keeper",
+        "rewards": [
+          {
+            "kind": "coins",
+            "amount": 150
+          },
+          {
+            "kind": "decor",
+            "id": "w04"
+          }
+        ],
+        "xp": 15375,
+        "bankLimit": 15375,
+        "bankFull": true,
+        "earnedLevel": 6,
+        "next": {
+          "level": 6,
+          "at": 12500,
+          "name": "Midnight market",
+          "rewards": [
+            {
+              "kind": "coins",
+              "amount": 225
+            },
+            {
+              "kind": "costume",
+              "id": "shane-skeleton"
+            }
+          ]
+        },
+        "requirements": [
+          {
+            "id": "wardrobe",
+            "text": "Use a costume rack or wardrobe at home",
+            "target": 1,
+            "action": "wardrobe",
+            "room": "parlour",
+            "current": 0,
+            "met": false,
+            "honoured": false
+          },
+          {
+            "id": "village:green-research+green-workshop+green-supper",
+            "text": "Complete “The Ink Beneath the Roots” · Complete “A Door Worth Knocking On” · Complete “A Seat for Somebody”",
+            "current": 0,
+            "target": 3,
+            "met": false,
+            "action": "village",
+            "room": "parlour"
+          }
+        ],
+        "blocked": true,
+        "progress": 1,
+        "tagline": "Next milestone: Use a costume rack or wardrobe at home"
+      }
+    },
+    {
+      "pass": true,
+      "label": "desktop: checklist fits viewport",
+      "detail": {
+        "x": 360,
+        "y": 14,
+        "w": 560,
+        "h": 772
+      }
+    },
+    {
+      "pass": true,
+      "label": "desktop: primary targets retain 44px areas",
+      "detail": [
+        {
+          "w": 44,
+          "h": 44
+        },
+        {
+          "w": 423.09375,
+          "h": 48
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "desktop: bank policy is clear"
+    },
+    {
+      "pass": true,
+      "label": "phone: checklist fits viewport",
+      "detail": {
+        "x": 12,
+        "y": 14,
+        "w": 366,
+        "h": 816
+      }
+    },
+    {
+      "pass": true,
+      "label": "phone: primary targets retain 44px areas",
+      "detail": [
+        {
+          "w": 44,
+          "h": 44
+        },
+        {
+          "w": 252.09375,
+          "h": 48
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "phone: bank policy is clear"
+    },
+    {
+      "pass": true,
+      "label": "landscape: checklist fits viewport",
+      "detail": {
+        "x": 142,
+        "y": 14,
+        "w": 560,
+        "h": 362
+      }
+    },
+    {
+      "pass": true,
+      "label": "landscape: primary targets retain 44px areas",
+      "detail": [
+        {
+          "w": 44,
+          "h": 44
+        },
+        {
+          "w": 423.09375,
+          "h": 48
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "landscape: bank policy is clear"
+    },
+    {
+      "pass": true,
+      "label": "fold: checklist fits viewport",
+      "detail": {
+        "x": 220,
+        "y": 14,
+        "w": 560,
+        "h": 872
+      }
+    },
+    {
+      "pass": true,
+      "label": "fold: primary targets retain 44px areas",
+      "detail": [
+        {
+          "w": 44,
+          "h": 44
+        },
+        {
+          "w": 423.09375,
+          "h": 48
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "fold: bank policy is clear"
+    },
+    {
+      "pass": true,
+      "label": "Finishing the story promotes once and reload cannot reuse overflow",
+      "detail": {
+        "first": [
+          6
+        ],
+        "again": [],
+        "afterLoad": [],
+        "level": 6,
+        "bank": 15375,
+        "afterBank": 15375,
+        "coins": 9000225,
+        "loadedCoins": 9000225,
+        "pending": [
+          6
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "No page errors",
+      "detail": []
+    }
+  ],
+  "errors": [],
+  "screenshots": [
+    "balanced-progression-desktop.png",
+    "balanced-progression-phone.png"
+  ],
+  "scope": "Exact offline bytes served on loopback; declared level5 save with ten million takings and missing village story. Normal SwiftShader rendering. Viewports are not physical Fold/TV/controller certification.",
+  "passed": true
+}

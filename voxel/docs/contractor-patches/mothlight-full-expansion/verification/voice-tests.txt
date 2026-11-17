@@ -1,0 +1,16 @@
+✔ published voices match the script, cast and hashes; every missing clip is declared (37.652672ms)
+✔ published clip inspection rejects duplicate and unsupported imports without loading audio (0.254993ms)
+✔ recording IDs are stable across whitespace and Unicode composition, but preserve the speaker (17.138777ms)
+✔ every active village identity and tour stop has a recording request without claiming recorded audio (23.770623ms)
+✔ quest speaker changes carry through to answers, while player choices stay silent (15.958755ms)
+✔ stage directions remain in captions and keys, but are never spoken (8.39982ms)
+✔ summary accounts for all characters and distinguishes later authored coverage (0.675013ms)
+✔ expansion friendship conversations and reveal lines are queued with their real speakers while puzzle choices stay silent (94.607097ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 236.903531

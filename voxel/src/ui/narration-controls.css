@@ -1,0 +1,21 @@
+/* A quiet purple pair of voice buttons; the touch target stays 44px. */
+.narration-controls { position: relative; display: inline-flex; align-items: center; gap: 3px; flex: 0 0 auto; pointer-events: auto; }
+.narration-controls[hidden] { display: none !important; }
+:is(.intro, #village-dialogue, #village-game, .village-root) .narration-controls button { display: grid; place-items: center; min-width: 44px; width: 44px; min-height: 44px; height: 44px; padding: 10px; margin: 0; border: 1px solid #d2afd52c; border-radius: 13px; background: linear-gradient(145deg, #49344de8, #2b2035f2); color: #e8d2ef; cursor: pointer; touch-action: manipulation; box-shadow: inset 0 1px #f7e5ff0a; }
+:is(.intro, #village-dialogue, #village-game, .village-root) .narration-controls button:focus-visible { outline: 2px solid #ffe0a9; outline-offset: 3px; }
+:is(.intro, #village-dialogue, #village-game, .village-root) .narration-controls button:disabled { opacity: .4; cursor: default; }
+.narration-controls svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.narration-controls .narration-muted { display: none; }
+.narration-controls.is-muted .narration-waves { display: none; }
+.narration-controls.is-muted .narration-muted { display: initial; }
+.narration-controls.is-playing [data-voice-toggle] { border-color: #e2bce16b; box-shadow: inset 0 1px #f7e5ff1a, 0 0 12px #b58acc20; }
+.narration-controls .narration-status { position: absolute; bottom: calc(100% + 5px); right: 0; z-index: 1; width: max-content; max-width: 190px; padding: 5px 8px; border: 1px solid #d2afd52c; border-radius: 8px; background: #2b2035f7; color: #eadbed; font: 500 11px/1.35 var(--body, system-ui); pointer-events: none; }
+.narration-controls .narration-status[hidden] { display: none; }
+.intro .intro-voices { position: absolute; z-index: 3; top: calc(var(--top) + 4px); left: max(12px, env(safe-area-inset-left)); }
+.intro .narration-status { top: calc(100% + 5px); bottom: auto; left: 0; right: auto; }
+.village-dialogue-footer .narration-controls { margin-left: auto; }
+.vg-tour .narration-controls { justify-content: center; }
+.village-root .tour-voices { justify-content: center; margin-top: 12px; }
+.village-root .village-tour-title:has(.tour-voices) { visibility: hidden; }
+.village-root .village-tour-title.shown:has(.tour-voices) { visibility: visible; }
+:is(#village-game, .village-root) .narration-controls button[data-voice-skip] { width: auto; padding: 9px 13px; }

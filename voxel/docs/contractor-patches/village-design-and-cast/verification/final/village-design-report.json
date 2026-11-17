@@ -1,0 +1,1879 @@
+{
+  "phase": "final",
+  "html": "Mothlight-Village-Explorer.html",
+  "date": "2026-11-08T06:48:50.454Z",
+  "bytes": 20029825,
+  "sha256": "3972f586706fd56998fbbb527a491834e07b69f13802cdb51271804de022e710",
+  "scope": "Actual explorer in Chromium/SwiftShader. Viewport emulation is not physical Fold or controller certification.",
+  "checks": [
+    {
+      "pass": true,
+      "label": "village explorer boots with a live view"
+    },
+    {
+      "pass": true,
+      "label": "Map opens as an intentional drawer"
+    },
+    {
+      "pass": true,
+      "label": "desktop-map: page has no horizontal overflow"
+    },
+    {
+      "pass": true,
+      "label": "desktop-map: visible controls meet44px touch targets",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "desktop-map: control text stays at least12px",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "choosing a map place closes the drawer"
+    },
+    {
+      "pass": true,
+      "label": "Elowen is reachable from Neighbours"
+    },
+    {
+      "pass": true,
+      "label": "meeting Elowen opens a compact conversation"
+    },
+    {
+      "pass": true,
+      "label": "desktop-conversation: page has no horizontal overflow"
+    },
+    {
+      "pass": true,
+      "label": "desktop-conversation: visible controls meet44px touch targets",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "desktop-conversation: control text stays at least12px",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "conversation presents three clear tone choices"
+    },
+    {
+      "pass": true,
+      "label": "one answer advances to the neighbour's reply"
+    },
+    {
+      "pass": true,
+      "label": "conversation closes without a permanent speech panel"
+    },
+    {
+      "pass": true,
+      "label": "all eight neighbours and Vesper use the shipped painted sprites",
+      "detail": [
+        {
+          "id": "elowen",
+          "style": "sprite",
+          "ready": true,
+          "frame": 5,
+          "action": "wave",
+          "walking": false,
+          "height": 2.3,
+          "frames": {
+            "idle": [
+              0
+            ],
+            "walk": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "wave": [
+              5
+            ],
+            "talk": [
+              0
+            ]
+          }
+        },
+        {
+          "id": "rowan",
+          "style": "sprite",
+          "ready": true,
+          "frame": 0,
+          "action": "idle",
+          "walking": false,
+          "height": 2.3,
+          "frames": {
+            "idle": [
+              0
+            ],
+            "walk": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "wave": [
+              5
+            ],
+            "talk": [
+              0
+            ]
+          }
+        },
+        {
+          "id": "vesper",
+          "style": "sprite",
+          "ready": true,
+          "frame": 0,
+          "action": "idle",
+          "walking": false,
+          "height": 2.3,
+          "frames": {
+            "idle": [
+              0
+            ],
+            "walk": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "wave": [
+              5
+            ],
+            "talk": [
+              0
+            ]
+          }
+        },
+        {
+          "id": "mabel",
+          "style": "sprite",
+          "ready": true,
+          "frame": 0,
+          "action": "idle",
+          "walking": false,
+          "height": 2.3,
+          "frames": {
+            "idle": [
+              0
+            ],
+            "walk": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "wave": [
+              5
+            ],
+            "talk": [
+              0
+            ]
+          }
+        },
+        {
+          "id": "tansy",
+          "style": "sprite",
+          "ready": true,
+          "frame": 0,
+          "action": "idle",
+          "walking": false,
+          "height": 2.3,
+          "frames": {
+            "idle": [
+              0
+            ],
+            "walk": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "wave": [
+              5
+            ],
+            "talk": [
+              0
+            ]
+          }
+        },
+        {
+          "id": "opal",
+          "style": "sprite",
+          "ready": true,
+          "frame": 0,
+          "action": "idle",
+          "walking": false,
+          "height": 2.3,
+          "frames": {
+            "idle": [
+              0
+            ],
+            "walk": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "wave": [
+              5
+            ],
+            "talk": [
+              0
+            ]
+          }
+        },
+        {
+          "id": "cinder",
+          "style": "sprite",
+          "ready": true,
+          "frame": 0,
+          "action": "idle",
+          "walking": false,
+          "height": 2.3,
+          "frames": {
+            "idle": [
+              0
+            ],
+            "walk": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "wave": [
+              5
+            ],
+            "talk": [
+              0
+            ]
+          }
+        },
+        {
+          "id": "corvus",
+          "style": "sprite",
+          "ready": true,
+          "frame": 0,
+          "action": "idle",
+          "walking": false,
+          "height": 2.3,
+          "frames": {
+            "idle": [
+              0
+            ],
+            "walk": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "wave": [
+              5
+            ],
+            "talk": [
+              0
+            ]
+          }
+        },
+        {
+          "id": "baron",
+          "style": "sprite",
+          "ready": true,
+          "frame": 0,
+          "action": "idle",
+          "walking": false,
+          "height": 2.3,
+          "frames": {
+            "idle": [
+              0
+            ],
+            "walk": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "wave": [
+              5
+            ],
+            "talk": [
+              0
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "the cast shares one2.3-unit scale"
+    },
+    {
+      "pass": true,
+      "label": "each painted walk alternates authored leg frames",
+      "detail": [
+        {
+          "id": "elowen",
+          "frames": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "legs": [
+            "left",
+            "right"
+          ]
+        },
+        {
+          "id": "rowan",
+          "frames": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "legs": [
+            "left",
+            "right"
+          ]
+        },
+        {
+          "id": "vesper",
+          "frames": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "legs": [
+            "left",
+            "right"
+          ]
+        },
+        {
+          "id": "mabel",
+          "frames": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "legs": [
+            "left",
+            "right"
+          ]
+        },
+        {
+          "id": "tansy",
+          "frames": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "legs": [
+            "left",
+            "right"
+          ]
+        },
+        {
+          "id": "opal",
+          "frames": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "legs": [
+            "left",
+            "right"
+          ]
+        },
+        {
+          "id": "cinder",
+          "frames": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "legs": [
+            "left",
+            "right"
+          ]
+        },
+        {
+          "id": "corvus",
+          "frames": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "legs": [
+            "left",
+            "right"
+          ]
+        },
+        {
+          "id": "baron",
+          "frames": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "legs": [
+            "left",
+            "right"
+          ]
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "all nine shipped sheets contain visibly distinct left and right steps",
+      "detail": [
+        {
+          "id": "elowen",
+          "walkPixelDifference": 6379,
+          "anchors": [
+            {
+              "frame": 0,
+              "x": 2.3841857821338408e-8,
+              "y": 0,
+              "unit": 0.008984375
+            },
+            {
+              "frame": 1,
+              "x": 2.3841857821338408e-8,
+              "y": 0,
+              "unit": 0.008984375
+            },
+            {
+              "frame": 3,
+              "x": 2.3841857821338408e-8,
+              "y": 0,
+              "unit": 0.008984375
+            }
+          ]
+        },
+        {
+          "id": "rowan",
+          "walkPixelDifference": 6721,
+          "anchors": [
+            {
+              "frame": 0,
+              "x": 2.1130430738480754e-8,
+              "y": -4.2073866612923894e-8,
+              "unit": 0.009019607843137253
+            },
+            {
+              "frame": 1,
+              "x": 2.1130430738480754e-8,
+              "y": -4.2073866612923894e-8,
+              "unit": 0.009019607843137253
+            },
+            {
+              "frame": 3,
+              "x": 2.1130430738480754e-8,
+              "y": -4.2073866612923894e-8,
+              "unit": 0.009019607843137253
+            }
+          ]
+        },
+        {
+          "id": "vesper",
+          "walkPixelDifference": 7558,
+          "anchors": [
+            {
+              "frame": 0,
+              "x": 2.1130430738480754e-8,
+              "y": -4.2073866612923894e-8,
+              "unit": 0.009019607843137253
+            },
+            {
+              "frame": 1,
+              "x": 2.1130430738480754e-8,
+              "y": -4.2073866612923894e-8,
+              "unit": 0.009019607843137253
+            },
+            {
+              "frame": 3,
+              "x": 2.1130430738480754e-8,
+              "y": -4.2073866612923894e-8,
+              "unit": 0.009019607843137253
+            }
+          ]
+        },
+        {
+          "id": "mabel",
+          "walkPixelDifference": 6287,
+          "anchors": [
+            {
+              "frame": 0,
+              "x": 4.31781677079357e-9,
+              "y": 1.351664384863227e-7,
+              "unit": 0.00905511811023622
+            },
+            {
+              "frame": 1,
+              "x": 4.31781677079357e-9,
+              "y": 1.351664384863227e-7,
+              "unit": 0.00905511811023622
+            },
+            {
+              "frame": 3,
+              "x": 4.31781677079357e-9,
+              "y": 1.351664384863227e-7,
+              "unit": 0.00905511811023622
+            }
+          ]
+        },
+        {
+          "id": "tansy",
+          "walkPixelDifference": 7596,
+          "anchors": [
+            {
+              "frame": 0,
+              "x": 2.1130430738480754e-8,
+              "y": -4.2073866612923894e-8,
+              "unit": 0.009019607843137253
+            },
+            {
+              "frame": 1,
+              "x": 2.1130430738480754e-8,
+              "y": -4.2073866612923894e-8,
+              "unit": 0.009019607843137253
+            },
+            {
+              "frame": 3,
+              "x": 2.1130430738480754e-8,
+              "y": -4.2073866612923894e-8,
+              "unit": 0.009019607843137253
+            }
+          ]
+        },
+        {
+          "id": "opal",
+          "walkPixelDifference": 6062,
+          "anchors": [
+            {
+              "frame": 0,
+              "x": 2.3841857821338408e-8,
+              "y": 0,
+              "unit": 0.008984375
+            },
+            {
+              "frame": 1,
+              "x": 2.3841857821338408e-8,
+              "y": 0,
+              "unit": 0.008984375
+            },
+            {
+              "frame": 3,
+              "x": 2.3841857821338408e-8,
+              "y": 0,
+              "unit": 0.008984375
+            }
+          ]
+        },
+        {
+          "id": "cinder",
+          "walkPixelDifference": 6562,
+          "anchors": [
+            {
+              "frame": 0,
+              "x": 2.1130430738480754e-8,
+              "y": -4.2073866612923894e-8,
+              "unit": 0.009019607843137253
+            },
+            {
+              "frame": 1,
+              "x": 2.1130430738480754e-8,
+              "y": -4.2073866612923894e-8,
+              "unit": 0.009019607843137253
+            },
+            {
+              "frame": 3,
+              "x": 2.1130430738480754e-8,
+              "y": -4.2073866612923894e-8,
+              "unit": 0.009019607843137253
+            }
+          ]
+        },
+        {
+          "id": "corvus",
+          "walkPixelDifference": 7113,
+          "anchors": [
+            {
+              "frame": 0,
+              "x": 2.1130430738480754e-8,
+              "y": -4.2073866612923894e-8,
+              "unit": 0.009019607843137253
+            },
+            {
+              "frame": 1,
+              "x": 2.1130430738480754e-8,
+              "y": -4.2073866612923894e-8,
+              "unit": 0.009019607843137253
+            },
+            {
+              "frame": 3,
+              "x": 2.1130430738480754e-8,
+              "y": -4.2073866612923894e-8,
+              "unit": 0.009019607843137253
+            }
+          ]
+        },
+        {
+          "id": "baron",
+          "walkPixelDifference": 7150,
+          "anchors": [
+            {
+              "frame": 0,
+              "x": 2.1130430738480754e-8,
+              "y": -4.2073866612923894e-8,
+              "unit": 0.009019607843137253
+            },
+            {
+              "frame": 1,
+              "x": 2.1130430738480754e-8,
+              "y": -4.2073866612923894e-8,
+              "unit": 0.009019607843137253
+            },
+            {
+              "frame": 3,
+              "x": 2.1130430738480754e-8,
+              "y": -4.2073866612923894e-8,
+              "unit": 0.009019607843137253
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "runtime idle and walking meshes share the same foot anchor"
+    },
+    {
+      "pass": true,
+      "label": "existing voxel cast remains available as a fallback"
+    },
+    {
+      "pass": true,
+      "label": "desktop: page has no horizontal overflow"
+    },
+    {
+      "pass": true,
+      "label": "desktop: visible controls meet44px touch targets",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "desktop: control text stays at least12px",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "interior velvet-bat opens"
+    },
+    {
+      "pass": true,
+      "label": "interior velvet-bat has its own location label"
+    },
+    {
+      "pass": true,
+      "label": "interior elowen-library opens"
+    },
+    {
+      "pass": true,
+      "label": "interior elowen-library has its own location label"
+    },
+    {
+      "pass": true,
+      "label": "interior rowan-workshop opens"
+    },
+    {
+      "pass": true,
+      "label": "interior rowan-workshop has its own location label"
+    },
+    {
+      "pass": true,
+      "label": "leaving a hall restores its outdoor location label"
+    },
+    {
+      "pass": true,
+      "label": "Walk places an owner at true village scale"
+    },
+    {
+      "pass": true,
+      "label": "phone: page has no horizontal overflow"
+    },
+    {
+      "pass": true,
+      "label": "phone: visible controls meet44px touch targets",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "phone: control text stays at least12px",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "phone-map: page has no horizontal overflow"
+    },
+    {
+      "pass": true,
+      "label": "phone-map: visible controls meet44px touch targets",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "phone-map: control text stays at least12px",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "phone-conversation: page has no horizontal overflow"
+    },
+    {
+      "pass": true,
+      "label": "phone-conversation: visible controls meet44px touch targets",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "phone-conversation: control text stays at least12px",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "landscape: page has no horizontal overflow"
+    },
+    {
+      "pass": true,
+      "label": "landscape: visible controls meet44px touch targets",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "landscape: control text stays at least12px",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "landscape-map: page has no horizontal overflow"
+    },
+    {
+      "pass": true,
+      "label": "landscape-map: visible controls meet44px touch targets",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "landscape-map: control text stays at least12px",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "landscape-conversation: page has no horizontal overflow"
+    },
+    {
+      "pass": true,
+      "label": "landscape-conversation: visible controls meet44px touch targets",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "landscape-conversation: control text stays at least12px",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "fold: page has no horizontal overflow"
+    },
+    {
+      "pass": true,
+      "label": "fold: visible controls meet44px touch targets",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "fold: control text stays at least12px",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "fold-map: page has no horizontal overflow"
+    },
+    {
+      "pass": true,
+      "label": "fold-map: visible controls meet44px touch targets",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "fold-map: control text stays at least12px",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "fold-conversation: page has no horizontal overflow"
+    },
+    {
+      "pass": true,
+      "label": "fold-conversation: visible controls meet44px touch targets",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "fold-conversation: control text stays at least12px",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "offline village makes no external font or asset requests",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "village views and interiors have no page or console errors",
+      "detail": []
+    }
+  ],
+  "metrics": [
+    {
+      "name": "desktop-map",
+      "viewport": [
+        1280,
+        800
+      ],
+      "rootOverflow": false,
+      "buttons": [
+        {
+          "id": "village-map-toggle",
+          "label": "Map",
+          "width": 64,
+          "height": 52,
+          "font": 12
+        },
+        {
+          "id": "village-neighbours-toggle",
+          "label": "Neighbours",
+          "width": 85.3,
+          "height": 52,
+          "font": 12
+        },
+        {
+          "id": "walk",
+          "label": "Walk",
+          "width": 64,
+          "height": 52,
+          "font": 12
+        },
+        {
+          "id": "village-more-toggle",
+          "label": "More",
+          "width": 64,
+          "height": 52,
+          "font": 12
+        },
+        {
+          "id": "",
+          "label": "Close map",
+          "width": 44,
+          "height": 44,
+          "font": 24
+        },
+        {
+          "id": "",
+          "label": "⌂Hollow GreenOur village square",
+          "width": 176.5,
+          "height": 102,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "✧The Moth TreeLanterns in the branches",
+          "width": 176.5,
+          "height": 102,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "☽The Velvet BatA candlelit welcome",
+          "width": 176.5,
+          "height": 102,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "❧Moonroot CopseAmong the silver woods",
+          "width": 176.5,
+          "height": 102,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "◇Lantern QuarryAcross the moonlit moat",
+          "width": 176.5,
+          "height": 102,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "♧Carnival MoorWhere the fair wakes",
+          "width": 176.5,
+          "height": 102,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "≈Mirror MarshBeyond the willow banks",
+          "width": 176.5,
+          "height": 102,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "✦The whole valleyA view from above",
+          "width": 176.5,
+          "height": 102,
+          "font": 13
+        }
+      ],
+      "smallTargets": [],
+      "smallFonts": [],
+      "fixed": [
+        {
+          "id": "header",
+          "area": 13560.286865234375,
+          "x": 12,
+          "y": 12,
+          "w": 217.890625,
+          "h": 62.234375
+        },
+        {
+          "id": "nav",
+          "area": 19286,
+          "x": 489.328125,
+          "y": 726,
+          "w": 301.34375,
+          "h": 64
+        }
+      ],
+      "approxOverlayRatio": 0.032076452016830445
+    },
+    {
+      "name": "desktop-conversation",
+      "viewport": [
+        1280,
+        800
+      ],
+      "rootOverflow": false,
+      "buttons": [
+        {
+          "id": "village-map-toggle",
+          "label": "Map",
+          "width": 64,
+          "height": 52,
+          "font": 12
+        },
+        {
+          "id": "village-neighbours-toggle",
+          "label": "Neighbours",
+          "width": 85.3,
+          "height": 52,
+          "font": 12
+        },
+        {
+          "id": "walk",
+          "label": "Walk",
+          "width": 64,
+          "height": 52,
+          "font": 12
+        },
+        {
+          "id": "village-more-toggle",
+          "label": "More",
+          "width": 64,
+          "height": 52,
+          "font": 12
+        },
+        {
+          "id": "",
+          "label": "Close conversation",
+          "width": 44,
+          "height": 44,
+          "font": 24
+        },
+        {
+          "id": "",
+          "label": "Continue",
+          "width": 81.2,
+          "height": 44,
+          "font": 13
+        }
+      ],
+      "smallTargets": [],
+      "smallFonts": [],
+      "fixed": [
+        {
+          "id": "header",
+          "area": 13560.286865234375,
+          "x": 12,
+          "y": 12,
+          "w": 217.890625,
+          "h": 62.234375
+        },
+        {
+          "id": "nav",
+          "area": 19286,
+          "x": 489.328125,
+          "y": 726,
+          "w": 301.34375,
+          "h": 64
+        }
+      ],
+      "approxOverlayRatio": 0.032076452016830445
+    },
+    {
+      "name": "desktop",
+      "viewport": [
+        1280,
+        800
+      ],
+      "rootOverflow": false,
+      "buttons": [
+        {
+          "id": "village-map-toggle",
+          "label": "Map",
+          "width": 64,
+          "height": 52,
+          "font": 12
+        },
+        {
+          "id": "village-neighbours-toggle",
+          "label": "Neighbours",
+          "width": 85.3,
+          "height": 52,
+          "font": 12
+        },
+        {
+          "id": "walk",
+          "label": "Walk",
+          "width": 64,
+          "height": 52,
+          "font": 12
+        },
+        {
+          "id": "village-more-toggle",
+          "label": "More",
+          "width": 64,
+          "height": 52,
+          "font": 12
+        }
+      ],
+      "smallTargets": [],
+      "smallFonts": [],
+      "fixed": [
+        {
+          "id": "header",
+          "area": 13560.286865234375,
+          "x": 12,
+          "y": 12,
+          "w": 217.890625,
+          "h": 62.234375
+        },
+        {
+          "id": "nav",
+          "area": 19286,
+          "x": 489.328125,
+          "y": 726,
+          "w": 301.34375,
+          "h": 64
+        }
+      ],
+      "approxOverlayRatio": 0.032076452016830445
+    },
+    {
+      "name": "phone",
+      "viewport": [
+        390,
+        844
+      ],
+      "rootOverflow": false,
+      "buttons": [
+        {
+          "id": "village-map-toggle",
+          "label": "Map",
+          "width": 60,
+          "height": 52,
+          "font": 12
+        },
+        {
+          "id": "village-neighbours-toggle",
+          "label": "Neighbours",
+          "width": 81.3,
+          "height": 52,
+          "font": 12
+        },
+        {
+          "id": "walk",
+          "label": "Walk",
+          "width": 60,
+          "height": 52,
+          "font": 12
+        },
+        {
+          "id": "village-more-toggle",
+          "label": "More",
+          "width": 60,
+          "height": 52,
+          "font": 12
+        }
+      ],
+      "smallTargets": [],
+      "smallFonts": [],
+      "fixed": [
+        {
+          "id": "header",
+          "area": 11119.6875,
+          "x": 12,
+          "y": 12,
+          "w": 185.328125,
+          "h": 60
+        },
+        {
+          "id": "nav",
+          "area": 17195.3125,
+          "x": 56.328125,
+          "y": 772,
+          "w": 277.34375,
+          "h": 62
+        }
+      ],
+      "approxOverlayRatio": 0.08602199538218495
+    },
+    {
+      "name": "phone-map",
+      "viewport": [
+        390,
+        844
+      ],
+      "rootOverflow": false,
+      "buttons": [
+        {
+          "id": "village-map-toggle",
+          "label": "Map",
+          "width": 60,
+          "height": 52,
+          "font": 12
+        },
+        {
+          "id": "village-neighbours-toggle",
+          "label": "Neighbours",
+          "width": 81.3,
+          "height": 52,
+          "font": 12
+        },
+        {
+          "id": "walk",
+          "label": "Walk",
+          "width": 60,
+          "height": 52,
+          "font": 12
+        },
+        {
+          "id": "village-more-toggle",
+          "label": "More",
+          "width": 60,
+          "height": 52,
+          "font": 12
+        },
+        {
+          "id": "",
+          "label": "Close map",
+          "width": 44,
+          "height": 44,
+          "font": 24
+        },
+        {
+          "id": "",
+          "label": "⌂Hollow GreenOur village square",
+          "width": 164.5,
+          "height": 102,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "✧The Moth TreeLanterns in the branches",
+          "width": 164.5,
+          "height": 102,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "☽The Velvet BatA candlelit welcome",
+          "width": 164.5,
+          "height": 102,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "❧Moonroot CopseAmong the silver woods",
+          "width": 164.5,
+          "height": 102,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "◇Lantern QuarryAcross the moonlit moat",
+          "width": 164.5,
+          "height": 102,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "♧Carnival MoorWhere the fair wakes",
+          "width": 164.5,
+          "height": 102,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "≈Mirror MarshBeyond the willow banks",
+          "width": 164.5,
+          "height": 102,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "✦The whole valleyA view from above",
+          "width": 164.5,
+          "height": 102,
+          "font": 13
+        }
+      ],
+      "smallTargets": [],
+      "smallFonts": [],
+      "fixed": [
+        {
+          "id": "header",
+          "area": 11119.6875,
+          "x": 12,
+          "y": 12,
+          "w": 185.328125,
+          "h": 60
+        },
+        {
+          "id": "nav",
+          "area": 17195.3125,
+          "x": 56.328125,
+          "y": 772,
+          "w": 277.34375,
+          "h": 62
+        }
+      ],
+      "approxOverlayRatio": 0.08602199538218495
+    },
+    {
+      "name": "phone-conversation",
+      "viewport": [
+        390,
+        844
+      ],
+      "rootOverflow": false,
+      "buttons": [
+        {
+          "id": "village-map-toggle",
+          "label": "Map",
+          "width": 60,
+          "height": 52,
+          "font": 12
+        },
+        {
+          "id": "village-neighbours-toggle",
+          "label": "Neighbours",
+          "width": 81.3,
+          "height": 52,
+          "font": 12
+        },
+        {
+          "id": "walk",
+          "label": "Walk",
+          "width": 60,
+          "height": 52,
+          "font": 12
+        },
+        {
+          "id": "village-more-toggle",
+          "label": "More",
+          "width": 60,
+          "height": 52,
+          "font": 12
+        },
+        {
+          "id": "",
+          "label": "Close conversation",
+          "width": 44,
+          "height": 44,
+          "font": 24
+        },
+        {
+          "id": "",
+          "label": "Done",
+          "width": 58.6,
+          "height": 44,
+          "font": 13
+        }
+      ],
+      "smallTargets": [],
+      "smallFonts": [],
+      "fixed": [
+        {
+          "id": "header",
+          "area": 11119.6875,
+          "x": 12,
+          "y": 12,
+          "w": 185.328125,
+          "h": 60
+        },
+        {
+          "id": "nav",
+          "area": 17195.3125,
+          "x": 56.328125,
+          "y": 772,
+          "w": 277.34375,
+          "h": 62
+        }
+      ],
+      "approxOverlayRatio": 0.08602199538218495
+    },
+    {
+      "name": "landscape",
+      "viewport": [
+        844,
+        390
+      ],
+      "rootOverflow": false,
+      "buttons": [
+        {
+          "id": "village-map-toggle",
+          "label": "Map",
+          "width": 64,
+          "height": 51.2,
+          "font": 12
+        },
+        {
+          "id": "village-neighbours-toggle",
+          "label": "Neighbours",
+          "width": 85.3,
+          "height": 51.2,
+          "font": 12
+        },
+        {
+          "id": "walk",
+          "label": "Walk",
+          "width": 64,
+          "height": 51.2,
+          "font": 12
+        },
+        {
+          "id": "village-more-toggle",
+          "label": "More",
+          "width": 64,
+          "height": 51.2,
+          "font": 12
+        }
+      ],
+      "smallTargets": [],
+      "smallFonts": [],
+      "fixed": [
+        {
+          "id": "header",
+          "area": 11766.09375,
+          "x": 12,
+          "y": 8,
+          "w": 217.890625,
+          "h": 54
+        },
+        {
+          "id": "nav",
+          "area": 19041.158203125,
+          "x": 10,
+          "y": 318.8125,
+          "w": 301.34375,
+          "h": 63.1875
+        }
+      ],
+      "approxOverlayRatio": 0.09359354706867481
+    },
+    {
+      "name": "landscape-map",
+      "viewport": [
+        844,
+        390
+      ],
+      "rootOverflow": false,
+      "buttons": [
+        {
+          "id": "village-map-toggle",
+          "label": "Map",
+          "width": 64,
+          "height": 51.2,
+          "font": 12
+        },
+        {
+          "id": "village-neighbours-toggle",
+          "label": "Neighbours",
+          "width": 85.3,
+          "height": 51.2,
+          "font": 12
+        },
+        {
+          "id": "walk",
+          "label": "Walk",
+          "width": 64,
+          "height": 51.2,
+          "font": 12
+        },
+        {
+          "id": "village-more-toggle",
+          "label": "More",
+          "width": 64,
+          "height": 51.2,
+          "font": 12
+        },
+        {
+          "id": "",
+          "label": "Close map",
+          "width": 44,
+          "height": 44,
+          "font": 24
+        },
+        {
+          "id": "",
+          "label": "⌂Hollow GreenOur village square",
+          "width": 169,
+          "height": 96.7,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "✧The Moth TreeLanterns in the branches",
+          "width": 169,
+          "height": 96.7,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "☽The Velvet BatA candlelit welcome",
+          "width": 169,
+          "height": 96.7,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "❧Moonroot CopseAmong the silver woods",
+          "width": 169,
+          "height": 96.7,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "◇Lantern QuarryAcross the moonlit moat",
+          "width": 169,
+          "height": 96.7,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "♧Carnival MoorWhere the fair wakes",
+          "width": 169,
+          "height": 96.7,
+          "font": 13
+        }
+      ],
+      "smallTargets": [],
+      "smallFonts": [],
+      "fixed": [
+        {
+          "id": "header",
+          "area": 11766.09375,
+          "x": 12,
+          "y": 8,
+          "w": 217.890625,
+          "h": 54
+        },
+        {
+          "id": "nav",
+          "area": 19041.158203125,
+          "x": 10,
+          "y": 318.8125,
+          "w": 301.34375,
+          "h": 63.1875
+        }
+      ],
+      "approxOverlayRatio": 0.09359354706867481
+    },
+    {
+      "name": "landscape-conversation",
+      "viewport": [
+        844,
+        390
+      ],
+      "rootOverflow": false,
+      "buttons": [
+        {
+          "id": "village-map-toggle",
+          "label": "Map",
+          "width": 64,
+          "height": 51.2,
+          "font": 12
+        },
+        {
+          "id": "village-neighbours-toggle",
+          "label": "Neighbours",
+          "width": 85.3,
+          "height": 51.2,
+          "font": 12
+        },
+        {
+          "id": "walk",
+          "label": "Walk",
+          "width": 64,
+          "height": 51.2,
+          "font": 12
+        },
+        {
+          "id": "village-more-toggle",
+          "label": "More",
+          "width": 64,
+          "height": 51.2,
+          "font": 12
+        },
+        {
+          "id": "",
+          "label": "Close conversation",
+          "width": 44,
+          "height": 44,
+          "font": 24
+        },
+        {
+          "id": "",
+          "label": "Done",
+          "width": 58.6,
+          "height": 44,
+          "font": 13
+        }
+      ],
+      "smallTargets": [],
+      "smallFonts": [],
+      "fixed": [
+        {
+          "id": "header",
+          "area": 11766.09375,
+          "x": 12,
+          "y": 8,
+          "w": 217.890625,
+          "h": 54
+        },
+        {
+          "id": "nav",
+          "area": 19041.158203125,
+          "x": 10,
+          "y": 318.8125,
+          "w": 301.34375,
+          "h": 63.1875
+        }
+      ],
+      "approxOverlayRatio": 0.09359354706867481
+    },
+    {
+      "name": "fold",
+      "viewport": [
+        900,
+        840
+      ],
+      "rootOverflow": false,
+      "buttons": [
+        {
+          "id": "village-map-toggle",
+          "label": "Map",
+          "width": 64,
+          "height": 52,
+          "font": 12
+        },
+        {
+          "id": "village-neighbours-toggle",
+          "label": "Neighbours",
+          "width": 85.3,
+          "height": 52,
+          "font": 12
+        },
+        {
+          "id": "walk",
+          "label": "Walk",
+          "width": 64,
+          "height": 52,
+          "font": 12
+        },
+        {
+          "id": "village-more-toggle",
+          "label": "More",
+          "width": 64,
+          "height": 52,
+          "font": 12
+        }
+      ],
+      "smallTargets": [],
+      "smallFonts": [],
+      "fixed": [
+        {
+          "id": "header",
+          "area": 13560.286865234375,
+          "x": 12,
+          "y": 12,
+          "w": 217.890625,
+          "h": 62.234375
+        },
+        {
+          "id": "nav",
+          "area": 19286,
+          "x": 299.328125,
+          "y": 766,
+          "w": 301.34375,
+          "h": 64
+        }
+      ],
+      "approxOverlayRatio": 0.043447469398458165
+    },
+    {
+      "name": "fold-map",
+      "viewport": [
+        900,
+        840
+      ],
+      "rootOverflow": false,
+      "buttons": [
+        {
+          "id": "village-map-toggle",
+          "label": "Map",
+          "width": 64,
+          "height": 52,
+          "font": 12
+        },
+        {
+          "id": "village-neighbours-toggle",
+          "label": "Neighbours",
+          "width": 85.3,
+          "height": 52,
+          "font": 12
+        },
+        {
+          "id": "walk",
+          "label": "Walk",
+          "width": 64,
+          "height": 52,
+          "font": 12
+        },
+        {
+          "id": "village-more-toggle",
+          "label": "More",
+          "width": 64,
+          "height": 52,
+          "font": 12
+        },
+        {
+          "id": "",
+          "label": "Close map",
+          "width": 44,
+          "height": 44,
+          "font": 24
+        },
+        {
+          "id": "",
+          "label": "⌂Hollow GreenOur village square",
+          "width": 176.5,
+          "height": 102,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "✧The Moth TreeLanterns in the branches",
+          "width": 176.5,
+          "height": 102,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "☽The Velvet BatA candlelit welcome",
+          "width": 176.5,
+          "height": 102,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "❧Moonroot CopseAmong the silver woods",
+          "width": 176.5,
+          "height": 102,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "◇Lantern QuarryAcross the moonlit moat",
+          "width": 176.5,
+          "height": 102,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "♧Carnival MoorWhere the fair wakes",
+          "width": 176.5,
+          "height": 102,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "≈Mirror MarshBeyond the willow banks",
+          "width": 176.5,
+          "height": 102,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "✦The whole valleyA view from above",
+          "width": 176.5,
+          "height": 102,
+          "font": 13
+        }
+      ],
+      "smallTargets": [],
+      "smallFonts": [],
+      "fixed": [
+        {
+          "id": "header",
+          "area": 13560.286865234375,
+          "x": 12,
+          "y": 12,
+          "w": 217.890625,
+          "h": 62.234375
+        },
+        {
+          "id": "nav",
+          "area": 19286,
+          "x": 299.328125,
+          "y": 766,
+          "w": 301.34375,
+          "h": 64
+        }
+      ],
+      "approxOverlayRatio": 0.043447469398458165
+    },
+    {
+      "name": "fold-conversation",
+      "viewport": [
+        900,
+        840
+      ],
+      "rootOverflow": false,
+      "buttons": [
+        {
+          "id": "village-map-toggle",
+          "label": "Map",
+          "width": 64,
+          "height": 52,
+          "font": 12
+        },
+        {
+          "id": "village-neighbours-toggle",
+          "label": "Neighbours",
+          "width": 85.3,
+          "height": 52,
+          "font": 12
+        },
+        {
+          "id": "walk",
+          "label": "Walk",
+          "width": 64,
+          "height": 52,
+          "font": 12
+        },
+        {
+          "id": "village-more-toggle",
+          "label": "More",
+          "width": 64,
+          "height": 52,
+          "font": 12
+        },
+        {
+          "id": "",
+          "label": "Close conversation",
+          "width": 44,
+          "height": 44,
+          "font": 24
+        },
+        {
+          "id": "",
+          "label": "Done",
+          "width": 58.6,
+          "height": 44,
+          "font": 13
+        }
+      ],
+      "smallTargets": [],
+      "smallFonts": [],
+      "fixed": [
+        {
+          "id": "header",
+          "area": 13560.286865234375,
+          "x": 12,
+          "y": 12,
+          "w": 217.890625,
+          "h": 62.234375
+        },
+        {
+          "id": "nav",
+          "area": 19286,
+          "x": 299.328125,
+          "y": 766,
+          "w": 301.34375,
+          "h": 64
+        }
+      ],
+      "approxOverlayRatio": 0.043447469398458165
+    }
+  ],
+  "screenshots": [
+    "final-desktop-map.png",
+    "final-desktop-conversation.png",
+    "final-cast-nine-authored-gaits.png",
+    "final-desktop-green.png",
+    "final-desktop-moth-tree.png",
+    "final-desktop-velvet-bat.png",
+    "final-restored-rowan-window-detail.png",
+    "final-copse-cottage-window-detail.png",
+    "final-inside-velvet-bat.png",
+    "final-inside-elowen-library.png",
+    "final-inside-rowan-workshop.png",
+    "final-desktop-walking.png",
+    "final-phone-green.png",
+    "final-phone-map.png",
+    "final-phone-conversation.png",
+    "final-landscape-green.png",
+    "final-landscape-map.png",
+    "final-landscape-conversation.png",
+    "final-fold-green.png",
+    "final-fold-map.png",
+    "final-fold-conversation.png"
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "passed": true
+}

@@ -1,0 +1,11 @@
+✔ test/village-game.test.mjs (558.69736ms)
+✔ test/village-navigation.test.mjs (321.988139ms)
+✔ test/village-window-detail.test.mjs (132.965187ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1022.302593

@@ -1,0 +1,304 @@
+{
+  "date": "2026-11-09T00:17:56.705Z",
+  "baseline": false,
+  "levelDelta": false,
+  "contrastOnly": false,
+  "musicDelta": true,
+  "html": "/workspace/Pumpkin-Patch-Village-Menu-Refinement.html",
+  "sha256": "e5858bc666dbf4f8160e5d964249044eddfe2e70dc7bc1d0cc9bbfd175c7c4e0",
+  "bytes": 58911354,
+  "checks": [
+    {
+      "pass": true,
+      "label": "All five exact song titles are in the actual31-track music chooser",
+      "detail": [
+        {
+          "id": "lantern",
+          "name": "Lantern March"
+        },
+        {
+          "id": "thriller",
+          "name": "Thriller"
+        },
+        {
+          "id": "lullaby",
+          "name": "Lullaby for a Dead Man"
+        },
+        {
+          "id": "nightmare",
+          "name": "Nightmare"
+        },
+        {
+          "id": "ghostbusters",
+          "name": "Ghostbusters"
+        },
+        {
+          "id": "living-dead-girl",
+          "name": "Living Dead Girl"
+        },
+        {
+          "id": "skyla",
+          "name": "Skyla’s Midnight Market"
+        },
+        {
+          "id": "moon",
+          "name": "Moonlit Mischief"
+        },
+        {
+          "id": "parade",
+          "name": "Pumpkin Parade"
+        },
+        {
+          "id": "disasterology",
+          "name": "Disasterology"
+        },
+        {
+          "id": "crazy-train",
+          "name": "Crazy Train"
+        },
+        {
+          "id": "rebel-yell",
+          "name": "Rebel Yell"
+        },
+        {
+          "id": "nothing-else-matters",
+          "name": "Nothing Else Matters"
+        },
+        {
+          "id": "dont-fear-the-reaper",
+          "name": "(Don’t Fear) The Reaper"
+        },
+        {
+          "id": "gypsys-tramps-and-thieves",
+          "name": "Gypsys, Tramps & Thieves"
+        },
+        {
+          "id": "everybody",
+          "name": "Everybody (Backstreet’s Back)"
+        },
+        {
+          "id": "where-is-my-mind",
+          "name": "Where Is My Mind?"
+        },
+        {
+          "id": "zombie",
+          "name": "Zombie"
+        },
+        {
+          "id": "killer-queen",
+          "name": "Killer Queen"
+        },
+        {
+          "id": "creep",
+          "name": "Creep"
+        },
+        {
+          "id": "numb",
+          "name": "Numb (Tim Dawes remix)"
+        },
+        {
+          "id": "crossing-field",
+          "name": "Crossing Field"
+        },
+        {
+          "id": "billie-jean",
+          "name": "Billie Jean"
+        },
+        {
+          "id": "africa",
+          "name": "Africa"
+        },
+        {
+          "id": "still-dre",
+          "name": "Still D.R.E."
+        },
+        {
+          "id": "bohemian-rhapsody",
+          "name": "Bohemian Rhapsody"
+        },
+        {
+          "id": "dancing-in-the-moonlight",
+          "name": "Dancing in the Moonlight"
+        },
+        {
+          "id": "bitter-sweet-symphony",
+          "name": "Bitter Sweet Symphony"
+        },
+        {
+          "id": "duality",
+          "name": "Duality"
+        },
+        {
+          "id": "paint-it-black",
+          "name": "Paint It, Black"
+        },
+        {
+          "id": "fireflies",
+          "name": "Fireflies"
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "Dancing in the Moonlight selects, decodes and schedules through actual WebAudio within the64-voice bound",
+      "detail": {
+        "track": "dancing-in-the-moonlight",
+        "playing": true,
+        "voices": 0,
+        "duration": 186.6648,
+        "context": "running",
+        "shuffle": true,
+        "sceneGain": 1,
+        "villageActive": false,
+        "narrationActive": false
+      }
+    },
+    {
+      "pass": true,
+      "label": "Bitter Sweet Symphony selects, decodes and schedules through actual WebAudio within the64-voice bound",
+      "detail": {
+        "track": "bitter-sweet-symphony",
+        "playing": true,
+        "voices": 3,
+        "duration": 256.81898923750003,
+        "context": "running",
+        "shuffle": true,
+        "sceneGain": 1,
+        "villageActive": false,
+        "narrationActive": false
+      }
+    },
+    {
+      "pass": true,
+      "label": "Duality selects, decodes and schedules through actual WebAudio within the64-voice bound",
+      "detail": {
+        "track": "duality",
+        "playing": true,
+        "voices": 0,
+        "duration": 258.10688475,
+        "context": "running",
+        "shuffle": true,
+        "sceneGain": 1,
+        "villageActive": false,
+        "narrationActive": false
+      }
+    },
+    {
+      "pass": true,
+      "label": "Paint It, Black selects, decodes and schedules through actual WebAudio within the64-voice bound",
+      "detail": {
+        "track": "paint-it-black",
+        "playing": true,
+        "voices": 0,
+        "duration": 222.516,
+        "context": "running",
+        "shuffle": true,
+        "sceneGain": 1,
+        "villageActive": false,
+        "narrationActive": false
+      }
+    },
+    {
+      "pass": true,
+      "label": "Fireflies selects, decodes and schedules through actual WebAudio within the64-voice bound",
+      "detail": {
+        "track": "fireflies",
+        "playing": true,
+        "voices": 0,
+        "duration": 266.6696,
+        "context": "running",
+        "shuffle": true,
+        "sceneGain": 1,
+        "villageActive": false,
+        "narrationActive": false
+      }
+    },
+    {
+      "pass": true,
+      "label": "Native music chooser typeahead can find Fireflies",
+      "detail": "fireflies"
+    },
+    {
+      "pass": true,
+      "label": "Actual Next song buttons traverse a full shuffled round including the five additions without repeats",
+      "detail": {
+        "bag": [
+          "zombie",
+          "paint-it-black",
+          "ghostbusters",
+          "bohemian-rhapsody",
+          "disasterology",
+          "bitter-sweet-symphony",
+          "dont-fear-the-reaper",
+          "dancing-in-the-moonlight",
+          "parade",
+          "rebel-yell",
+          "living-dead-girl",
+          "duality",
+          "fireflies",
+          "thriller",
+          "billie-jean",
+          "nightmare",
+          "lantern",
+          "africa",
+          "killer-queen",
+          "nothing-else-matters",
+          "skyla",
+          "gypsys-tramps-and-thieves",
+          "still-dre",
+          "crossing-field",
+          "crazy-train",
+          "everybody",
+          "lullaby",
+          "numb",
+          "moon",
+          "where-is-my-mind",
+          "creep"
+        ],
+        "status": {
+          "track": "creep",
+          "playing": true,
+          "voices": 3,
+          "duration": 230.41992319270835,
+          "context": "running",
+          "shuffle": true,
+          "sceneGain": 1,
+          "villageActive": false,
+          "narrationActive": false
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "Shuffle also avoids a repeat across its next-round boundary"
+    },
+    {
+      "pass": true,
+      "label": "Actual Shuffle button disables shuffle"
+    },
+    {
+      "pass": true,
+      "label": "Unshuffled Next song wraps to the first catalogue entry"
+    },
+    {
+      "pass": true,
+      "label": "Actual Music mute stops scheduling and preserves shuffle preference"
+    },
+    {
+      "pass": true,
+      "label": "Final menus have no page/shader errors",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "Final offline game uses no external assets",
+      "detail": []
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "screenshots": [],
+  "observations": [],
+  "scope": "Exact unchanged final offline HTML music-data delta. Actual Settings selector, Shuffle and Next song buttons, native WebAudio status and bounded voices; finite note counts are from the separately stored same-source MIDI audit. No repeated UI photos.",
+  "passed": true
+}

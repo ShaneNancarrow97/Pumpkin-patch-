@@ -1,0 +1,782 @@
+{
+  "source": "e99cd6e",
+  "checks": 114,
+  "pass": true,
+  "scope": "Read-only catalogue and trade rendering; canonical action IDs, parameters, and enabled states across six state fixtures, four pages and all resident/station combinations.",
+  "reports": [
+    {
+      "scenario": "fresh",
+      "kind": "materials",
+      "actions": 8,
+      "pass": true
+    },
+    {
+      "scenario": "fresh",
+      "kind": "upgrades",
+      "actions": 12,
+      "pass": true
+    },
+    {
+      "scenario": "fresh",
+      "kind": "stall",
+      "actions": 2,
+      "pass": true
+    },
+    {
+      "scenario": "fresh",
+      "kind": "almanac",
+      "actions": 2,
+      "pass": true
+    },
+    {
+      "scenario": "fresh",
+      "who": null,
+      "station": null,
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "fresh",
+      "who": null,
+      "station": "home",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "fresh",
+      "who": null,
+      "station": "truck",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "fresh",
+      "who": "tansy",
+      "station": null,
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "fresh",
+      "who": "tansy",
+      "station": "home",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "fresh",
+      "who": "tansy",
+      "station": "truck",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "fresh",
+      "who": "opal",
+      "station": null,
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "fresh",
+      "who": "opal",
+      "station": "home",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "fresh",
+      "who": "opal",
+      "station": "truck",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "fresh",
+      "who": "cinder",
+      "station": null,
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "fresh",
+      "who": "cinder",
+      "station": "home",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "fresh",
+      "who": "cinder",
+      "station": "truck",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "fresh",
+      "who": "granny",
+      "station": null,
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "fresh",
+      "who": "granny",
+      "station": "home",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "fresh",
+      "who": "granny",
+      "station": "truck",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "ready",
+      "kind": "materials",
+      "actions": 7,
+      "pass": true
+    },
+    {
+      "scenario": "ready",
+      "kind": "upgrades",
+      "actions": 11,
+      "pass": true
+    },
+    {
+      "scenario": "ready",
+      "kind": "stall",
+      "actions": 7,
+      "pass": true
+    },
+    {
+      "scenario": "ready",
+      "kind": "almanac",
+      "actions": 0,
+      "pass": true
+    },
+    {
+      "scenario": "ready",
+      "who": null,
+      "station": null,
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "ready",
+      "who": null,
+      "station": "home",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "ready",
+      "who": null,
+      "station": "truck",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "ready",
+      "who": "tansy",
+      "station": null,
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "ready",
+      "who": "tansy",
+      "station": "home",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "ready",
+      "who": "tansy",
+      "station": "truck",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "ready",
+      "who": "opal",
+      "station": null,
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "ready",
+      "who": "opal",
+      "station": "home",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "ready",
+      "who": "opal",
+      "station": "truck",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "ready",
+      "who": "cinder",
+      "station": null,
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "ready",
+      "who": "cinder",
+      "station": "home",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "ready",
+      "who": "cinder",
+      "station": "truck",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "ready",
+      "who": "granny",
+      "station": null,
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "ready",
+      "who": "granny",
+      "station": "home",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "ready",
+      "who": "granny",
+      "station": "truck",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "poor",
+      "kind": "materials",
+      "actions": 7,
+      "pass": true
+    },
+    {
+      "scenario": "poor",
+      "kind": "upgrades",
+      "actions": 11,
+      "pass": true
+    },
+    {
+      "scenario": "poor",
+      "kind": "stall",
+      "actions": 7,
+      "pass": true
+    },
+    {
+      "scenario": "poor",
+      "kind": "almanac",
+      "actions": 0,
+      "pass": true
+    },
+    {
+      "scenario": "poor",
+      "who": null,
+      "station": null,
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "poor",
+      "who": null,
+      "station": "home",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "poor",
+      "who": null,
+      "station": "truck",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "poor",
+      "who": "tansy",
+      "station": null,
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "poor",
+      "who": "tansy",
+      "station": "home",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "poor",
+      "who": "tansy",
+      "station": "truck",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "poor",
+      "who": "opal",
+      "station": null,
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "poor",
+      "who": "opal",
+      "station": "home",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "poor",
+      "who": "opal",
+      "station": "truck",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "poor",
+      "who": "cinder",
+      "station": null,
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "poor",
+      "who": "cinder",
+      "station": "home",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "poor",
+      "who": "cinder",
+      "station": "truck",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "poor",
+      "who": "granny",
+      "station": null,
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "poor",
+      "who": "granny",
+      "station": "home",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "poor",
+      "who": "granny",
+      "station": "truck",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "paused",
+      "kind": "materials",
+      "actions": 7,
+      "pass": true
+    },
+    {
+      "scenario": "paused",
+      "kind": "upgrades",
+      "actions": 11,
+      "pass": true
+    },
+    {
+      "scenario": "paused",
+      "kind": "stall",
+      "actions": 7,
+      "pass": true
+    },
+    {
+      "scenario": "paused",
+      "kind": "almanac",
+      "actions": 0,
+      "pass": true
+    },
+    {
+      "scenario": "paused",
+      "who": null,
+      "station": null,
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "paused",
+      "who": null,
+      "station": "home",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "paused",
+      "who": null,
+      "station": "truck",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "paused",
+      "who": "tansy",
+      "station": null,
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "paused",
+      "who": "tansy",
+      "station": "home",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "paused",
+      "who": "tansy",
+      "station": "truck",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "paused",
+      "who": "opal",
+      "station": null,
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "paused",
+      "who": "opal",
+      "station": "home",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "paused",
+      "who": "opal",
+      "station": "truck",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "paused",
+      "who": "cinder",
+      "station": null,
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "paused",
+      "who": "cinder",
+      "station": "home",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "paused",
+      "who": "cinder",
+      "station": "truck",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "paused",
+      "who": "granny",
+      "station": null,
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "paused",
+      "who": "granny",
+      "station": "home",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "paused",
+      "who": "granny",
+      "station": "truck",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "owned",
+      "kind": "materials",
+      "actions": 7,
+      "pass": true
+    },
+    {
+      "scenario": "owned",
+      "kind": "upgrades",
+      "actions": 10,
+      "pass": true
+    },
+    {
+      "scenario": "owned",
+      "kind": "stall",
+      "actions": 7,
+      "pass": true
+    },
+    {
+      "scenario": "owned",
+      "kind": "almanac",
+      "actions": 0,
+      "pass": true
+    },
+    {
+      "scenario": "owned",
+      "who": null,
+      "station": null,
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "owned",
+      "who": null,
+      "station": "home",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "owned",
+      "who": null,
+      "station": "truck",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "owned",
+      "who": "tansy",
+      "station": null,
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "owned",
+      "who": "tansy",
+      "station": "home",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "owned",
+      "who": "tansy",
+      "station": "truck",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "owned",
+      "who": "opal",
+      "station": null,
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "owned",
+      "who": "opal",
+      "station": "home",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "owned",
+      "who": "opal",
+      "station": "truck",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "owned",
+      "who": "cinder",
+      "station": null,
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "owned",
+      "who": "cinder",
+      "station": "home",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "owned",
+      "who": "cinder",
+      "station": "truck",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "owned",
+      "who": "granny",
+      "station": null,
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "owned",
+      "who": "granny",
+      "station": "home",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "owned",
+      "who": "granny",
+      "station": "truck",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "depleted",
+      "kind": "materials",
+      "actions": 7,
+      "pass": true
+    },
+    {
+      "scenario": "depleted",
+      "kind": "upgrades",
+      "actions": 11,
+      "pass": true
+    },
+    {
+      "scenario": "depleted",
+      "kind": "stall",
+      "actions": 7,
+      "pass": true
+    },
+    {
+      "scenario": "depleted",
+      "kind": "almanac",
+      "actions": 0,
+      "pass": true
+    },
+    {
+      "scenario": "depleted",
+      "who": null,
+      "station": null,
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "depleted",
+      "who": null,
+      "station": "home",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "depleted",
+      "who": null,
+      "station": "truck",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "depleted",
+      "who": "tansy",
+      "station": null,
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "depleted",
+      "who": "tansy",
+      "station": "home",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "depleted",
+      "who": "tansy",
+      "station": "truck",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "depleted",
+      "who": "opal",
+      "station": null,
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "depleted",
+      "who": "opal",
+      "station": "home",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "depleted",
+      "who": "opal",
+      "station": "truck",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "depleted",
+      "who": "cinder",
+      "station": null,
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "depleted",
+      "who": "cinder",
+      "station": "home",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "depleted",
+      "who": "cinder",
+      "station": "truck",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "depleted",
+      "who": "granny",
+      "station": null,
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "depleted",
+      "who": "granny",
+      "station": "home",
+      "trade": true,
+      "pass": true
+    },
+    {
+      "scenario": "depleted",
+      "who": "granny",
+      "station": "truck",
+      "trade": true,
+      "pass": true
+    }
+  ]
+}

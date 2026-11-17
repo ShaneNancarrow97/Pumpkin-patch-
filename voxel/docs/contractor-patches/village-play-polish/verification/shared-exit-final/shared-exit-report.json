@@ -1,0 +1,547 @@
+{
+  "date": "2026-11-08T20:59:45.361Z",
+  "html": "/workspace/Pumpkin-Patch-Village-Play-Polish-Shared-Exit-Final.html",
+  "checks": [
+    {
+      "pass": true,
+      "label": "base shared exit remains visible to the play camera",
+      "detail": {
+        "world": {
+          "x": 42.25,
+          "y": 1.2,
+          "z": 7.75
+        },
+        "screen": {
+          "x": 319.7048854871375,
+          "y": 461.6217865274991
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "base real pointer pick starts owner approach before entering",
+      "detail": {
+        "pick": {
+          "type": "village"
+        },
+        "active": false,
+        "player": {
+          "enabled": true,
+          "who": "natalie",
+          "available": true,
+          "place": "farm",
+          "passing": null,
+          "room": null,
+          "position": {
+            "x": 38.38784803120884,
+            "z": 8.427623097240515
+          },
+          "heading": {
+            "x": 0,
+            "z": 1
+          },
+          "facing": "back",
+          "moving": false,
+          "gait": "walk",
+          "speed": 0,
+          "pose": null,
+          "travelling": true,
+          "actionProgress": 0,
+          "blocked": false,
+          "action": null,
+          "actionTarget": null,
+          "waterCanVisible": false,
+          "wateringVisible": false,
+          "canVisible": false,
+          "waterCanStyle": "sprite",
+          "waterCanWidth": 0.82,
+          "streamVisible": false,
+          "dropsVisible": false,
+          "canScale": 1,
+          "waterNozzle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "visualYaw": -3.141592653589793,
+          "spriteFrame": 1,
+          "spriteDirection": "front",
+          "spriteStature": 2.2784368734298597,
+          "sideFrameCount": 4,
+          "target": null
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "base clicked approach completes actual village entry"
+    },
+    {
+      "pass": true,
+      "label": "base click returns to a live farm with owner and music restored",
+      "detail": {
+        "active": false,
+        "place": null,
+        "player": {
+          "enabled": true,
+          "who": "natalie",
+          "available": true,
+          "place": "farm",
+          "passing": null,
+          "room": null,
+          "position": {
+            "x": 41.134028147914485,
+            "z": 7.207098600926891
+          },
+          "heading": {
+            "x": 0.9138115486202656,
+            "z": -0.40613846605342824
+          },
+          "facing": "back",
+          "moving": false,
+          "gait": "walk",
+          "speed": 0,
+          "pose": null,
+          "travelling": false,
+          "actionProgress": 0,
+          "blocked": false,
+          "action": null,
+          "actionTarget": null,
+          "waterCanVisible": false,
+          "wateringVisible": false,
+          "canVisible": false,
+          "waterCanStyle": "sprite",
+          "waterCanWidth": 0.82,
+          "streamVisible": false,
+          "dropsVisible": false,
+          "canScale": 1,
+          "waterNozzle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "visualYaw": -1.1525719972156887,
+          "spriteFrame": 3,
+          "spriteDirection": "front",
+          "spriteStature": 2.2784368734298597,
+          "sideFrameCount": 4,
+          "target": {
+            "type": "village",
+            "label": "Travel to Mothlight",
+            "x": 41.357735564224676,
+            "z": 7.1076730825668095,
+            "distance": 0.24480694804958433,
+            "score": 0.24480694804958436
+          }
+        },
+        "music": {
+          "track": null,
+          "playing": false,
+          "voices": 0,
+          "duration": 0,
+          "context": "waiting",
+          "shuffle": true,
+          "sceneGain": 1,
+          "villageActive": false,
+          "narrationActive": false
+        },
+        "drawn": 39
+      }
+    },
+    {
+      "pass": true,
+      "label": "expanded shared exit remains visible to the play camera",
+      "detail": {
+        "world": {
+          "x": 56.75,
+          "y": 1.2,
+          "z": 7.75
+        },
+        "screen": {
+          "x": 326.55643199444626,
+          "y": 396.7642084703368
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "expanded real pointer pick starts owner approach before entering",
+      "detail": {
+        "pick": {
+          "type": "village"
+        },
+        "active": false,
+        "player": {
+          "enabled": true,
+          "who": "natalie",
+          "available": true,
+          "place": "farm",
+          "passing": null,
+          "room": null,
+          "position": {
+            "x": 52.5,
+            "z": 6.6
+          },
+          "heading": {
+            "x": 0,
+            "z": 1
+          },
+          "facing": "back",
+          "moving": false,
+          "gait": "walk",
+          "speed": 0,
+          "pose": null,
+          "travelling": true,
+          "actionProgress": 0,
+          "blocked": false,
+          "action": null,
+          "actionTarget": null,
+          "waterCanVisible": false,
+          "wateringVisible": false,
+          "canVisible": false,
+          "waterCanStyle": "sprite",
+          "waterCanWidth": 0.82,
+          "streamVisible": false,
+          "dropsVisible": false,
+          "canScale": 1,
+          "waterNozzle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "visualYaw": -3.141592653589793,
+          "spriteFrame": 1,
+          "spriteDirection": "front",
+          "spriteStature": 2.2784368734298597,
+          "sideFrameCount": 4,
+          "target": null
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "expanded clicked approach completes actual village entry"
+    },
+    {
+      "pass": true,
+      "label": "expanded click returns to a live farm with owner and music restored",
+      "detail": {
+        "active": false,
+        "place": null,
+        "player": {
+          "enabled": true,
+          "who": "natalie",
+          "available": true,
+          "place": "farm",
+          "passing": null,
+          "room": null,
+          "position": {
+            "x": 55.560633044294846,
+            "z": 6.6
+          },
+          "heading": {
+            "x": 1,
+            "z": 0
+          },
+          "facing": "back",
+          "moving": false,
+          "gait": "walk",
+          "speed": 0,
+          "pose": null,
+          "travelling": false,
+          "actionProgress": 0,
+          "blocked": false,
+          "action": null,
+          "actionTarget": null,
+          "waterCanVisible": false,
+          "wateringVisible": false,
+          "canVisible": false,
+          "waterCanStyle": "sprite",
+          "waterCanWidth": 0.82,
+          "streamVisible": false,
+          "dropsVisible": false,
+          "canScale": 1,
+          "waterNozzle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "visualYaw": -1.5707963267948966,
+          "spriteFrame": 3,
+          "spriteDirection": "front",
+          "spriteStature": 2.2784368734298597,
+          "sideFrameCount": 4,
+          "target": {
+            "type": "village",
+            "label": "Travel to Mothlight",
+            "x": 55.75,
+            "z": 6.6,
+            "distance": 0.18936695570515383,
+            "score": 0.18936695570515383
+          }
+        },
+        "music": {
+          "track": null,
+          "playing": false,
+          "voices": 0,
+          "duration": 0,
+          "context": "waiting",
+          "shuffle": true,
+          "sceneGain": 1,
+          "villageActive": false,
+          "narrationActive": false
+        },
+        "drawn": 43
+      }
+    },
+    {
+      "pass": true,
+      "label": "Shared-exit runtime and normal shaders report no errors",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "Scoped shared-exit standalone uses no external assets",
+      "detail": []
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "screenshots": [
+    {
+      "file": "01-base-shared-road.png",
+      "glow": true,
+      "shadows": true
+    },
+    {
+      "file": "02-expanded-shared-road.png",
+      "glow": true,
+      "shadows": true
+    },
+    {
+      "file": "03-phone-shared-road.png",
+      "glow": true,
+      "shadows": true
+    }
+  ],
+  "cases": [
+    {
+      "id": "base",
+      "plots": 0,
+      "kitchen": false,
+      "meadow": false,
+      "cocoa": 0,
+      "gate": {
+        "x": 42.5,
+        "z": 6.6,
+        "expanded": false,
+        "halfWidth": 0.95,
+        "lane": [
+          [
+            31.8,
+            10.2
+          ],
+          [
+            31.6,
+            12.6
+          ],
+          [
+            35,
+            10.6
+          ],
+          [
+            38,
+            8.6
+          ],
+          [
+            42.5,
+            6.6
+          ]
+        ],
+        "approach": {
+          "x": 41.357735564224676,
+          "z": 7.1076730825668095
+        },
+        "zone": {
+          "x0": 42.15,
+          "x1": 42.8,
+          "z0": 5.949999999999999,
+          "z1": 7.25
+        },
+        "extension": {
+          "x0": 40,
+          "x1": 43.3,
+          "z0": 5.5,
+          "z1": 8.8
+        },
+        "corridor": {
+          "points": [
+            [
+              35,
+              10.6
+            ],
+            [
+              38,
+              8.6
+            ],
+            [
+              42.5,
+              6.6
+            ],
+            [
+              43.05,
+              6.6
+            ]
+          ],
+          "halfWidth": 0.95
+        },
+        "clearance": {
+          "x0": 41.25,
+          "x1": 43.3,
+          "z0": 5.5,
+          "z1": 8.95
+        }
+      }
+    },
+    {
+      "id": "expanded",
+      "plots": 4,
+      "kitchen": true,
+      "meadow": true,
+      "cocoa": 3,
+      "gate": {
+        "x": 57,
+        "z": 6.6,
+        "expanded": true,
+        "halfWidth": 0.95,
+        "lane": [
+          [
+            31.8,
+            10.2
+          ],
+          [
+            31.6,
+            12.6
+          ],
+          [
+            35,
+            10.6
+          ],
+          [
+            38,
+            8.6
+          ],
+          [
+            42.5,
+            6.6
+          ],
+          [
+            49,
+            6.6
+          ],
+          [
+            53.6,
+            6.6
+          ],
+          [
+            57,
+            6.6
+          ]
+        ],
+        "approach": {
+          "x": 55.75,
+          "z": 6.6
+        },
+        "zone": {
+          "x0": 56.65,
+          "x1": 57.3,
+          "z0": 5.949999999999999,
+          "z1": 7.25
+        },
+        "extension": {
+          "x0": 54,
+          "x1": 57.8,
+          "z0": 5.5,
+          "z1": 7.699999999999999
+        },
+        "corridor": {
+          "points": [
+            [
+              35,
+              10.6
+            ],
+            [
+              38,
+              8.6
+            ],
+            [
+              42.5,
+              6.6
+            ],
+            [
+              49,
+              6.6
+            ],
+            [
+              53.6,
+              6.6
+            ],
+            [
+              57,
+              6.6
+            ],
+            [
+              57.55,
+              6.6
+            ]
+          ],
+          "halfWidth": 0.95
+        },
+        "clearance": {
+          "x0": 55.75,
+          "x1": 57.8,
+          "z0": 5.5,
+          "z1": 8.95
+        }
+      }
+    }
+  ],
+  "scope": "Exact unchanged final marker/canopy visual-delta HTML on loopback. Declared base/expanded fixtures; actual pointer pick, owner approach and live Farm returns checked again. Normal glow/shadow base, expanded and emulated-phone photos. Full physical-walk/truck separation evidence stays on predecessor D72 hash. Only draw methods are held between photos; real RAF/simulation/UI remain active. No hardware-performance claims.",
+  "mode": "visual-delta",
+  "inheritedFunctionalEvidence": {
+    "htmlSha256": "d72d1d63b8946da228708bb9f81bcabf2fbd1c0e69e7d2c6efe2ebcb510e9463",
+    "report": "../shared-exit/shared-exit-report.json",
+    "scope": "Base/kitchen/expanded walking, truck interaction separation and live returns were checked on that earlier exact build; not relabelled as this hash."
+  },
+  "sha256": "9314af490ecceb32d030b6ac57772927a15013790f910146ff27ccaf0d54ce17",
+  "bytes": 58259782,
+  "sourceHashes": {
+    "src/content/village-gateway.js": {
+      "bytes": 2153,
+      "sha256": "b56647267a7beafa47958bd47e00a712ffd5712a3d09071bd5ab2b6cf04a5125"
+    },
+    "src/farm-village-gate.js": {
+      "bytes": 1887,
+      "sha256": "56e7bbeb9ec12a7ab2ec860fb81c72713dea0cb80cb1d60d8783e9523f9c9348"
+    },
+    "src/main.js": {
+      "bytes": 79676,
+      "sha256": "19b8903f49e6c8229519d2346995b5976532e03ae46217945a149f519f67884a"
+    },
+    "src/scene.js": {
+      "bytes": 94268,
+      "sha256": "d566a40f92f876dbade693c2d68340ec94737e796655be90618ddd796a4fa6ee"
+    },
+    "src/player-control.js": {
+      "bytes": 27813,
+      "sha256": "ae5903c671b1e64bd36372dfb0b7b370d74d8e5a005fdab254456ca578b6b90c"
+    },
+    "src/world.js": {
+      "bytes": 54185,
+      "sha256": "b8d75aca22da71035feeff7ef5663139ea72d08104cddbccf0bc77c1b6e37549"
+    }
+  },
+  "sourceCommit": "c1990b24beba955269feaeb69c9425b0b753a3ce",
+  "workingTree": " M docs/contractor-patches/village-play-polish/DELIVERY.md\n M docs/contractor-patches/village-play-polish/FARM-ENTRANCE.md\n M docs/contractor-patches/village-play-polish/README.md\n M src/content/village-gateway.js\n M src/cooking-world.js\n M src/farm-village-gate.js\n M src/festival-meadow-world.js\n M src/main.js\n M src/player-control.js\n M src/scene.js\n M src/wilds.js\n M src/world.js\n M test/farm-village-gateway.test.mjs\n M test/wilds.test.mjs\n?? android/\n?? docs/contractor-patches/village-play-polish/verification/shared-exit/\n?? tools/village-shared-exit-qa.mjs\n",
+  "passed": true
+}

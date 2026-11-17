@@ -1,0 +1,463 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Life-Play-Fit.html",
+  "sha256": "4dcba1fa9183b0e403bddd8f4e6d6181c9b115844d8aed0ce0f79b8905d0291e",
+  "started": "2026-10-28T21:49:36.802Z",
+  "scope": "Exact HTML; indoor projected sprite size and pitch/zoom limits, compact right-thumb UI and notices, forgiving real pointer holds, illustrated can rendering and cancellation. QA state/time only, HTML untouched. No physical Fold/Bluetooth test.",
+  "passed": true,
+  "checks": [
+    {
+      "ok": true,
+      "label": "phone: the owner fits naturally with room around them",
+      "data": {
+        "fraction": 0.21778681231721708,
+        "leanStretch": 1.0584151284134642,
+        "worldScale": 1.009464,
+        "framing": {
+          "zoom": 1,
+          "x": -2,
+          "z": 1.06,
+          "span": 23.47826086956522,
+          "roomDistance": 15,
+          "overview": 0,
+          "width": 390,
+          "height": 844,
+          "playerLook": {
+            "x": 0,
+            "z": -0.17453292519943292
+          },
+          "playerOrbit": {
+            "yaw": 0,
+            "pitch": 0.4537856055185257,
+            "active": true
+          }
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone: compact controls put Interact within the right thumb's reach",
+      "data": {
+        "layout": {
+          "action": {
+            "x": 256,
+            "y": 658,
+            "width": 120,
+            "height": 68,
+            "top": 658,
+            "right": 376,
+            "bottom": 726,
+            "left": 256
+          },
+          "move": {
+            "x": 14,
+            "y": 740,
+            "width": 86,
+            "height": 86,
+            "top": 740,
+            "right": 100,
+            "bottom": 826,
+            "left": 14
+          },
+          "look": {
+            "x": 290,
+            "y": 740,
+            "width": 86,
+            "height": 86,
+            "top": 740,
+            "right": 376,
+            "bottom": 826,
+            "left": 290
+          },
+          "select": "none",
+          "overflow": false,
+          "right": true,
+          "overlap": false
+        },
+        "touchFit": {
+          "overflow": false,
+          "small": [],
+          "clipped": []
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone: the notification stays a small intrinsic-height toast",
+      "data": {
+        "x": 61.453125,
+        "y": 607.8125,
+        "width": 267.09375,
+        "height": 34.1875,
+        "top": 607.8125,
+        "right": 328.546875,
+        "bottom": 642,
+        "left": 61.453125,
+        "text": "This crop has had a drink. Try the next one."
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold: the owner fits naturally with room around them",
+      "data": {
+        "fraction": 0.19798951836814244,
+        "leanStretch": 1.0584151284134642,
+        "worldScale": 1.009464,
+        "framing": {
+          "zoom": 1,
+          "x": -2,
+          "z": 1.06,
+          "span": 23.47826086956522,
+          "roomDistance": 16.5,
+          "overview": 1,
+          "width": 874,
+          "height": 787,
+          "playerLook": {
+            "x": 0,
+            "z": -0.17453292519943292
+          },
+          "playerOrbit": {
+            "yaw": 0,
+            "pitch": 0.4537856055185257,
+            "active": true
+          }
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold: compact controls put Interact within the right thumb's reach",
+      "data": {
+        "layout": {
+          "action": {
+            "x": 740,
+            "y": 601,
+            "width": 120,
+            "height": 68,
+            "top": 601,
+            "right": 860,
+            "bottom": 669,
+            "left": 740
+          },
+          "move": {
+            "x": 14,
+            "y": 683,
+            "width": 86,
+            "height": 86,
+            "top": 683,
+            "right": 100,
+            "bottom": 769,
+            "left": 14
+          },
+          "look": {
+            "x": 774,
+            "y": 683,
+            "width": 86,
+            "height": 86,
+            "top": 683,
+            "right": 860,
+            "bottom": 769,
+            "left": 774
+          },
+          "select": "none",
+          "overflow": false,
+          "right": true,
+          "overlap": false
+        },
+        "touchFit": {
+          "overflow": false,
+          "small": [],
+          "clipped": []
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold: the notification stays a small intrinsic-height toast",
+      "data": {
+        "x": 303.453125,
+        "y": 550.8125,
+        "width": 267.09375,
+        "height": 34.1875,
+        "top": 550.8125,
+        "right": 570.546875,
+        "bottom": 585,
+        "left": 303.453125,
+        "text": "This crop has had a drink. Try the next one."
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape: the owner fits naturally with room around them",
+      "data": {
+        "fraction": 0.19798951836814244,
+        "leanStretch": 1.0584151284134642,
+        "worldScale": 1.009464,
+        "framing": {
+          "zoom": 1,
+          "x": -2,
+          "z": 1.06,
+          "span": 23.47826086956522,
+          "roomDistance": 16.5,
+          "overview": 1,
+          "width": 844,
+          "height": 390,
+          "playerLook": {
+            "x": 0,
+            "z": -0.17453292519943292
+          },
+          "playerOrbit": {
+            "yaw": 0,
+            "pitch": 0.4537856055185257,
+            "active": true
+          }
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape: compact controls put Interact within the right thumb's reach",
+      "data": {
+        "layout": {
+          "action": {
+            "x": 710,
+            "y": 216,
+            "width": 120,
+            "height": 68,
+            "top": 216,
+            "right": 830,
+            "bottom": 284,
+            "left": 710
+          },
+          "move": {
+            "x": 14,
+            "y": 298,
+            "width": 80,
+            "height": 80,
+            "top": 298,
+            "right": 94,
+            "bottom": 378,
+            "left": 14
+          },
+          "look": {
+            "x": 750,
+            "y": 298,
+            "width": 80,
+            "height": 80,
+            "top": 298,
+            "right": 830,
+            "bottom": 378,
+            "left": 750
+          },
+          "select": "none",
+          "overflow": false,
+          "right": true,
+          "overlap": false
+        },
+        "touchFit": {
+          "overflow": false,
+          "small": [],
+          "clipped": []
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape: the notification stays a small intrinsic-height toast",
+      "data": {
+        "x": 288.453125,
+        "y": 169.8125,
+        "width": 267.09375,
+        "height": 34.1875,
+        "top": 169.8125,
+        "right": 555.546875,
+        "bottom": 204,
+        "left": 288.453125,
+        "text": "This crop has had a drink. Try the next one."
+      }
+    },
+    {
+      "ok": true,
+      "label": "Looking down no longer doubles indoor sprite world height",
+      "data": {
+        "normal": {
+          "fraction": 0.21778681231721708,
+          "leanStretch": 1.0584151284134642,
+          "worldScale": 1.009464,
+          "framing": {
+            "zoom": 1,
+            "x": -2,
+            "z": 1.06,
+            "span": 23.47826086956522,
+            "roomDistance": 15,
+            "overview": 0,
+            "width": 390,
+            "height": 844,
+            "playerLook": {
+              "x": 0,
+              "z": -0.17453292519943292
+            },
+            "playerOrbit": {
+              "yaw": 0,
+              "pitch": 0.4537856055185257,
+              "active": true
+            }
+          }
+        },
+        "steep": {
+          "fraction": 0.12184290650964275,
+          "leanStretch": 1.0584151284134642,
+          "worldScale": 1.009464,
+          "framing": {
+            "zoom": 1,
+            "x": -2,
+            "z": 1.06,
+            "span": 23.47826086956522,
+            "roomDistance": 15,
+            "overview": 0,
+            "width": 390,
+            "height": 844,
+            "playerLook": {
+              "x": 0,
+              "z": 0.5235987755982989
+            },
+            "playerOrbit": {
+              "yaw": 0,
+              "pitch": 1.1519173063162575,
+              "active": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "Indoor zoom cannot turn the owner into a screen-filling giant",
+      "data": {
+        "fraction": 0.2504582064883789,
+        "leanStretch": 1.0584151284134642,
+        "worldScale": 1.009464,
+        "framing": {
+          "zoom": 1.15,
+          "x": -2,
+          "z": 1.06,
+          "span": 23.47826086956522,
+          "roomDistance": 13.043478260869566,
+          "overview": 0,
+          "width": 390,
+          "height": 844,
+          "playerLook": {
+            "x": 0,
+            "z": -0.17453292519943292
+          },
+          "playerOrbit": {
+            "yaw": 0,
+            "pitch": 0.4537856055185257,
+            "active": true
+          }
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "Pressing the right-hand button begins a visible held action"
+    },
+    {
+      "ok": true,
+      "label": "Releasing a longer press finishes the current use instead of losing it"
+    },
+    {
+      "ok": true,
+      "label": "Watering draws the illustrated can and an animated pour",
+      "data": {
+        "state": {
+          "enabled": true,
+          "who": "natalie",
+          "available": true,
+          "place": "farm",
+          "room": null,
+          "position": {
+            "x": 15.3,
+            "z": 14.2
+          },
+          "facing": "side",
+          "moving": false,
+          "gait": "walk",
+          "speed": 0,
+          "pose": null,
+          "travelling": false,
+          "actionProgress": 0.17391304347826086,
+          "blocked": false,
+          "action": "water",
+          "actionTarget": {
+            "type": "plot",
+            "index": 0,
+            "x": 16.5,
+            "z": 14.2,
+            "label": "Water pumpkin",
+            "distance": 1.1999999999999993,
+            "score": 1.1999999999999993
+          },
+          "waterCanVisible": true,
+          "wateringVisible": true,
+          "canVisible": true,
+          "waterCanStyle": "sprite",
+          "waterCanWidth": 0.82,
+          "streamVisible": true,
+          "dropsVisible": true,
+          "canScale": 1,
+          "waterNozzle": {
+            "x": 16.276027495305733,
+            "y": 0.9278290785657332,
+            "z": 14.44243950631368
+          },
+          "visualYaw": 0,
+          "spriteFrame": 0,
+          "spriteDirection": "water",
+          "spriteStature": 2.3,
+          "sideFrameCount": 4,
+          "target": {
+            "type": "plot",
+            "index": 0,
+            "x": 16.5,
+            "z": 14.2,
+            "label": "Water pumpkin",
+            "distance": 1.1999999999999993,
+            "score": 1.1999999999999993
+          }
+        },
+        "geometry": "PlaneGeometry",
+        "width": 256,
+        "height": 184
+      }
+    },
+    {
+      "ok": true,
+      "label": "Release commits one watering use and stops the chain"
+    },
+    {
+      "ok": true,
+      "label": "Costume watering keeps the selected outfit and uses the same painted can"
+    },
+    {
+      "ok": true,
+      "label": "Movement still cancels unfinished work without planting"
+    },
+    {
+      "ok": true,
+      "label": "The refinement flow has no browser errors or external runtime assets",
+      "data": {
+        "errors": [],
+        "requests": []
+      }
+    }
+  ],
+  "errors": [],
+  "requests": [],
+  "shots": [
+    "phone-room-controls",
+    "fold-room-controls",
+    "landscape-room-controls",
+    "illustrated-can-hold",
+    "costume-illustrated-can"
+  ]
+}

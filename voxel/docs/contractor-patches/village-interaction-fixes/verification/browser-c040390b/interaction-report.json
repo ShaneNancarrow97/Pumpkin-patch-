@@ -1,0 +1,751 @@
+{
+  "date": "2026-11-09T02:18:12.657Z",
+  "html": "/workspace/Pumpkin-Patch-Village-Interaction-Fixes.html",
+  "sha256": "c040390b02ffebccd1b346048dea3889ea4b71ee3490d014a8dede8fe9a59103",
+  "bytes": 59031801,
+  "checks": [
+    {
+      "pass": true,
+      "label": "Play uses the exact glyph-only Create assignment and translucent surface without the idle R3 card",
+      "detail": {
+        "label": "Play mode · choose Shane or Natalie · Create · small button left of the touchpad",
+        "text": "Play mode",
+        "createGlyph": true,
+        "background": "linear-gradient(155deg, rgba(58, 44, 69, 0.6), rgba(33, 25, 42, 0.67))",
+        "camera": false,
+        "warning": true,
+        "nextChapter": false
+      }
+    },
+    {
+      "pass": true,
+      "label": "Blocked house criterion retains only the small warning triangle",
+      "detail": {
+        "label": "Play mode · choose Shane or Natalie · Create · small button left of the touchpad",
+        "text": "Play mode",
+        "createGlyph": true,
+        "background": "linear-gradient(155deg, rgba(58, 44, 69, 0.6), rgba(33, 25, 42, 0.67))",
+        "camera": false,
+        "warning": true,
+        "nextChapter": false
+      }
+    },
+    {
+      "pass": true,
+      "label": "Final Fold farm has no horizontal overflow",
+      "detail": {
+        "w": 864,
+        "h": 756,
+        "scroll": 864,
+        "targets": [
+          {
+            "id": "open-stock",
+            "text": "0⌄",
+            "x": 411.71875,
+            "y": 11,
+            "w": 64,
+            "h": 44
+          },
+          {
+            "id": "open-levels",
+            "text": "4Level4",
+            "x": 525,
+            "y": 11,
+            "w": 46,
+            "h": 44
+          },
+          {
+            "id": "fullscreen",
+            "text": "",
+            "x": 571,
+            "y": 11,
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "open-settings",
+            "text": "",
+            "x": 615,
+            "y": 11,
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "tab active",
+            "text": "Farm",
+            "x": 192,
+            "y": 695,
+            "w": 67.703125,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "Manage",
+            "x": 260.703125,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "Rides",
+            "x": 329.421875,
+            "y": 695,
+            "w": 67.703125,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "Home",
+            "x": 398.125,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "Outfits",
+            "x": 466.84375,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "Village",
+            "x": 535.5625,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "More",
+            "x": 604.28125,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48
+          },
+          {
+            "id": "play-toggle",
+            "text": "Play modeCREATE",
+            "x": 688.109375,
+            "y": 66,
+            "w": 165.890625,
+            "h": 44
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "Final Fold farm interactive targets fit and remain at least44px",
+      "detail": {
+        "w": 864,
+        "h": 756,
+        "scroll": 864,
+        "targets": [
+          {
+            "id": "open-stock",
+            "text": "0⌄",
+            "x": 411.71875,
+            "y": 11,
+            "w": 64,
+            "h": 44
+          },
+          {
+            "id": "open-levels",
+            "text": "4Level4",
+            "x": 525,
+            "y": 11,
+            "w": 46,
+            "h": 44
+          },
+          {
+            "id": "fullscreen",
+            "text": "",
+            "x": 571,
+            "y": 11,
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "open-settings",
+            "text": "",
+            "x": 615,
+            "y": 11,
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "tab active",
+            "text": "Farm",
+            "x": 192,
+            "y": 695,
+            "w": 67.703125,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "Manage",
+            "x": 260.703125,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "Rides",
+            "x": 329.421875,
+            "y": 695,
+            "w": 67.703125,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "Home",
+            "x": 398.125,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "Outfits",
+            "x": 466.84375,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "Village",
+            "x": 535.5625,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "More",
+            "x": 604.28125,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48
+          },
+          {
+            "id": "play-toggle",
+            "text": "Play modeCREATE",
+            "x": 688.109375,
+            "y": 66,
+            "w": 165.890625,
+            "h": 44
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "Play and every Farm HUD/dock target have no pairwise overlap",
+      "detail": {
+        "play": {
+          "id": "play-toggle",
+          "text": "Play modeCREATE",
+          "x": 688.109375,
+          "y": 66,
+          "w": 165.890625,
+          "h": 44
+        },
+        "overlap": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "Skyla previews the exact tier3→4 tip chance, conditional tip and £9500 price",
+      "detail": {
+        "text": "Skyla’s thank-you jar\n\nLovelier pumpkins and quick service encourage bigger thank-yous from guests with spare change.\n\nVelvet hospitality · Tier 4 · 3 of 5 owned\n\nBest tip chance 50% → 60% · up to £25\n\nWhen a quick 4★ £100 basket gets a tip: £9 → £11\n\n£9,500"
+      }
+    },
+    {
+      "pass": true,
+      "label": "One tap buys tip tier4 without awarding fabricated tips",
+      "detail": {
+        "coins": 90500,
+        "level": 4,
+        "tips": 37
+      }
+    },
+    {
+      "pass": true,
+      "label": "Tier4→5 preview retains the £25 cap and £22000 price",
+      "detail": {
+        "text": "Skyla’s thank-you jar\n\nLovelier pumpkins and quick service encourage bigger thank-yous from guests with spare change.\n\nMoonlit generosity · Tier 5 · 4 of 5 owned\n\nBest tip chance 60% → 68% · up to £25\n\nWhen a quick 4★ £100 basket gets a tip: £11 → £14\n\n£22,000"
+      }
+    },
+    {
+      "pass": true,
+      "label": "One tap buys the fifth tip tier while the separate tips ledger stays unchanged",
+      "detail": {
+        "coins": 68500,
+        "level": 5,
+        "tips": 37
+      }
+    },
+    {
+      "pass": true,
+      "label": "Owned expanded shop shows four named display table tabs"
+    },
+    {
+      "pass": true,
+      "label": "One-tap display choice is free, preserves stock, highlights selection and blocks duplicate varieties",
+      "detail": {
+        "coins": 68500,
+        "stock": [
+          24,
+          24,
+          24,
+          24,
+          24
+        ],
+        "displays": [
+          0,
+          1,
+          4,
+          3
+        ],
+        "selected": "true",
+        "duplicate": true,
+        "text": "Table 3 · Front left\nMidnight Moon on show\nFree to change\n—\nClear table\nLeave this table empty\nOrange\n£12\nbase price\nOn Table 1\nMoonlight\n£24\nbase price\nOn Table 2\nWitchfire\n£42\nbase price\n24 available\nStarlight\n£70\nbase price\nOn Table 4\nMidnight Moon\n£110\nbase price\nOn this table\n✓\n\nOne table per variety. Available pumpkins refill it automatically; harvest to restock."
+      }
+    },
+    {
+      "pass": true,
+      "label": "Fold Skyla tables has no page horizontal overflow",
+      "detail": {
+        "width": 864,
+        "scroll": 864,
+        "targets": [
+          {
+            "text": "Table 1\nBack left\nOrange\n24 available\nChoose",
+            "w": 262.5,
+            "h": 117.1875,
+            "x": 165,
+            "right": 427.5
+          },
+          {
+            "text": "Table 2\nBack right\nMoonlight\n24 available\nChoose",
+            "w": 262.5,
+            "h": 117.1875,
+            "x": 436.5,
+            "right": 699
+          },
+          {
+            "text": "Table 3\nFront left\nMidnight Moon\n24 available\nEditing",
+            "w": 262.5,
+            "h": 117.1875,
+            "x": 165,
+            "right": 427.5
+          },
+          {
+            "text": "Table 4\nFront right\nStarlight\n24 available\nChoose",
+            "w": 262.5,
+            "h": 117.1875,
+            "x": 436.5,
+            "right": 699
+          },
+          {
+            "text": "—\nClear table\nLeave this table empty",
+            "w": 162.65625,
+            "h": 168.421875,
+            "x": 180,
+            "right": 342.65625
+          },
+          {
+            "text": "Orange\n£12\nbase price\nOn Table 1",
+            "w": 162.671875,
+            "h": 168.421875,
+            "x": 350.65625,
+            "right": 513.328125
+          },
+          {
+            "text": "Moonlight\n£24\nbase price\nOn Table 2",
+            "w": 162.671875,
+            "h": 168.421875,
+            "x": 521.328125,
+            "right": 684
+          },
+          {
+            "text": "Witchfire\n£42\nbase price\n24 available",
+            "w": 162.65625,
+            "h": 168.421875,
+            "x": 180,
+            "right": 342.65625
+          },
+          {
+            "text": "Starlight\n£70\nbase price\nOn Table 4",
+            "w": 162.671875,
+            "h": 168.421875,
+            "x": 350.65625,
+            "right": 513.328125
+          },
+          {
+            "text": "Midnight Moon\n£110\nbase price\nOn this table\n✓",
+            "w": 162.671875,
+            "h": 168.421875,
+            "x": 521.328125,
+            "right": 684
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "Fold Skyla tables scrollable controls retain 44 px targets without horizontal clipping",
+      "detail": {
+        "width": 864,
+        "scroll": 864,
+        "targets": [
+          {
+            "text": "Table 1\nBack left\nOrange\n24 available\nChoose",
+            "w": 262.5,
+            "h": 117.1875,
+            "x": 165,
+            "right": 427.5
+          },
+          {
+            "text": "Table 2\nBack right\nMoonlight\n24 available\nChoose",
+            "w": 262.5,
+            "h": 117.1875,
+            "x": 436.5,
+            "right": 699
+          },
+          {
+            "text": "Table 3\nFront left\nMidnight Moon\n24 available\nEditing",
+            "w": 262.5,
+            "h": 117.1875,
+            "x": 165,
+            "right": 427.5
+          },
+          {
+            "text": "Table 4\nFront right\nStarlight\n24 available\nChoose",
+            "w": 262.5,
+            "h": 117.1875,
+            "x": 436.5,
+            "right": 699
+          },
+          {
+            "text": "—\nClear table\nLeave this table empty",
+            "w": 162.65625,
+            "h": 168.421875,
+            "x": 180,
+            "right": 342.65625
+          },
+          {
+            "text": "Orange\n£12\nbase price\nOn Table 1",
+            "w": 162.671875,
+            "h": 168.421875,
+            "x": 350.65625,
+            "right": 513.328125
+          },
+          {
+            "text": "Moonlight\n£24\nbase price\nOn Table 2",
+            "w": 162.671875,
+            "h": 168.421875,
+            "x": 521.328125,
+            "right": 684
+          },
+          {
+            "text": "Witchfire\n£42\nbase price\n24 available",
+            "w": 162.65625,
+            "h": 168.421875,
+            "x": 180,
+            "right": 342.65625
+          },
+          {
+            "text": "Starlight\n£70\nbase price\nOn Table 4",
+            "w": 162.671875,
+            "h": 168.421875,
+            "x": 350.65625,
+            "right": 513.328125
+          },
+          {
+            "text": "Midnight Moon\n£110\nbase price\nOn this table\n✓",
+            "w": 162.671875,
+            "h": 168.421875,
+            "x": 521.328125,
+            "right": 684
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "TV Skyla tables has no page horizontal overflow",
+      "detail": {
+        "width": 1920,
+        "scroll": 1920,
+        "targets": [
+          {
+            "text": "Table 1\nBack left\nOrange\n24 available\nChoose",
+            "w": 631.484375,
+            "h": 178.078125,
+            "x": 321.59375,
+            "right": 953.078125
+          },
+          {
+            "text": "Table 2\nBack right\nMoonlight\n24 available\nChoose",
+            "w": 631.484375,
+            "h": 178.078125,
+            "x": 966.90625,
+            "right": 1598.390625
+          },
+          {
+            "text": "Table 3\nFront left\nMidnight Moon\n24 available\nEditing",
+            "w": 631.484375,
+            "h": 178.078125,
+            "x": 321.59375,
+            "right": 953.078125
+          },
+          {
+            "text": "Table 4\nFront right\nStarlight\n24 available\nChoose",
+            "w": 631.484375,
+            "h": 178.078125,
+            "x": 966.90625,
+            "right": 1598.390625
+          },
+          {
+            "text": "—\nClear table\nLeave this table empty",
+            "w": 402.390625,
+            "h": 257.765625,
+            "x": 344.109375,
+            "right": 746.5
+          },
+          {
+            "text": "Orange\n£12\nbase price\nOn Table 1",
+            "w": 402.40625,
+            "h": 257.765625,
+            "x": 758.78125,
+            "right": 1161.1875
+          },
+          {
+            "text": "Moonlight\n£24\nbase price\nOn Table 2",
+            "w": 402.390625,
+            "h": 257.765625,
+            "x": 1173.46875,
+            "right": 1575.859375
+          },
+          {
+            "text": "Witchfire\n£42\nbase price\n24 available",
+            "w": 402.390625,
+            "h": 257.765625,
+            "x": 344.109375,
+            "right": 746.5
+          },
+          {
+            "text": "Starlight\n£70\nbase price\nOn Table 4",
+            "w": 402.40625,
+            "h": 257.765625,
+            "x": 758.78125,
+            "right": 1161.1875
+          },
+          {
+            "text": "Midnight Moon\n£110\nbase price\nOn this table\n✓",
+            "w": 402.390625,
+            "h": 257.765625,
+            "x": 1173.46875,
+            "right": 1575.859375
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "TV Skyla tables scrollable controls retain 44 px targets without horizontal clipping",
+      "detail": {
+        "width": 1920,
+        "scroll": 1920,
+        "targets": [
+          {
+            "text": "Table 1\nBack left\nOrange\n24 available\nChoose",
+            "w": 631.484375,
+            "h": 178.078125,
+            "x": 321.59375,
+            "right": 953.078125
+          },
+          {
+            "text": "Table 2\nBack right\nMoonlight\n24 available\nChoose",
+            "w": 631.484375,
+            "h": 178.078125,
+            "x": 966.90625,
+            "right": 1598.390625
+          },
+          {
+            "text": "Table 3\nFront left\nMidnight Moon\n24 available\nEditing",
+            "w": 631.484375,
+            "h": 178.078125,
+            "x": 321.59375,
+            "right": 953.078125
+          },
+          {
+            "text": "Table 4\nFront right\nStarlight\n24 available\nChoose",
+            "w": 631.484375,
+            "h": 178.078125,
+            "x": 966.90625,
+            "right": 1598.390625
+          },
+          {
+            "text": "—\nClear table\nLeave this table empty",
+            "w": 402.390625,
+            "h": 257.765625,
+            "x": 344.109375,
+            "right": 746.5
+          },
+          {
+            "text": "Orange\n£12\nbase price\nOn Table 1",
+            "w": 402.40625,
+            "h": 257.765625,
+            "x": 758.78125,
+            "right": 1161.1875
+          },
+          {
+            "text": "Moonlight\n£24\nbase price\nOn Table 2",
+            "w": 402.390625,
+            "h": 257.765625,
+            "x": 1173.46875,
+            "right": 1575.859375
+          },
+          {
+            "text": "Witchfire\n£42\nbase price\n24 available",
+            "w": 402.390625,
+            "h": 257.765625,
+            "x": 344.109375,
+            "right": 746.5
+          },
+          {
+            "text": "Starlight\n£70\nbase price\nOn Table 4",
+            "w": 402.40625,
+            "h": 257.765625,
+            "x": 758.78125,
+            "right": 1161.1875
+          },
+          {
+            "text": "Midnight Moon\n£110\nbase price\nOn this table\n✓",
+            "w": 402.390625,
+            "h": 257.765625,
+            "x": 1173.46875,
+            "right": 1575.859375
+          }
+        ]
+      }
+    },
+    {
+      "pass": false,
+      "label": "Actual D-pad Up icon stays upright while button12 toggles the quest tracker",
+      "detail": {
+        "quest": {
+          "icon": false,
+          "text": "The Moving Address\nTell Elowen what you think of Mothlight\n⌄",
+          "expanded": "false",
+          "transform": "none",
+          "h": 62.734375
+        },
+        "toggled": {
+          "expanded": "true",
+          "transform": "none"
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "Actual controller reaches Rowan through the central village path",
+      "detail": {
+        "result": {
+          "count": 494,
+          "position": {
+            "x": 93.18743951264815,
+            "z": 42.7892274664309
+          }
+        },
+        "route": [
+          {
+            "x": 90,
+            "z": 31.5
+          },
+          {
+            "x": 93,
+            "z": 35.699999999999996
+          },
+          {
+            "x": 93.6,
+            "z": 41.7
+          },
+          {
+            "x": 93.15,
+            "z": 42.9
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "The exact final standalone HTML requests no external assets",
+      "detail": []
+    },
+    {
+      "pass": false,
+      "label": "Final integrated runtime has no page or shader errors",
+      "detail": [
+        {
+          "section": "real Sandy hospitality purchase and relocation",
+          "message": "page.evaluate: TypeError: p.openCocoaSheet is not a function\n    at eval (eval at evaluate (:234:30), <anonymous>:1:156)\n    at UtilityScript.evaluate (<anonymous>:236:17)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at /workspace/village-menu-refinement/voxel/tools/village-interaction-ui-delta-qa.mjs:80:14\n    at section (/workspace/village-menu-refinement/voxel/tools/village-interaction-ui-delta-qa.mjs:25:43)\n    at /workspace/village-menu-refinement/voxel/tools/village-interaction-ui-delta-qa.mjs:78:8"
+        },
+        {
+          "section": "village Up icon, clear world, actual reward receipt and Return smoke",
+          "message": "locator.click: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#vg-look:visible').first()\u001b[22m\n\n    at click (/workspace/village-menu-refinement/voxel/tools/village-interaction-ui-delta-qa.mjs:27:65)\n    at /workspace/village-menu-refinement/voxel/tools/village-interaction-ui-delta-qa.mjs:99:161\n    at async section (/workspace/village-menu-refinement/voxel/tools/village-interaction-ui-delta-qa.mjs:25:37)\n    at /workspace/village-menu-refinement/voxel/async file:/workspace/village-menu-refinement/voxel/tools/village-interaction-ui-delta-qa.mjs:96:2"
+        }
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "section": "real Sandy hospitality purchase and relocation",
+      "message": "page.evaluate: TypeError: p.openCocoaSheet is not a function\n    at eval (eval at evaluate (:234:30), <anonymous>:1:156)\n    at UtilityScript.evaluate (<anonymous>:236:17)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at /workspace/village-menu-refinement/voxel/tools/village-interaction-ui-delta-qa.mjs:80:14\n    at section (/workspace/village-menu-refinement/voxel/tools/village-interaction-ui-delta-qa.mjs:25:43)\n    at /workspace/village-menu-refinement/voxel/tools/village-interaction-ui-delta-qa.mjs:78:8"
+    },
+    {
+      "section": "village Up icon, clear world, actual reward receipt and Return smoke",
+      "message": "locator.click: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#vg-look:visible').first()\u001b[22m\n\n    at click (/workspace/village-menu-refinement/voxel/tools/village-interaction-ui-delta-qa.mjs:27:65)\n    at /workspace/village-menu-refinement/voxel/tools/village-interaction-ui-delta-qa.mjs:99:161\n    at async section (/workspace/village-menu-refinement/voxel/tools/village-interaction-ui-delta-qa.mjs:25:37)\n    at /workspace/village-menu-refinement/voxel/async file:/workspace/village-menu-refinement/voxel/tools/village-interaction-ui-delta-qa.mjs:96:2"
+    }
+  ],
+  "externalRequests": [],
+  "screenshots": [
+    {
+      "file": "01-fold-farm-controller.png",
+      "render": "Actual normal renderer/composer, glow and shadows enabled, real RAF village tick restored."
+    },
+    {
+      "file": "03-fold-skyla-tables.png",
+      "render": "Actual normal renderer/composer, glow and shadows enabled, real RAF village tick restored."
+    },
+    {
+      "file": "04-tv-skyla-tables.png",
+      "render": "Actual normal renderer/composer, glow and shadows enabled, real RAF village tick restored."
+    }
+  ],
+  "fixtures": [
+    {
+      "kind": "farm",
+      "level": 4,
+      "house": 0,
+      "earnings": 9000,
+      "coins": 30000,
+      "description": "Level5 earnings are ready, but the first house upgrade is missing. Visitor arrivals deferred for deterministic UI checks."
+    },
+    {
+      "kind": "services",
+      "description": "Owned meadow, tier1 stand, Bring a friend tier1 and £100000 declared for real menu purchase checks; purchases use existing native handlers, not earned campaign progress."
+    }
+  ],
+  "observations": [],
+  "scope": "Exact unchanged offline HTML on loopback. Declared level4/house0/earnings-ready farm and a prepared invitation-final-step village, not an earned campaign. Native Gamepad API is mocked; real game/menu/cursor/rules/view methods run. Only renderer/composer draw calls are held between normal-render photographs; deterministic input bursts use the real village tick. Normal photos restore real RAF village ticking. Software Chromium viewport checks do not certify Bluetooth, physical PS5/TV hardware or hardware performance. Focused final delta after the first integrated pass: corrected Fold spacing, exact Create artwork, actual service purchases and display selection, quest Up glyph, real quest reward receipt and Return/movement smoke. Earlier broad input/growth cases remain recorded against their original hash.",
+  "passed": false
+}

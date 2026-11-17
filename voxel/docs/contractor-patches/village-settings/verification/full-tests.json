@@ -1,0 +1,11 @@
+{
+  "tests": 1602,
+  "pass": 1602,
+  "fail": 0,
+  "cancelled": 0,
+  "skipped": 0,
+  "todo": 0,
+  "runtimeCommit": "7be8eed82e04bb1c8d891a3aa6a0bf1cc9948cdf",
+  "command": "node --test --test-concurrency=2 'test/**/*.test.mjs'",
+  "durationMs": 320288.443602
+}

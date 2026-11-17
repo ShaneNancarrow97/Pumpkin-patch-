@@ -1,0 +1,268 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Refined-Menus.html",
+  "sha256": "373a99d814ca5dcf90393d852fd5600806f6a2d1160cadeb768a6eaa1185f235",
+  "started": "2026-10-26T21:40:05.847Z",
+  "fixture": "Only browser localStorage receives QA funds/unlocks. The downloadable HTML is unmodified.",
+  "passed": true,
+  "checks": [
+    {
+      "ok": true,
+      "label": "level four clearly previews the locked kitchen purchase"
+    },
+    {
+      "ok": true,
+      "label": "locked kitchen: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "cocoa land stays gated until its level unlock"
+    },
+    {
+      "ok": true,
+      "label": "new cocoa business explains the meadow step first"
+    },
+    {
+      "ok": true,
+      "label": "locked meadow: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "meadow action charges once and reveals the stand step"
+    },
+    {
+      "ok": true,
+      "label": "cocoa setup leads directly to building the stand"
+    },
+    {
+      "ok": true,
+      "label": "building the stand keeps the player in its management menu"
+    },
+    {
+      "ok": true,
+      "label": "desktop final cooking: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "desktop final food pricing: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "desktop final cocoa stock: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "desktop final helpers: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "desktop final VIP entry: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "desktop final tractor upgrades: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "desktop management directory fits the screen",
+      "data": {
+        "x": 374.734375,
+        "y": 125.265625,
+        "width": 320,
+        "height": 605.734375
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone final cooking: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone final food pricing: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone final cocoa stock: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone final helpers: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone courier toggle is visible in its first helper card"
+    },
+    {
+      "ok": true,
+      "label": "phone final VIP entry: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone final tractor upgrades: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone management directory fits the screen",
+      "data": {
+        "x": 8,
+        "y": 169.265625,
+        "width": 320,
+        "height": 605.734375
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold final cooking: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold final food pricing: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold final cocoa stock: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold final helpers: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold final VIP entry: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold final tractor upgrades: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold management directory fits the screen",
+      "data": {
+        "x": 171.734375,
+        "y": 112.265625,
+        "width": 320,
+        "height": 605.734375
+      }
+    },
+    {
+      "ok": true,
+      "label": "final HTML has no browser errors",
+      "data": []
+    },
+    {
+      "ok": true,
+      "label": "final HTML is self-contained",
+      "data": []
+    }
+  ],
+  "errors": [],
+  "requests": [],
+  "shots": [
+    "phone-final-cooking",
+    "phone-final-cocoa",
+    "phone-final-helpers",
+    "phone-final-directory",
+    "fold-final-cooking",
+    "fold-final-cocoa",
+    "fold-final-tractors"
+  ]
+}

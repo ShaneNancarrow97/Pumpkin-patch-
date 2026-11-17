@@ -1,0 +1,83 @@
+{
+  "method": "Track the same near foot between heel strike and opposite-phase toe-off; full left-and-right stride is twice that contact travel. These are visual estimates of the ground-contact point, not bounding-box widths or anatomical rig certification.",
+  "chosenOwnerStrideWorld": 1.8,
+  "observations": [
+    {
+      "character": "shane-base",
+      "direction": "right",
+      "nearLeg": "right",
+      "phase0": {
+        "kind": "trailing toe",
+        "point": [
+          34,
+          164
+        ]
+      },
+      "phase4": {
+        "kind": "leading heel",
+        "point": [
+          92,
+          164
+        ]
+      },
+      "method": "Manual identification on final packed pixels; shoe-sole threshold candidates assist the visual placement.",
+      "packedBodyPixels": 144,
+      "worldBodyHeight": 2.2784385,
+      "contactDeltaPixels": 58,
+      "estimatedFullStrideWorld": 1.8354087916666668,
+      "contactPointUncertaintyPixels": 3
+    },
+    {
+      "character": "shane-base",
+      "direction": "left",
+      "nearLeg": "left",
+      "phase0": {
+        "kind": "leading heel",
+        "point": [
+          31,
+          160
+        ]
+      },
+      "phase4": {
+        "kind": "trailing toe",
+        "point": [
+          92,
+          163
+        ]
+      },
+      "method": "Manual identification on final packed pixels; use the near cargo-pocket leg, not the far support foot.",
+      "packedBodyPixels": 144,
+      "worldBodyHeight": 2.2784385,
+      "contactDeltaPixels": 61,
+      "estimatedFullStrideWorld": 1.9303437291666667,
+      "contactPointUncertaintyPixels": 3
+    },
+    {
+      "character": "natalie-base",
+      "direction": "right",
+      "nearLeg": "right",
+      "phase0": {
+        "kind": "trailing toe",
+        "point": [
+          36.5573,
+          161.7127
+        ]
+      },
+      "phase4": {
+        "kind": "leading heel",
+        "point": [
+          89.3994,
+          160.202
+        ]
+      },
+      "method": "Manual source toe/heel coordinates transformed through row registration and final shared baker scale; no shoe-extent substitution.",
+      "packedBodyPixels": 144,
+      "worldBodyHeight": 2.2784385,
+      "contactDeltaPixels": 52.8421,
+      "estimatedFullStrideWorld": 1.6721871536229167,
+      "contactPointUncertaintyPixels": 3
+    }
+  ],
+  "reason": "Final packed estimates range1.67\u20131.93 world units, with approximately\u00b13px uncertainty per point (roughly\u00b10.19 world units on a full cycle). The mean1.81 supports retaining1.8 rather than increasing cadence.",
+  "passingPoseReview": "Opposite knees/boots are visibly raised in phases2/6. Right-facing Shane uses the foreground cargo-pocket knee in one half and the far darker boot in the other; Natalie right-repair explicitly separates near forward-knee and far trailing-boot silhouettes."
+}

@@ -1,0 +1,15 @@
+VILLAGE ready
+PASS Actual controller route reaches Elowen for the real greeting
+PASS A genuine nearby meeting opens real chat, quest, gift, about and leave choices
+PASS Every actual greeting choice has its explicit painted icon
+PASS tv speech ribbon and all44px choice controls fit the viewport
+PASS tv speech, reply stack, nameplate, footer and Back children stay fully on screen
+PASS tv real DualSense action focus is highlighted and background HUD is hidden
+PASS tv dialogue faces the owner sprite to its camera and frames the actual resident feet
+PASS tv real camera keeps both characters clear of the actual bottom UI
+PASS TV D-pad scroll reaches the final real Leave choice inside the visible reply column
+SHOT 02-tv-neighbour-greeting
+PASS tv long lines and choices scroll independently while Back stays reachable
+PASS Final menus have no page/shader errors
+PASS Final offline game uses no external assets
+{"passed":true,"checks":12,"errors":0,"sha256":"e98d2ffc583051836aa21f33eccb04559ea413b4e4ebec31bd4cc8cd529abaaf"}

@@ -1,0 +1,956 @@
+{
+  "date": "2026-11-08T18:27:10.331Z",
+  "html": "/workspace/Pumpkin-Patch-Village-Journey.html",
+  "sha256": "21e7270c572d9cdc6f2abae9eb9a27681d9d656841e93f81988e7320a375d3cb",
+  "bytes": 56977409,
+  "sourceCommit": "dc6725ee749709d4babcac0a7dcf01609435459d",
+  "workingTree": " M assets/voices/mothlight-v1/recording-status.json\n M assets/voices/mothlight-v1/voice-manifest.json\n M src/content/village-quests.js\n M src/content/village-tour.js\n M src/content/village-upgrades.js\n M src/content/village.js\n M src/cooking-world.js\n M src/festival-meadow-world.js\n M src/hayride-world.js\n M src/index.html\n M src/main.js\n M src/model.js\n M src/player-control.js\n M src/rules/farm.js\n M src/rules/village-navigation.js\n M src/rules/village-upgrades.js\n M src/rules/village.js\n M src/rules/wardrobe.js\n M src/scene.js\n M src/sprite-actors.js\n M src/style.css\n M src/ui/collection-sheets.js\n M src/ui/farm-sheets.js\n M src/ui/premium-icons.js\n M src/ui/village-chapters.js\n M src/ui/village-game.css\n M src/ui/village-item-markup.js\n M src/village-game.js\n M src/village-models.js\n M src/village-terrain.js\n M src/village-view.js\n M src/village-world.js\n M test/farm-growth.test.mjs\n M test/midnight-moon.test.mjs\n M test/model.test.mjs\n M test/unlocks.test.mjs\n M test/village-game.test.mjs\n M test/village-navigation.test.mjs\n?? assets/hd-natalie-empty-idle.webp\n?? assets/hd-shane-empty-idle.webp\n?? assets/owner-idle-concepts/\n?? docs/contractor-patches/village-journey/\n?? src/content/owner-empty-idle-meta.js\n?? src/content/village-gateway.js\n?? src/farm-village-gate.js\n?? test/owner-empty-idle.test.mjs\n?? test/village-away-progression.test.mjs\n?? tools/bake-owner-empty-idle.py\n?? tools/village-journey-qa.mjs\n",
+  "sourceHashes": {
+    "src/main.js": "209f19ffe39bebdf6fc79d9cd07a85c17a1592e7575a8da3e2567ac53c7e9c28",
+    "src/model.js": "0b2bf61ac2d146a1feae06855b5151d3fcea3a87f6e855c24a926facbff265a9",
+    "src/village-game.js": "c5e9f56a90066d8e076d8a4d364b5121687d6b5b671d3d948eb5533dff23e266",
+    "src/village-view.js": "00475901aa84e621b5faade1ff9cd80006852d22183d4faa9219c009b1fe0059",
+    "src/content/village.js": "79eeca7e364d5c09da45d532a55b5c3b8b92d90f72297ca018aa1a911c0339d5",
+    "src/content/village-gateway.js": "ef4babb1f62fb20d03c4d4116c6351c0a375b6e16ef70431fef3ea4792b9eba1",
+    "src/rules/farm.js": "925dc66ceaeb63c6b03ecb01bebb37ee2a31a1884e710f6696892dfa1b4a4ff1",
+    "src/rules/wardrobe.js": "da06fd058f2d78477657a5e17cc56d11356ec6e419b4e70dce09ba834fa89a90",
+    "src/sprite-actors.js": "8956f8020ab386a0623a9f886a6d6772a52753569e4623f6c2830862dda066f2",
+    "assets/hd-natalie-empty-idle.webp": "57c139643fa52fdfc160a36cfd7dbd1af7cb7d5a4b4f09c8bd28bb43b9e494b9",
+    "assets/hd-shane-empty-idle.webp": "cddc935ad5c2001c0ee72709a2112d2bcf2ce967f5b788039900e084c876ab4c"
+  },
+  "scope": "Exact standalone HTML bytes on loopback. A declared level-3 save starts invited/toured for the late UI and layout continuation. Actual Playwright pointer/key events test visible navigation, gateway, gather and workshop controls. Walk setup uses the real collision/controller path with mocked standard-pad axes and accelerated 0.05s steps; farm gateway threshold uses declared teleport immediately before actual keyboard input. Gather snapshots freeze only village controller tick, then call its original tick with explicit dt. Late story state/inventory is explicitly fixture-set, not earned in play. Viewports emulate layout/touch, not physical phone, Fold, TV, Bluetooth or GPU performance.",
+  "fixture": {
+    "level": 3,
+    "coins": 20000,
+    "introSeen": true,
+    "invited": true,
+    "toured": true
+  },
+  "checks": [
+    {
+      "pass": true,
+      "label": "Late final plot purchase explains workshop story gate",
+      "detail": {
+        "containsWorkshopReason": true
+      }
+    },
+    {
+      "pass": true,
+      "label": "Late Midnight Moon seeds explain Lantern Keepers story gate"
+    },
+    {
+      "pass": true,
+      "label": "Mummy wardrobe purchase explains village story gate"
+    },
+    {
+      "pass": true,
+      "label": "House Natalie uses HD empty-handed idle sheet",
+      "detail": {
+        "direction": "front",
+        "map": [
+          1562,
+          662
+        ],
+        "can": false
+      }
+    },
+    {
+      "pass": true,
+      "label": "Library interior opens and renders"
+    },
+    {
+      "pass": true,
+      "label": "phone village: six village controls fit with 44px touch targets",
+      "detail": {
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "scrollWidth": 390,
+        "nav": {
+          "x": 11,
+          "y": 774,
+          "w": 368,
+          "h": 56,
+          "scrollWidth": 366,
+          "clientWidth": 366
+        },
+        "buttons": [
+          {
+            "text": "Map",
+            "x": 17,
+            "y": 780,
+            "w": 59.328125,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "People",
+            "x": 76.328125,
+            "y": 780,
+            "w": 59.34375,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "Quests",
+            "x": 135.671875,
+            "y": 780,
+            "w": 59.328125,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "Satchel",
+            "x": 195,
+            "y": 780,
+            "w": 59.34375,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "Workshop",
+            "x": 254.34375,
+            "y": 780,
+            "w": 59.328125,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "Build",
+            "x": 313.671875,
+            "y": 780,
+            "w": 59.328125,
+            "h": 44,
+            "visible": true
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "phone: actual village Map touch target opens panel"
+    },
+    {
+      "pass": true,
+      "label": "phone farm: seven farm controls fit with 44px touch targets",
+      "detail": {
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "scrollWidth": 390,
+        "nav": {
+          "x": 8,
+          "y": 778,
+          "w": 374,
+          "h": 58,
+          "scrollWidth": 372,
+          "clientWidth": 372
+        },
+        "buttons": [
+          {
+            "text": "Farm",
+            "x": 13,
+            "y": 783,
+            "w": 51.140625,
+            "h": 48,
+            "visible": true
+          },
+          {
+            "text": "Manage",
+            "x": 65.140625,
+            "y": 783,
+            "w": 51.15625,
+            "h": 48,
+            "visible": true
+          },
+          {
+            "text": "Rides",
+            "x": 117.296875,
+            "y": 783,
+            "w": 51.140625,
+            "h": 48,
+            "visible": true
+          },
+          {
+            "text": "Home",
+            "x": 169.4375,
+            "y": 783,
+            "w": 51.140625,
+            "h": 48,
+            "visible": true
+          },
+          {
+            "text": "Outfits",
+            "x": 221.578125,
+            "y": 783,
+            "w": 51.140625,
+            "h": 48,
+            "visible": true
+          },
+          {
+            "text": "Village",
+            "x": 273.71875,
+            "y": 783,
+            "w": 51.140625,
+            "h": 48,
+            "visible": true
+          },
+          {
+            "text": "More",
+            "x": 325.859375,
+            "y": 783,
+            "w": 51.140625,
+            "h": 48,
+            "visible": true
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "phone: actual Village hotbar button returns to village"
+    },
+    {
+      "pass": true,
+      "label": "unfolded village: six village controls fit with 44px touch targets",
+      "detail": {
+        "innerWidth": 864,
+        "innerHeight": 756,
+        "scrollWidth": 864,
+        "nav": {
+          "x": 169.484375,
+          "y": 682,
+          "w": 525.03125,
+          "h": 56,
+          "scrollWidth": 523,
+          "clientWidth": 523
+        },
+        "buttons": [
+          {
+            "text": "Map",
+            "x": 175.484375,
+            "y": 688,
+            "w": 80,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "People",
+            "x": 260.484375,
+            "y": 688,
+            "w": 80,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "Quests",
+            "x": 345.484375,
+            "y": 688,
+            "w": 80,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "Satchel",
+            "x": 430.484375,
+            "y": 688,
+            "w": 80,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "Workshop",
+            "x": 515.484375,
+            "y": 688,
+            "w": 88.03125,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "Build",
+            "x": 608.515625,
+            "y": 688,
+            "w": 80,
+            "h": 44,
+            "visible": true
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "unfolded: actual village Map touch target opens panel"
+    },
+    {
+      "pass": true,
+      "label": "unfolded farm: seven farm controls fit with 44px touch targets",
+      "detail": {
+        "innerWidth": 864,
+        "innerHeight": 756,
+        "scrollWidth": 864,
+        "nav": {
+          "x": 187,
+          "y": 690,
+          "w": 490,
+          "h": 58,
+          "scrollWidth": 488,
+          "clientWidth": 488
+        },
+        "buttons": [
+          {
+            "text": "Farm",
+            "x": 192,
+            "y": 695,
+            "w": 67.703125,
+            "h": 48,
+            "visible": true
+          },
+          {
+            "text": "Manage",
+            "x": 260.703125,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48,
+            "visible": true
+          },
+          {
+            "text": "Rides",
+            "x": 329.421875,
+            "y": 695,
+            "w": 67.703125,
+            "h": 48,
+            "visible": true
+          },
+          {
+            "text": "Home",
+            "x": 398.125,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48,
+            "visible": true
+          },
+          {
+            "text": "Outfits",
+            "x": 466.84375,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48,
+            "visible": true
+          },
+          {
+            "text": "Village",
+            "x": 535.5625,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48,
+            "visible": true
+          },
+          {
+            "text": "More",
+            "x": 604.28125,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48,
+            "visible": true
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "unfolded: actual Village hotbar button returns to village"
+    },
+    {
+      "pass": true,
+      "label": "landscape village: six village controls fit with 44px touch targets",
+      "detail": {
+        "innerWidth": 844,
+        "innerHeight": 390,
+        "scrollWidth": 844,
+        "nav": {
+          "x": 234.6796875,
+          "y": 322,
+          "w": 374.640625,
+          "h": 56,
+          "scrollWidth": 373,
+          "clientWidth": 373
+        },
+        "buttons": [
+          {
+            "text": "Map",
+            "x": 240.6796875,
+            "y": 328,
+            "w": 44,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "People",
+            "x": 289.6796875,
+            "y": 328,
+            "w": 56.328125,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "Quests",
+            "x": 351.0078125,
+            "y": 328,
+            "w": 57.140625,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "Satchel",
+            "x": 413.1484375,
+            "y": 328,
+            "w": 58.34375,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "Workshop",
+            "x": 476.4921875,
+            "y": 328,
+            "w": 75.25,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "Build",
+            "x": 556.7421875,
+            "y": 328,
+            "w": 46.578125,
+            "h": 44,
+            "visible": true
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "landscape: actual village Map touch target opens panel"
+    },
+    {
+      "pass": true,
+      "label": "landscape farm: seven farm controls fit with 44px touch targets",
+      "detail": {
+        "innerWidth": 844,
+        "innerHeight": 390,
+        "scrollWidth": 844,
+        "nav": {
+          "x": 207,
+          "y": 330,
+          "w": 430,
+          "h": 54,
+          "scrollWidth": 428,
+          "clientWidth": 428
+        },
+        "buttons": [
+          {
+            "text": "Farm",
+            "x": 212,
+            "y": 335,
+            "w": 59.140625,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "Manage",
+            "x": 272.140625,
+            "y": 335,
+            "w": 59.15625,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "Rides",
+            "x": 332.296875,
+            "y": 335,
+            "w": 59.140625,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "Home",
+            "x": 392.4375,
+            "y": 335,
+            "w": 59.140625,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "Outfits",
+            "x": 452.578125,
+            "y": 335,
+            "w": 59.140625,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "Village",
+            "x": 512.71875,
+            "y": 335,
+            "w": 59.140625,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "More",
+            "x": 572.859375,
+            "y": 335,
+            "w": 59.140625,
+            "h": 44,
+            "visible": true
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "landscape: actual Village hotbar button returns to village"
+    },
+    {
+      "pass": true,
+      "label": "Browser produced no JavaScript or console errors",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "Standalone HTML requested no external assets",
+      "detail": []
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "07-house-empty-hands.png",
+      "kind": "Actual house idle in default Natalie outfit, normal follow camera"
+    },
+    {
+      "file": "08-library-interior.png",
+      "kind": "Actual detailed library interior entered via village controller API"
+    },
+    {
+      "file": "09-phone-village.png",
+      "kind": "390x844 touch viewport, normal village after library exit"
+    }
+  ],
+  "layouts": [
+    {
+      "name": "phone village",
+      "village": true,
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "scrollWidth": 390,
+      "nav": {
+        "x": 11,
+        "y": 774,
+        "w": 368,
+        "h": 56,
+        "scrollWidth": 366,
+        "clientWidth": 366
+      },
+      "buttons": [
+        {
+          "text": "Map",
+          "x": 17,
+          "y": 780,
+          "w": 59.328125,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "People",
+          "x": 76.328125,
+          "y": 780,
+          "w": 59.34375,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "Quests",
+          "x": 135.671875,
+          "y": 780,
+          "w": 59.328125,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "Satchel",
+          "x": 195,
+          "y": 780,
+          "w": 59.34375,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "Workshop",
+          "x": 254.34375,
+          "y": 780,
+          "w": 59.328125,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "Build",
+          "x": 313.671875,
+          "y": 780,
+          "w": 59.328125,
+          "h": 44,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "name": "phone farm",
+      "village": false,
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "scrollWidth": 390,
+      "nav": {
+        "x": 8,
+        "y": 778,
+        "w": 374,
+        "h": 58,
+        "scrollWidth": 372,
+        "clientWidth": 372
+      },
+      "buttons": [
+        {
+          "text": "Farm",
+          "x": 13,
+          "y": 783,
+          "w": 51.140625,
+          "h": 48,
+          "visible": true
+        },
+        {
+          "text": "Manage",
+          "x": 65.140625,
+          "y": 783,
+          "w": 51.15625,
+          "h": 48,
+          "visible": true
+        },
+        {
+          "text": "Rides",
+          "x": 117.296875,
+          "y": 783,
+          "w": 51.140625,
+          "h": 48,
+          "visible": true
+        },
+        {
+          "text": "Home",
+          "x": 169.4375,
+          "y": 783,
+          "w": 51.140625,
+          "h": 48,
+          "visible": true
+        },
+        {
+          "text": "Outfits",
+          "x": 221.578125,
+          "y": 783,
+          "w": 51.140625,
+          "h": 48,
+          "visible": true
+        },
+        {
+          "text": "Village",
+          "x": 273.71875,
+          "y": 783,
+          "w": 51.140625,
+          "h": 48,
+          "visible": true
+        },
+        {
+          "text": "More",
+          "x": 325.859375,
+          "y": 783,
+          "w": 51.140625,
+          "h": 48,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "name": "unfolded village",
+      "village": true,
+      "innerWidth": 864,
+      "innerHeight": 756,
+      "scrollWidth": 864,
+      "nav": {
+        "x": 169.484375,
+        "y": 682,
+        "w": 525.03125,
+        "h": 56,
+        "scrollWidth": 523,
+        "clientWidth": 523
+      },
+      "buttons": [
+        {
+          "text": "Map",
+          "x": 175.484375,
+          "y": 688,
+          "w": 80,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "People",
+          "x": 260.484375,
+          "y": 688,
+          "w": 80,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "Quests",
+          "x": 345.484375,
+          "y": 688,
+          "w": 80,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "Satchel",
+          "x": 430.484375,
+          "y": 688,
+          "w": 80,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "Workshop",
+          "x": 515.484375,
+          "y": 688,
+          "w": 88.03125,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "Build",
+          "x": 608.515625,
+          "y": 688,
+          "w": 80,
+          "h": 44,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "name": "unfolded farm",
+      "village": false,
+      "innerWidth": 864,
+      "innerHeight": 756,
+      "scrollWidth": 864,
+      "nav": {
+        "x": 187,
+        "y": 690,
+        "w": 490,
+        "h": 58,
+        "scrollWidth": 488,
+        "clientWidth": 488
+      },
+      "buttons": [
+        {
+          "text": "Farm",
+          "x": 192,
+          "y": 695,
+          "w": 67.703125,
+          "h": 48,
+          "visible": true
+        },
+        {
+          "text": "Manage",
+          "x": 260.703125,
+          "y": 695,
+          "w": 67.71875,
+          "h": 48,
+          "visible": true
+        },
+        {
+          "text": "Rides",
+          "x": 329.421875,
+          "y": 695,
+          "w": 67.703125,
+          "h": 48,
+          "visible": true
+        },
+        {
+          "text": "Home",
+          "x": 398.125,
+          "y": 695,
+          "w": 67.71875,
+          "h": 48,
+          "visible": true
+        },
+        {
+          "text": "Outfits",
+          "x": 466.84375,
+          "y": 695,
+          "w": 67.71875,
+          "h": 48,
+          "visible": true
+        },
+        {
+          "text": "Village",
+          "x": 535.5625,
+          "y": 695,
+          "w": 67.71875,
+          "h": 48,
+          "visible": true
+        },
+        {
+          "text": "More",
+          "x": 604.28125,
+          "y": 695,
+          "w": 67.71875,
+          "h": 48,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "name": "landscape village",
+      "village": true,
+      "innerWidth": 844,
+      "innerHeight": 390,
+      "scrollWidth": 844,
+      "nav": {
+        "x": 234.6796875,
+        "y": 322,
+        "w": 374.640625,
+        "h": 56,
+        "scrollWidth": 373,
+        "clientWidth": 373
+      },
+      "buttons": [
+        {
+          "text": "Map",
+          "x": 240.6796875,
+          "y": 328,
+          "w": 44,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "People",
+          "x": 289.6796875,
+          "y": 328,
+          "w": 56.328125,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "Quests",
+          "x": 351.0078125,
+          "y": 328,
+          "w": 57.140625,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "Satchel",
+          "x": 413.1484375,
+          "y": 328,
+          "w": 58.34375,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "Workshop",
+          "x": 476.4921875,
+          "y": 328,
+          "w": 75.25,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "Build",
+          "x": 556.7421875,
+          "y": 328,
+          "w": 46.578125,
+          "h": 44,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "name": "landscape farm",
+      "village": false,
+      "innerWidth": 844,
+      "innerHeight": 390,
+      "scrollWidth": 844,
+      "nav": {
+        "x": 207,
+        "y": 330,
+        "w": 430,
+        "h": 54,
+        "scrollWidth": 428,
+        "clientWidth": 428
+      },
+      "buttons": [
+        {
+          "text": "Farm",
+          "x": 212,
+          "y": 335,
+          "w": 59.140625,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "Manage",
+          "x": 272.140625,
+          "y": 335,
+          "w": 59.15625,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "Rides",
+          "x": 332.296875,
+          "y": 335,
+          "w": 59.140625,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "Home",
+          "x": 392.4375,
+          "y": 335,
+          "w": 59.140625,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "Outfits",
+          "x": 452.578125,
+          "y": 335,
+          "w": 59.140625,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "Village",
+          "x": 512.71875,
+          "y": 335,
+          "w": 59.140625,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "More",
+          "x": 572.859375,
+          "y": 335,
+          "w": 59.140625,
+          "h": 44,
+          "visible": true
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "mode": "late-only",
+  "passed": true
+}

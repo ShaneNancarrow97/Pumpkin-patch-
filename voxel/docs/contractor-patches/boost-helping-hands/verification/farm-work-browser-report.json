@@ -1,0 +1,113 @@
+{
+  "date": "2026-11-02T15:53:49.467Z",
+  "htmlSha256": "bd6a053533a1a5c2c01489085f012140746e6340c7e70d4da40f8062bdf1ba64",
+  "checks": [
+    {
+      "pass": true,
+      "label": "Plant button changes exactly one plot"
+    },
+    {
+      "pass": true,
+      "label": "Second plant press changes only one further plot"
+    },
+    {
+      "pass": true,
+      "label": "Boost accepts a tap and adds heat"
+    },
+    {
+      "pass": true,
+      "label": "Genuine hold-to-buy hires Shane without hiring Natalie"
+    },
+    {
+      "pass": true,
+      "label": "Planting and watering purchases train only Shane"
+    },
+    {
+      "pass": true,
+      "label": "First basket upgrade gives Shane capacity two"
+    },
+    {
+      "pass": true,
+      "label": "Second basket upgrade gives Shane capacity three"
+    },
+    {
+      "pass": true,
+      "label": "Power and cooling purchases change their real rule values"
+    },
+    {
+      "pass": true,
+      "label": "Manual pick button respects capacity 1"
+    },
+    {
+      "pass": true,
+      "label": "Manual pick button respects capacity 2"
+    },
+    {
+      "pass": true,
+      "label": "Manual pick button respects capacity 3"
+    },
+    {
+      "pass": true,
+      "label": "Overheated dial visibly disables Boost and says Cooling"
+    },
+    {
+      "pass": true,
+      "label": "Tea break freezes heat"
+    },
+    {
+      "pass": true,
+      "label": "Active-time cooling unlocks Boost after threshold"
+    },
+    {
+      "pass": true,
+      "label": "Legacy shared helping-hands purchase restores both owners at version15"
+    },
+    {
+      "pass": true,
+      "label": "fold-unfolded: helper menu has no horizontal overflow"
+    },
+    {
+      "pass": true,
+      "label": "fold-unfolded: both boost upgrade cards reachable"
+    },
+    {
+      "pass": true,
+      "label": "phone: helper menu has no horizontal overflow"
+    },
+    {
+      "pass": true,
+      "label": "phone: both boost upgrade cards reachable"
+    },
+    {
+      "pass": true,
+      "label": "phone-landscape: helper menu has no horizontal overflow"
+    },
+    {
+      "pass": true,
+      "label": "phone-landscape: both boost upgrade cards reachable"
+    },
+    {
+      "pass": true,
+      "label": "Focused browser run has no page or console errors",
+      "detail": []
+    }
+  ],
+  "errors": [],
+  "screenshots": [
+    "farm-work-desktop-dial.png",
+    "farm-work-desktop-helpers.png",
+    "farm-work-desktop-boost-upgrades.png",
+    "farm-work-desktop-overheated.png",
+    "farm-work-fold-unfolded-helpers.png",
+    "farm-work-fold-unfolded-boost.png",
+    "farm-work-fold-unfolded-dial.png",
+    "farm-work-phone-helpers.png",
+    "farm-work-phone-boost.png",
+    "farm-work-phone-dial.png",
+    "farm-work-phone-landscape-helpers.png",
+    "farm-work-phone-landscape-boost.png",
+    "farm-work-phone-landscape-dial.png"
+  ],
+  "standardSmoke": null,
+  "passed": true
+}

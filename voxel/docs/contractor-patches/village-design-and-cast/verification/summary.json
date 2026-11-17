@@ -1,0 +1,22 @@
+{
+  "date": "2026-11-08",
+  "runtimeCommit": "e9e60a9",
+  "artCommit": "dffa38f",
+  "base": "604fe2359427fc7e90a3d1248a6c4d1d6b0136c8",
+  "unitTestFiles": {
+    "pass": 130,
+    "fail": 0
+  },
+  "villageGameChecks": 55,
+  "explorerChecks": 60,
+  "farmSmoke": {
+    "desktop": 27,
+    "phone": 27
+  },
+  "farmSmokeProfile": "software WebGL; SMOKE_LITE=1; glow/shadows off",
+  "actualGameSha256": "1dc758ae753244335539f4a57a19d2cbe31932a0f5874914591e064b4f82102f",
+  "explorerSha256": "3972f586706fd56998fbbb527a491834e07b69f13802cdb51271804de022e710",
+  "artifactCommit": "3d701467d68c6383da47815d3ebe40c70eac1a68",
+  "downloadsVerified": true,
+  "physicalHardwareCertified": false
+}

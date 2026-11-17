@@ -1,0 +1,339 @@
+{
+  "date": "2026-11-08T19:56:47.415Z",
+  "scope": "Actual headless Chromium DOM using production cursor, catalogue rendering and category artwork. No WebGL game, emulated viewport/controller state; furniture item thumbnails stubbed. No physical hardware claims.",
+  "checks": [
+    {
+      "pass": true,
+      "label": "Click replacing menu preserves exact pointer point; detached hover cannot pull to origin",
+      "detail": {
+        "before": {
+          "x": 113.32170038566746,
+          "y": 102.01483781240623,
+          "label": "Buy sofa"
+        },
+        "after": {
+          "x": 113.32170038566746,
+          "y": 102.01483781240623,
+          "label": ""
+        },
+        "clicks": 1,
+        "oldGone": true
+      }
+    },
+    {
+      "pass": true,
+      "label": "Connected clicked button moving to another panel cannot steer pointer",
+      "detail": {
+        "before": {
+          "x": 120.88678379128191,
+          "y": 110,
+          "label": "Buy sofa"
+        },
+        "after": {
+          "x": 120.88678379128191,
+          "y": 110,
+          "label": ""
+        },
+        "clicks": 2,
+        "connected": true
+      }
+    },
+    {
+      "pass": true,
+      "label": "Magnetic settling needs steering and stops immediately when target node changes",
+      "detail": {
+        "release": {
+          "x": 108.90904050989126,
+          "y": 98.02225671860934,
+          "label": "Buy sofa"
+        },
+        "settled": {
+          "x": 127.42296593573906,
+          "y": 102.36265369088676,
+          "label": "Buy sofa"
+        },
+        "before": {
+          "x": 127.42296593573906,
+          "y": 102.36265369088676,
+          "label": "Buy sofa"
+        },
+        "after": {
+          "x": 127.42296593573906,
+          "y": 102.36265369088676,
+          "label": ""
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "Other controller buttons do not create fresh cursor steering intent",
+      "detail": {
+        "before": {
+          "x": 100,
+          "y": 100,
+          "label": "Buy sofa"
+        },
+        "after": {
+          "x": 100,
+          "y": 100,
+          "label": "Buy sofa"
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "Invalid controller coordinates cannot corrupt screen position",
+      "detail": {
+        "x": 100,
+        "y": 100,
+        "label": "Buy sofa"
+      }
+    },
+    {
+      "pass": true,
+      "label": "D-pad makes a controlled screen-space nudge",
+      "detail": {
+        "x": 109.33333333333333,
+        "y": 100,
+        "label": "Buy sofa"
+      }
+    },
+    {
+      "pass": true,
+      "label": "Right stick scrolls without moving the cursor point",
+      "detail": {
+        "before": {
+          "x": 110,
+          "y": 105,
+          "label": "Scrollable option"
+        },
+        "after": {
+          "x": 110,
+          "y": 105,
+          "label": "Scrollable option"
+        },
+        "scroll": 20
+      }
+    },
+    {
+      "pass": true,
+      "label": "Viewport change clamps pointer to visible bounds without resetting it",
+      "detail": {
+        "x": 388,
+        "y": 298,
+        "label": ""
+      }
+    },
+    {
+      "pass": true,
+      "label": "Mouse takeover hides cursor; toggling resumes its retained point"
+    },
+    {
+      "pass": true,
+      "label": "Actual Furnish markup has18 illustrated, labelled44px category tabs",
+      "detail": [
+        {
+          "id": "all",
+          "label": "Everything",
+          "caption": "All",
+          "icon": "all",
+          "w": 60,
+          "h": 62,
+          "font": "12px"
+        },
+        {
+          "id": "seating",
+          "label": "Seating",
+          "caption": "Seating",
+          "icon": "seating",
+          "w": 60,
+          "h": 62,
+          "font": "12px"
+        },
+        {
+          "id": "tables",
+          "label": "Tables & desks",
+          "caption": "Tables",
+          "icon": "tables",
+          "w": 60,
+          "h": 62,
+          "font": "12px"
+        },
+        {
+          "id": "beds",
+          "label": "Beds & dressing",
+          "caption": "Beds",
+          "icon": "beds",
+          "w": 60,
+          "h": 62,
+          "font": "12px"
+        },
+        {
+          "id": "storage",
+          "label": "Shelves & storage",
+          "caption": "Storage",
+          "icon": "storage",
+          "w": 60,
+          "h": 62,
+          "font": "12px"
+        },
+        {
+          "id": "lighting",
+          "label": "Lighting",
+          "caption": "Lights",
+          "icon": "lighting",
+          "w": 60,
+          "h": 62,
+          "font": "12px"
+        },
+        {
+          "id": "rugs",
+          "label": "Rugs",
+          "caption": "Rugs",
+          "icon": "rugs",
+          "w": 60,
+          "h": 62,
+          "font": "12px"
+        },
+        {
+          "id": "wall",
+          "label": "On the walls",
+          "caption": "Wall art",
+          "icon": "wall",
+          "w": 60,
+          "h": 62,
+          "font": "12px"
+        },
+        {
+          "id": "small",
+          "label": "Little treasures",
+          "caption": "Small",
+          "icon": "small",
+          "w": 60,
+          "h": 62,
+          "font": "12px"
+        },
+        {
+          "id": "curios",
+          "label": "Curios & plants",
+          "caption": "Curios",
+          "icon": "curios",
+          "w": 60,
+          "h": 62,
+          "font": "12px"
+        },
+        {
+          "id": "kitchen",
+          "label": "Kitchen",
+          "caption": "Kitchen",
+          "icon": "kitchen",
+          "w": 60,
+          "h": 62,
+          "font": "12px"
+        },
+        {
+          "id": "bathroom",
+          "label": "Bathroom",
+          "caption": "Bath",
+          "icon": "bathroom",
+          "w": 60,
+          "h": 62,
+          "font": "12px"
+        },
+        {
+          "id": "electronics",
+          "label": "Electronics",
+          "caption": "Screens",
+          "icon": "electronics",
+          "w": 60,
+          "h": 62,
+          "font": "12px"
+        },
+        {
+          "id": "laundry",
+          "label": "Laundry",
+          "caption": "Laundry",
+          "icon": "laundry",
+          "w": 60,
+          "h": 62,
+          "font": "12px"
+        },
+        {
+          "id": "music",
+          "label": "Music",
+          "caption": "Music",
+          "icon": "music",
+          "w": 60,
+          "h": 62,
+          "font": "12px"
+        },
+        {
+          "id": "pets",
+          "label": "Pets",
+          "caption": "Pets",
+          "icon": "pets",
+          "w": 60,
+          "h": 62,
+          "font": "12px"
+        },
+        {
+          "id": "books",
+          "label": "Books",
+          "caption": "Books",
+          "icon": "books",
+          "w": 60,
+          "h": 62,
+          "font": "12px"
+        },
+        {
+          "id": "wallpaper",
+          "label": "Wallpaper",
+          "caption": "Paper",
+          "icon": "wallpaper",
+          "w": 60,
+          "h": 62,
+          "font": "12px"
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "By room uses corresponding furniture/category art for all five rooms"
+    },
+    {
+      "pass": true,
+      "label": "Owned modes retain four illustrated inventory filters"
+    },
+    {
+      "pass": true,
+      "label": "Illustrated category preserves actual catalogue filter selection"
+    },
+    {
+      "pass": true,
+      "label": "Top Rooms/Furnish/Expand menu actions include artwork"
+    },
+    {
+      "pass": true,
+      "label": "Late category selection retains horizontal scroll through full menu replacement",
+      "detail": {
+        "before": 450,
+        "after": 450
+      }
+    },
+    {
+      "pass": true,
+      "label": "UI-only browser test produced no page errors",
+      "detail": []
+    }
+  ],
+  "errors": [],
+  "sourceHashes": {
+    "src/ui/pad-cursor.js": "e94e45e88ae2ed03d3a0bde24c876f6c3b35008124d37029dada4db628ac18b5",
+    "src/ui/menu-memory.js": "216e72b05939b723c9e1ab49b44ac08f7a5014253578bfdc2371b91512f117c9",
+    "src/ui/home-sheets.js": "cb7972bd95ed8ba5a60e70e378a4bbbca6256a3f3f2137425bc1a300e216ce1a",
+    "src/ui/build-catalogue.css": "ff74501f47268f509cafe4c7fa541a4c40c46556d4b1ea8447d6b2a6c3cfe130",
+    "src/ui/home-category-icon-markup.js": "2acb01f4cc749ba13525cb19a6c297fb05a67b8c6b4ff28bb341972e1d983512",
+    "assets/home-category-icons/home-categories.webp": "c035905327dc8da4c62b5befc51e1fd51f7c0e2920920a4ec7f07631329c2e1d"
+  },
+  "passed": true
+}

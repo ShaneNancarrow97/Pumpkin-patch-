@@ -1,0 +1,1675 @@
+{
+  "generator": "OpenAI image generation; source paintings retained unchanged",
+  "baker": "tools/bake-mothlight-expansion-art.py",
+  "sources": {
+    "dishes-2.png": {
+      "sha256": "a3f34010814963faee110b6c189d684adc945399842d612ef5291e9d10a1fe8d",
+      "bytes": 1974681
+    },
+    "granny-48.png": {
+      "sha256": "0226d2ba25116f2a90bebcbd907e8d49b7faf00db666c4df45e61f1042407ebd",
+      "bytes": 2511954
+    },
+    "granny-before-direction-repair.png": {
+      "sha256": "e71d04d2d72d88caff474f252983d7a01707b9b752160b2ca2701d62cd87cc26",
+      "bytes": 2485299
+    },
+    "icons-12.png": {
+      "sha256": "ceabf7b63e15e259b4e6f8299fc3543bc2ca9a4012638f93c47d1dbbb1452d71",
+      "bytes": 2261390
+    }
+  },
+  "granny": {
+    "authoredPoses": 48,
+    "directions": [
+      "front",
+      "frontRight",
+      "right",
+      "backRight",
+      "back",
+      "backLeft",
+      "left",
+      "frontLeft"
+    ],
+    "poses": [
+      "idle",
+      "left-contact",
+      "left-pass",
+      "right-contact",
+      "right-pass",
+      "gesture"
+    ],
+    "cell": {
+      "w": 192,
+      "h": 176,
+      "ax": 96,
+      "ay": 164
+    },
+    "rows": 144,
+    "height": 1.95,
+    "sharedScale": 0.8044692737430168,
+    "mirrored": false,
+    "interpolated": false,
+    "frames": [
+      {
+        "direction": "front",
+        "pose": "idle",
+        "sourceBox": [
+          0,
+          0,
+          181,
+          181
+        ],
+        "sourceAlphaBounds": [
+          50,
+          5,
+          179,
+          181
+        ],
+        "sourceTorsoAxis": 115.0,
+        "targetAlphaBounds": [
+          44,
+          22,
+          148,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "front",
+        "pose": "left-contact",
+        "sourceBox": [
+          181,
+          0,
+          362,
+          181
+        ],
+        "sourceAlphaBounds": [
+          41,
+          5,
+          173,
+          181
+        ],
+        "sourceTorsoAxis": 107.0,
+        "targetAlphaBounds": [
+          43,
+          22,
+          149,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "front",
+        "pose": "left-pass",
+        "sourceBox": [
+          362,
+          0,
+          543,
+          181
+        ],
+        "sourceAlphaBounds": [
+          29,
+          5,
+          166,
+          179
+        ],
+        "sourceTorsoAxis": 97.5,
+        "targetAlphaBounds": [
+          41,
+          24,
+          151,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "front",
+        "pose": "right-contact",
+        "sourceBox": [
+          543,
+          0,
+          724,
+          181
+        ],
+        "sourceAlphaBounds": [
+          19,
+          6,
+          152,
+          179
+        ],
+        "sourceTorsoAxis": 85.75,
+        "targetAlphaBounds": [
+          42,
+          25,
+          149,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "front",
+        "pose": "right-pass",
+        "sourceBox": [
+          724,
+          0,
+          905,
+          181
+        ],
+        "sourceAlphaBounds": [
+          9,
+          6,
+          139,
+          181
+        ],
+        "sourceTorsoAxis": 75.0,
+        "targetAlphaBounds": [
+          43,
+          23,
+          148,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "front",
+        "pose": "gesture",
+        "sourceBox": [
+          905,
+          0,
+          1086,
+          181
+        ],
+        "sourceAlphaBounds": [
+          2,
+          6,
+          151,
+          181
+        ],
+        "sourceTorsoAxis": 63.5,
+        "targetAlphaBounds": [
+          47,
+          23,
+          167,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "frontRight",
+        "pose": "idle",
+        "sourceBox": [
+          0,
+          181,
+          181,
+          362
+        ],
+        "sourceAlphaBounds": [
+          52,
+          5,
+          172,
+          179
+        ],
+        "sourceTorsoAxis": 111.5,
+        "targetAlphaBounds": [
+          48,
+          24,
+          145,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "frontRight",
+        "pose": "left-contact",
+        "sourceBox": [
+          181,
+          181,
+          362,
+          362
+        ],
+        "sourceAlphaBounds": [
+          44,
+          5,
+          165,
+          179
+        ],
+        "sourceTorsoAxis": 104.0,
+        "targetAlphaBounds": [
+          48,
+          24,
+          145,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "frontRight",
+        "pose": "left-pass",
+        "sourceBox": [
+          362,
+          181,
+          543,
+          362
+        ],
+        "sourceAlphaBounds": [
+          33,
+          5,
+          154,
+          176
+        ],
+        "sourceTorsoAxis": 94.0,
+        "targetAlphaBounds": [
+          47,
+          26,
+          144,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "frontRight",
+        "pose": "right-contact",
+        "sourceBox": [
+          543,
+          181,
+          724,
+          362
+        ],
+        "sourceAlphaBounds": [
+          24,
+          7,
+          148,
+          178
+        ],
+        "sourceTorsoAxis": 86.5,
+        "targetAlphaBounds": [
+          46,
+          26,
+          146,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "frontRight",
+        "pose": "right-pass",
+        "sourceBox": [
+          724,
+          181,
+          905,
+          362
+        ],
+        "sourceAlphaBounds": [
+          14,
+          4,
+          136,
+          179
+        ],
+        "sourceTorsoAxis": 75.0,
+        "targetAlphaBounds": [
+          47,
+          23,
+          145,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "frontRight",
+        "pose": "gesture",
+        "sourceBox": [
+          905,
+          181,
+          1086,
+          362
+        ],
+        "sourceAlphaBounds": [
+          3,
+          5,
+          154,
+          179
+        ],
+        "sourceTorsoAxis": 63.0,
+        "targetAlphaBounds": [
+          48,
+          24,
+          169,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "right",
+        "pose": "idle",
+        "sourceBox": [
+          0,
+          362,
+          181,
+          543
+        ],
+        "sourceAlphaBounds": [
+          54,
+          2,
+          171,
+          179
+        ],
+        "sourceTorsoAxis": 108.25,
+        "targetAlphaBounds": [
+          52,
+          22,
+          146,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "right",
+        "pose": "left-contact",
+        "sourceBox": [
+          181,
+          362,
+          362,
+          543
+        ],
+        "sourceAlphaBounds": [
+          46,
+          2,
+          163,
+          179
+        ],
+        "sourceTorsoAxis": 99.5,
+        "targetAlphaBounds": [
+          53,
+          22,
+          147,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "right",
+        "pose": "left-pass",
+        "sourceBox": [
+          362,
+          362,
+          543,
+          543
+        ],
+        "sourceAlphaBounds": [
+          41,
+          2,
+          154,
+          179
+        ],
+        "sourceTorsoAxis": 93.5,
+        "targetAlphaBounds": [
+          54,
+          22,
+          145,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "right",
+        "pose": "right-contact",
+        "sourceBox": [
+          543,
+          362,
+          724,
+          543
+        ],
+        "sourceAlphaBounds": [
+          30,
+          2,
+          145,
+          179
+        ],
+        "sourceTorsoAxis": 84.0,
+        "targetAlphaBounds": [
+          53,
+          22,
+          146,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "right",
+        "pose": "right-pass",
+        "sourceBox": [
+          724,
+          362,
+          905,
+          543
+        ],
+        "sourceAlphaBounds": [
+          20,
+          2,
+          133,
+          179
+        ],
+        "sourceTorsoAxis": 74.0,
+        "targetAlphaBounds": [
+          53,
+          22,
+          144,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "right",
+        "pose": "gesture",
+        "sourceBox": [
+          905,
+          362,
+          1086,
+          543
+        ],
+        "sourceAlphaBounds": [
+          13,
+          2,
+          152,
+          179
+        ],
+        "sourceTorsoAxis": 65.75,
+        "targetAlphaBounds": [
+          54,
+          22,
+          166,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "backRight",
+        "pose": "idle",
+        "sourceBox": [
+          0,
+          543,
+          181,
+          724
+        ],
+        "sourceAlphaBounds": [
+          53,
+          2,
+          168,
+          179
+        ],
+        "sourceTorsoAxis": 110.0,
+        "targetAlphaBounds": [
+          50,
+          22,
+          143,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "backRight",
+        "pose": "left-contact",
+        "sourceBox": [
+          181,
+          543,
+          362,
+          724
+        ],
+        "sourceAlphaBounds": [
+          47,
+          2,
+          168,
+          179
+        ],
+        "sourceTorsoAxis": 103.5,
+        "targetAlphaBounds": [
+          51,
+          22,
+          148,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "backRight",
+        "pose": "left-pass",
+        "sourceBox": [
+          362,
+          543,
+          543,
+          724
+        ],
+        "sourceAlphaBounds": [
+          38,
+          2,
+          151,
+          177
+        ],
+        "sourceTorsoAxis": 94.5,
+        "targetAlphaBounds": [
+          51,
+          23,
+          142,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "backRight",
+        "pose": "right-contact",
+        "sourceBox": [
+          543,
+          543,
+          724,
+          724
+        ],
+        "sourceAlphaBounds": [
+          30,
+          3,
+          142,
+          179
+        ],
+        "sourceTorsoAxis": 86.0,
+        "targetAlphaBounds": [
+          51,
+          22,
+          141,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "backRight",
+        "pose": "right-pass",
+        "sourceBox": [
+          724,
+          543,
+          905,
+          724
+        ],
+        "sourceAlphaBounds": [
+          16,
+          2,
+          130,
+          178
+        ],
+        "sourceTorsoAxis": 73.0,
+        "targetAlphaBounds": [
+          50,
+          22,
+          142,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "backRight",
+        "pose": "gesture",
+        "sourceBox": [
+          905,
+          543,
+          1086,
+          724
+        ],
+        "sourceAlphaBounds": [
+          3,
+          3,
+          153,
+          178
+        ],
+        "sourceTorsoAxis": 61.0,
+        "targetAlphaBounds": [
+          49,
+          23,
+          170,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "back",
+        "pose": "idle",
+        "sourceBox": [
+          0,
+          724,
+          181,
+          905
+        ],
+        "sourceAlphaBounds": [
+          54,
+          5,
+          178,
+          180
+        ],
+        "sourceTorsoAxis": 116.0,
+        "targetAlphaBounds": [
+          46,
+          23,
+          146,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "back",
+        "pose": "left-contact",
+        "sourceBox": [
+          181,
+          724,
+          362,
+          905
+        ],
+        "sourceAlphaBounds": [
+          42,
+          5,
+          169,
+          180
+        ],
+        "sourceTorsoAxis": 106.0,
+        "targetAlphaBounds": [
+          45,
+          23,
+          147,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "back",
+        "pose": "left-pass",
+        "sourceBox": [
+          362,
+          724,
+          543,
+          905
+        ],
+        "sourceAlphaBounds": [
+          32,
+          5,
+          157,
+          180
+        ],
+        "sourceTorsoAxis": 97.5,
+        "targetAlphaBounds": [
+          43,
+          23,
+          144,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "back",
+        "pose": "right-contact",
+        "sourceBox": [
+          543,
+          724,
+          724,
+          905
+        ],
+        "sourceAlphaBounds": [
+          25,
+          7,
+          147,
+          180
+        ],
+        "sourceTorsoAxis": 88.0,
+        "targetAlphaBounds": [
+          45,
+          25,
+          143,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "back",
+        "pose": "right-pass",
+        "sourceBox": [
+          724,
+          724,
+          905,
+          905
+        ],
+        "sourceAlphaBounds": [
+          15,
+          7,
+          137,
+          181
+        ],
+        "sourceTorsoAxis": 76.5,
+        "targetAlphaBounds": [
+          47,
+          24,
+          145,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "back",
+        "pose": "gesture",
+        "sourceBox": [
+          905,
+          724,
+          1086,
+          905
+        ],
+        "sourceAlphaBounds": [
+          3,
+          7,
+          153,
+          180
+        ],
+        "sourceTorsoAxis": 64.5,
+        "targetAlphaBounds": [
+          47,
+          25,
+          168,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "backLeft",
+        "pose": "idle",
+        "sourceBox": [
+          0,
+          905,
+          181,
+          1086
+        ],
+        "sourceAlphaBounds": [
+          58,
+          5,
+          175,
+          179
+        ],
+        "sourceTorsoAxis": 118.0,
+        "targetAlphaBounds": [
+          48,
+          24,
+          142,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "backLeft",
+        "pose": "left-contact",
+        "sourceBox": [
+          181,
+          905,
+          362,
+          1086
+        ],
+        "sourceAlphaBounds": [
+          46,
+          5,
+          166,
+          178
+        ],
+        "sourceTorsoAxis": 106.0,
+        "targetAlphaBounds": [
+          48,
+          25,
+          145,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "backLeft",
+        "pose": "left-pass",
+        "sourceBox": [
+          362,
+          905,
+          543,
+          1086
+        ],
+        "sourceAlphaBounds": [
+          36,
+          5,
+          157,
+          178
+        ],
+        "sourceTorsoAxis": 98.5,
+        "targetAlphaBounds": [
+          46,
+          25,
+          143,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "backLeft",
+        "pose": "right-contact",
+        "sourceBox": [
+          543,
+          905,
+          724,
+          1086
+        ],
+        "sourceAlphaBounds": [
+          25,
+          5,
+          148,
+          179
+        ],
+        "sourceTorsoAxis": 87.25,
+        "targetAlphaBounds": [
+          46,
+          24,
+          145,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "backLeft",
+        "pose": "right-pass",
+        "sourceBox": [
+          724,
+          905,
+          905,
+          1086
+        ],
+        "sourceAlphaBounds": [
+          16,
+          6,
+          134,
+          179
+        ],
+        "sourceTorsoAxis": 78.5,
+        "targetAlphaBounds": [
+          46,
+          25,
+          141,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "backLeft",
+        "pose": "gesture",
+        "sourceBox": [
+          905,
+          905,
+          1086,
+          1086
+        ],
+        "sourceAlphaBounds": [
+          2,
+          6,
+          152,
+          179
+        ],
+        "sourceTorsoAxis": 59.5,
+        "targetAlphaBounds": [
+          50,
+          25,
+          171,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "left",
+        "pose": "idle",
+        "sourceBox": [
+          0,
+          1086,
+          181,
+          1267
+        ],
+        "sourceAlphaBounds": [
+          59,
+          2,
+          173,
+          178
+        ],
+        "sourceTorsoAxis": 126.0,
+        "targetAlphaBounds": [
+          42,
+          22,
+          134,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "left",
+        "pose": "left-contact",
+        "sourceBox": [
+          181,
+          1086,
+          362,
+          1267
+        ],
+        "sourceAlphaBounds": [
+          47,
+          3,
+          171,
+          176
+        ],
+        "sourceTorsoAxis": 115.75,
+        "targetAlphaBounds": [
+          41,
+          25,
+          141,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "left",
+        "pose": "left-pass",
+        "sourceBox": [
+          362,
+          1086,
+          543,
+          1267
+        ],
+        "sourceAlphaBounds": [
+          36,
+          2,
+          158,
+          177
+        ],
+        "sourceTorsoAxis": 105.0,
+        "targetAlphaBounds": [
+          40,
+          23,
+          138,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "left",
+        "pose": "right-contact",
+        "sourceBox": [
+          543,
+          1086,
+          724,
+          1267
+        ],
+        "sourceAlphaBounds": [
+          25,
+          3,
+          148,
+          177
+        ],
+        "sourceTorsoAxis": 93.0,
+        "targetAlphaBounds": [
+          41,
+          24,
+          140,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "left",
+        "pose": "right-pass",
+        "sourceBox": [
+          724,
+          1086,
+          905,
+          1267
+        ],
+        "sourceAlphaBounds": [
+          14,
+          2,
+          135,
+          178
+        ],
+        "sourceTorsoAxis": 80.75,
+        "targetAlphaBounds": [
+          42,
+          22,
+          139,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": [
+          {
+            "pixels": 161,
+            "bounds": [
+              166,
+              74,
+              181,
+              88
+            ]
+          }
+        ]
+      },
+      {
+        "direction": "left",
+        "pose": "gesture",
+        "sourceBox": [
+          905,
+          1086,
+          1086,
+          1267
+        ],
+        "sourceAlphaBounds": [
+          0,
+          1,
+          133,
+          178
+        ],
+        "sourceTorsoAxis": 73.75,
+        "targetAlphaBounds": [
+          37,
+          22,
+          144,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "frontLeft",
+        "pose": "idle",
+        "sourceBox": [
+          0,
+          1267,
+          181,
+          1448
+        ],
+        "sourceAlphaBounds": [
+          55,
+          1,
+          179,
+          177
+        ],
+        "sourceTorsoAxis": 121.0,
+        "targetAlphaBounds": [
+          43,
+          22,
+          143,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "frontLeft",
+        "pose": "left-contact",
+        "sourceBox": [
+          181,
+          1267,
+          362,
+          1448
+        ],
+        "sourceAlphaBounds": [
+          47,
+          2,
+          171,
+          177
+        ],
+        "sourceTorsoAxis": 110.5,
+        "targetAlphaBounds": [
+          45,
+          23,
+          145,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "frontLeft",
+        "pose": "left-pass",
+        "sourceBox": [
+          362,
+          1267,
+          543,
+          1448
+        ],
+        "sourceAlphaBounds": [
+          35,
+          0,
+          160,
+          178
+        ],
+        "sourceTorsoAxis": 99.75,
+        "targetAlphaBounds": [
+          44,
+          21,
+          145,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "frontLeft",
+        "pose": "right-contact",
+        "sourceBox": [
+          543,
+          1267,
+          724,
+          1448
+        ],
+        "sourceAlphaBounds": [
+          23,
+          2,
+          151,
+          178
+        ],
+        "sourceTorsoAxis": 87.5,
+        "targetAlphaBounds": [
+          44,
+          22,
+          147,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      },
+      {
+        "direction": "frontLeft",
+        "pose": "right-pass",
+        "sourceBox": [
+          724,
+          1267,
+          905,
+          1448
+        ],
+        "sourceAlphaBounds": [
+          9,
+          1,
+          141,
+          179
+        ],
+        "sourceTorsoAxis": 77.5,
+        "targetAlphaBounds": [
+          41,
+          21,
+          147,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": [
+          {
+            "pixels": 155,
+            "bounds": [
+              167,
+              72,
+              181,
+              86
+            ]
+          }
+        ]
+      },
+      {
+        "direction": "frontLeft",
+        "pose": "gesture",
+        "sourceBox": [
+          905,
+          1267,
+          1086,
+          1448
+        ],
+        "sourceAlphaBounds": [
+          0,
+          0,
+          136,
+          179
+        ],
+        "sourceTorsoAxis": 74.25,
+        "targetAlphaBounds": [
+          36,
+          20,
+          145,
+          164
+        ],
+        "anchor": [
+          96,
+          164
+        ],
+        "removedNeighbourFragments": []
+      }
+    ],
+    "runtimeBytes": 544046
+  },
+  "icons": {
+    "grid": [
+      4,
+      3
+    ],
+    "cell": 128,
+    "items": [
+      {
+        "id": "cave",
+        "column": 0,
+        "row": 0,
+        "sourceBox": [
+          0,
+          0,
+          362,
+          362
+        ],
+        "sourceAlphaBounds": [
+          22,
+          27,
+          345,
+          336
+        ]
+      },
+      {
+        "id": "lantern-amethyst",
+        "column": 1,
+        "row": 0,
+        "sourceBox": [
+          362,
+          0,
+          724,
+          362
+        ],
+        "sourceAlphaBounds": [
+          63,
+          22,
+          299,
+          346
+        ]
+      },
+      {
+        "id": "ember-garnet",
+        "column": 2,
+        "row": 0,
+        "sourceBox": [
+          724,
+          0,
+          1086,
+          362
+        ],
+        "sourceAlphaBounds": [
+          46,
+          51,
+          314,
+          322
+        ]
+      },
+      {
+        "id": "hollow-opal",
+        "column": 3,
+        "row": 0,
+        "sourceBox": [
+          1086,
+          0,
+          1448,
+          362
+        ],
+        "sourceAlphaBounds": [
+          42,
+          46,
+          315,
+          331
+        ]
+      },
+      {
+        "id": "scarecrow-maze",
+        "column": 0,
+        "row": 1,
+        "sourceBox": [
+          0,
+          362,
+          362,
+          724
+        ],
+        "sourceAlphaBounds": [
+          17,
+          18,
+          350,
+          338
+        ]
+      },
+      {
+        "id": "granny-house",
+        "column": 1,
+        "row": 1,
+        "sourceBox": [
+          362,
+          362,
+          724,
+          724
+        ],
+        "sourceAlphaBounds": [
+          33,
+          12,
+          343,
+          343
+        ]
+      },
+      {
+        "id": "gemcraft",
+        "column": 2,
+        "row": 1,
+        "sourceBox": [
+          724,
+          362,
+          1086,
+          724
+        ],
+        "sourceAlphaBounds": [
+          20,
+          28,
+          345,
+          338
+        ]
+      },
+      {
+        "id": "ward",
+        "column": 3,
+        "row": 1,
+        "sourceBox": [
+          1086,
+          362,
+          1448,
+          724
+        ],
+        "sourceAlphaBounds": [
+          40,
+          8,
+          321,
+          343
+        ]
+      },
+      {
+        "id": "commission",
+        "column": 0,
+        "row": 2,
+        "sourceBox": [
+          0,
+          724,
+          362,
+          1086
+        ],
+        "sourceAlphaBounds": [
+          17,
+          30,
+          351,
+          336
+        ]
+      },
+      {
+        "id": "festival",
+        "column": 1,
+        "row": 2,
+        "sourceBox": [
+          362,
+          724,
+          724,
+          1086
+        ],
+        "sourceAlphaBounds": [
+          5,
+          56,
+          358,
+          315
+        ]
+      },
+      {
+        "id": "companion",
+        "column": 2,
+        "row": 2,
+        "sourceBox": [
+          724,
+          724,
+          1086,
+          1086
+        ],
+        "sourceAlphaBounds": [
+          27,
+          33,
+          325,
+          335
+        ]
+      },
+      {
+        "id": "restoration",
+        "column": 3,
+        "row": 2,
+        "sourceBox": [
+          1086,
+          724,
+          1448,
+          1086
+        ],
+        "sourceAlphaBounds": [
+          15,
+          25,
+          340,
+          338
+        ]
+      }
+    ],
+    "bytes": 240382
+  },
+  "dishes": {
+    "grid": [
+      2,
+      1
+    ],
+    "cell": 256,
+    "items": [
+      {
+        "id": "cinders-lantern-stew",
+        "sourceBox": [
+          0,
+          0,
+          887,
+          887
+        ],
+        "sourceAlphaBounds": [
+          36,
+          37,
+          812,
+          815
+        ]
+      },
+      {
+        "id": "grannys-bramble-pudding",
+        "sourceBox": [
+          887,
+          0,
+          1774,
+          887
+        ],
+        "sourceAlphaBounds": [
+          108,
+          70,
+          796,
+          825
+        ]
+      }
+    ],
+    "bytes": 65768
+  }
+}

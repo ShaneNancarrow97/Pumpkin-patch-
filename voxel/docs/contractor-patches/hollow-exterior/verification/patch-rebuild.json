@@ -1,0 +1,11 @@
+{
+  "leadBase": "3f92ca8df92e07b09445ce092101e9309c00288c",
+  "runtimeSourceCommit": "0fdeffa66f087e09dd235b696a06ecde60d349ae",
+  "method": "Apply binary patch in an isolated worktree at exact lead base and build with pinned dependencies.",
+  "htmlSha256": "4e84fd080a749e129020da081afdc064cdc29328678c208210e72a4111cccbf5",
+  "rebuiltHtmlSha256": "4e84fd080a749e129020da081afdc064cdc29328678c208210e72a4111cccbf5",
+  "identical": true,
+  "root2DChanged": false,
+  "rulesModelSaveChanged": false,
+  "foyerTailByteIdentical": true
+}

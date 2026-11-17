@@ -1,0 +1,1276 @@
+{
+  "date": "2026-11-08T19:07:58.248Z",
+  "html": "/workspace/Pumpkin-Patch-Village-Journey.html",
+  "sha256": "f6a755b2b692f899d132df07b148dacba229711c8a1c67a7d8bcdeacaacf2edd",
+  "bytes": 57503178,
+  "sourceCommit": "1fa44e580ae6e8f609219f96aaedd09da99c8898",
+  "checks": [
+    {
+      "pass": true,
+      "label": "Farm ground uses masked shared grass-detail shader",
+      "data": [
+        {
+          "name": "",
+          "detail": {
+            "worldUnits": 1.6,
+            "coverage": "base-map-alpha",
+            "sharedTexture": true
+          },
+          "map": [
+            480,
+            350
+          ]
+        },
+        {
+          "name": "",
+          "detail": {
+            "worldUnits": 1.6,
+            "coverage": "base-map-alpha",
+            "sharedTexture": true
+          },
+          "map": [
+            480,
+            350
+          ]
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "Settings exposes all26 tracks including five supplied MIDIs",
+      "data": [
+        {
+          "id": "lantern",
+          "name": "Lantern March"
+        },
+        {
+          "id": "thriller",
+          "name": "Thriller"
+        },
+        {
+          "id": "lullaby",
+          "name": "Lullaby for a Dead Man"
+        },
+        {
+          "id": "nightmare",
+          "name": "Nightmare"
+        },
+        {
+          "id": "ghostbusters",
+          "name": "Ghostbusters"
+        },
+        {
+          "id": "living-dead-girl",
+          "name": "Living Dead Girl"
+        },
+        {
+          "id": "skyla",
+          "name": "Skyla’s Midnight Market"
+        },
+        {
+          "id": "moon",
+          "name": "Moonlit Mischief"
+        },
+        {
+          "id": "parade",
+          "name": "Pumpkin Parade"
+        },
+        {
+          "id": "disasterology",
+          "name": "Disasterology"
+        },
+        {
+          "id": "crazy-train",
+          "name": "Crazy Train"
+        },
+        {
+          "id": "rebel-yell",
+          "name": "Rebel Yell"
+        },
+        {
+          "id": "nothing-else-matters",
+          "name": "Nothing Else Matters"
+        },
+        {
+          "id": "dont-fear-the-reaper",
+          "name": "(Don’t Fear) The Reaper"
+        },
+        {
+          "id": "gypsys-tramps-and-thieves",
+          "name": "Gypsys, Tramps & Thieves"
+        },
+        {
+          "id": "everybody",
+          "name": "Everybody (Backstreet’s Back)"
+        },
+        {
+          "id": "where-is-my-mind",
+          "name": "Where Is My Mind?"
+        },
+        {
+          "id": "zombie",
+          "name": "Zombie"
+        },
+        {
+          "id": "killer-queen",
+          "name": "Killer Queen"
+        },
+        {
+          "id": "creep",
+          "name": "Creep"
+        },
+        {
+          "id": "numb",
+          "name": "Numb (Tim Dawes remix)"
+        },
+        {
+          "id": "crossing-field",
+          "name": "Crossing Field"
+        },
+        {
+          "id": "billie-jean",
+          "name": "Billie Jean"
+        },
+        {
+          "id": "africa",
+          "name": "Africa"
+        },
+        {
+          "id": "still-dre",
+          "name": "Still D.R.E."
+        },
+        {
+          "id": "bohemian-rhapsody",
+          "name": "Bohemian Rhapsody"
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "New supplied track can be selected"
+    },
+    {
+      "pass": true,
+      "label": "shane: actual controller movement advances alternating authored left/right steps",
+      "data": {
+        "who": "shane",
+        "samples": [
+          {
+            "position": {
+              "x": 20.05142409884918,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 0,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 20.165391156836396,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 0,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 20.307460577865942,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 1,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 20.46215720457054,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 2,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 20.622527600520808,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 2,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 20.78544738532887,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 3,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 20.949512684391532,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 4,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 21.1140926961876,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 4,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 21.278903983322987,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 5,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 21.443819189167012,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 6,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 21.608781088696748,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 7,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 21.77376396905191,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 7,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 21.938756276699632,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 0,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 22.103752820302947,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 1,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 22.268751267243804,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 2,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 22.43375056940935,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 2,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 22.59875025585212,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 3,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 22.763750114961777,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 4,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 22.928750051655665,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 5,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 23.093750023210394,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 5,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 23.258750010429107,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 6,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 23.42375000468611,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 7,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 23.58875000210561,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 7,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784385149407926
+          },
+          {
+            "position": {
+              "x": 23.753750000946116,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 0,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784385149407926
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "shane: walking/idle has no watering prop"
+    },
+    {
+      "pass": true,
+      "label": "natalie: actual controller movement advances alternating authored left/right steps",
+      "data": {
+        "who": "natalie",
+        "samples": [
+          {
+            "position": {
+              "x": 20.05142409884918,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 0,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 20.165391156836396,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 0,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 20.307460577865942,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 1,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 20.46215720457054,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 2,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 20.622527600520808,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 2,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 20.78544738532887,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 3,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 20.949512684391532,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 4,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 21.1140926961876,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 4,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 21.278903983322987,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 5,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 21.443819189167012,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 6,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 21.608781088696748,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 7,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 21.77376396905191,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 7,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 21.938756276699632,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 0,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 22.103752820302947,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 1,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 22.268751267243804,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 2,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 22.43375056940935,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 2,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 22.59875025585212,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 3,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 22.763750114961777,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 4,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 22.928750051655665,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 5,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 23.093750023210394,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 5,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 23.258750010429107,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 6,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 23.42375000468611,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 7,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 23.58875000210561,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 7,
+            "leading": "right",
+            "authored": true,
+            "stature": 2.2784368734298597
+          },
+          {
+            "position": {
+              "x": 23.753750000946116,
+              "z": 18
+            },
+            "direction": "right",
+            "frame": 0,
+            "leading": "left",
+            "authored": true,
+            "stature": 2.2784368734298597
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "natalie: walking/idle has no watering prop"
+    },
+    {
+      "pass": false,
+      "label": "Final increment has no browser/console errors",
+      "data": [
+        "fountain: locator.click: Target page, context or browser has been closed\nCall log:\n\u001b[2m  - waiting for locator('[data-fountain]:visible').first()\u001b[22m\n\u001b[2m    - locator resolved to <button data-fountain=\"\" class=\"button purchase-button\">Buy seeds · £1,500</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\n    at click (/workspace/pumpkin-menu-item-sprites/voxel/tools/village-journey-final-qa.mjs:18:55)\n    at /workspace/pumpkin-menu-item-sprites/voxel/tools/village-journey-final-qa.mjs:27:470\n    at async attempt (/workspace/pumpkin-menu-item-sprites/voxel/tools/village-journey-final-qa.mjs:19:36)\n    at /workspace/pumpkin-menu-item-sprites/voxel/async file:/workspace/pumpkin-menu-item-sprites/voxel/tools/village-journey-final-qa.mjs:27:2",
+        "truck: page.evaluate: Target page, context or browser has been closed\n    at /workspace/pumpkin-menu-item-sprites/voxel/tools/village-journey-final-qa.mjs:28:57\n    at attempt (/workspace/pumpkin-menu-item-sprites/voxel/tools/village-journey-final-qa.mjs:19:42)\n    at /workspace/pumpkin-menu-item-sprites/voxel/tools/village-journey-final-qa.mjs:28:8",
+        "furniture: locator.click: Target page, context or browser has been closed\n    at click (/workspace/pumpkin-menu-item-sprites/voxel/tools/village-journey-final-qa.mjs:18:55)\n    at /workspace/pumpkin-menu-item-sprites/voxel/tools/village-journey-final-qa.mjs:29:44\n    at attempt (/workspace/pumpkin-menu-item-sprites/voxel/tools/village-journey-final-qa.mjs:19:42)\n    at /workspace/pumpkin-menu-item-sprites/voxel/tools/village-journey-final-qa.mjs:29:8",
+        "proximity: page.evaluate: Target page, context or browser has been closed\n    at /workspace/pumpkin-menu-item-sprites/voxel/tools/village-journey-final-qa.mjs:30:49\n    at attempt (/workspace/pumpkin-menu-item-sprites/voxel/tools/village-journey-final-qa.mjs:19:42)\n    at /workspace/pumpkin-menu-item-sprites/voxel/tools/village-journey-final-qa.mjs:30:8"
+      ]
+    },
+    {
+      "pass": true,
+      "label": "Offline HTML makes no external asset requests",
+      "data": []
+    }
+  ],
+  "errors": [
+    "fountain: locator.click: Target page, context or browser has been closed\nCall log:\n\u001b[2m  - waiting for locator('[data-fountain]:visible').first()\u001b[22m\n\u001b[2m    - locator resolved to <button data-fountain=\"\" class=\"button purchase-button\">Buy seeds · £1,500</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\n    at click (/workspace/pumpkin-menu-item-sprites/voxel/tools/village-journey-final-qa.mjs:18:55)\n    at /workspace/pumpkin-menu-item-sprites/voxel/tools/village-journey-final-qa.mjs:27:470\n    at async attempt (/workspace/pumpkin-menu-item-sprites/voxel/tools/village-journey-final-qa.mjs:19:36)\n    at /workspace/pumpkin-menu-item-sprites/voxel/async file:/workspace/pumpkin-menu-item-sprites/voxel/tools/village-journey-final-qa.mjs:27:2",
+    "truck: page.evaluate: Target page, context or browser has been closed\n    at /workspace/pumpkin-menu-item-sprites/voxel/tools/village-journey-final-qa.mjs:28:57\n    at attempt (/workspace/pumpkin-menu-item-sprites/voxel/tools/village-journey-final-qa.mjs:19:42)\n    at /workspace/pumpkin-menu-item-sprites/voxel/tools/village-journey-final-qa.mjs:28:8",
+    "furniture: locator.click: Target page, context or browser has been closed\n    at click (/workspace/pumpkin-menu-item-sprites/voxel/tools/village-journey-final-qa.mjs:18:55)\n    at /workspace/pumpkin-menu-item-sprites/voxel/tools/village-journey-final-qa.mjs:29:44\n    at attempt (/workspace/pumpkin-menu-item-sprites/voxel/tools/village-journey-final-qa.mjs:19:42)\n    at /workspace/pumpkin-menu-item-sprites/voxel/tools/village-journey-final-qa.mjs:29:8",
+    "proximity: page.evaluate: Target page, context or browser has been closed\n    at /workspace/pumpkin-menu-item-sprites/voxel/tools/village-journey-final-qa.mjs:30:49\n    at attempt (/workspace/pumpkin-menu-item-sprites/voxel/tools/village-journey-final-qa.mjs:19:42)\n    at /workspace/pumpkin-menu-item-sprites/voxel/tools/village-journey-final-qa.mjs:30:8"
+  ],
+  "externalRequests": [],
+  "screenshots": [
+    "10-farm-grass.png",
+    "11-shane-walk.png",
+    "11-natalie-walk.png"
+  ],
+  "scope": "Exact HTML served unchanged on loopback; software Chromium. Explicit level20/finished-tour fixture, finite-wallet native starving guest fixture, star-marked ready pumpkin fixture. Timers and steps accelerated through game diagnostics; late progression not earned in play. Viewports are emulation, not hardware certification.",
+  "owners": [
+    {
+      "who": "shane",
+      "samples": [
+        {
+          "position": {
+            "x": 20.05142409884918,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 0,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 20.165391156836396,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 0,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 20.307460577865942,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 1,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 20.46215720457054,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 2,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 20.622527600520808,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 2,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 20.78544738532887,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 3,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 20.949512684391532,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 4,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 21.1140926961876,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 4,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 21.278903983322987,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 5,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 21.443819189167012,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 6,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 21.608781088696748,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 7,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 21.77376396905191,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 7,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 21.938756276699632,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 0,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 22.103752820302947,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 1,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 22.268751267243804,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 2,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 22.43375056940935,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 2,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 22.59875025585212,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 3,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 22.763750114961777,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 4,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 22.928750051655665,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 5,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 23.093750023210394,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 5,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 23.258750010429107,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 6,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 23.42375000468611,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 7,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 23.58875000210561,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 7,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784385149407926
+        },
+        {
+          "position": {
+            "x": 23.753750000946116,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 0,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784385149407926
+        }
+      ]
+    },
+    {
+      "who": "natalie",
+      "samples": [
+        {
+          "position": {
+            "x": 20.05142409884918,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 0,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 20.165391156836396,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 0,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 20.307460577865942,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 1,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 20.46215720457054,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 2,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 20.622527600520808,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 2,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 20.78544738532887,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 3,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 20.949512684391532,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 4,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 21.1140926961876,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 4,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 21.278903983322987,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 5,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 21.443819189167012,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 6,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 21.608781088696748,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 7,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 21.77376396905191,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 7,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 21.938756276699632,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 0,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 22.103752820302947,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 1,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 22.268751267243804,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 2,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 22.43375056940935,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 2,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 22.59875025585212,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 3,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 22.763750114961777,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 4,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 22.928750051655665,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 5,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 23.093750023210394,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 5,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 23.258750010429107,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 6,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 23.42375000468611,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 7,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 23.58875000210561,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 7,
+          "leading": "right",
+          "authored": true,
+          "stature": 2.2784368734298597
+        },
+        {
+          "position": {
+            "x": 23.753750000946116,
+            "z": 18
+          },
+          "direction": "right",
+          "frame": 0,
+          "leading": "left",
+          "authored": true,
+          "stature": 2.2784368734298597
+        }
+      ]
+    }
+  ],
+  "passed": false
+}

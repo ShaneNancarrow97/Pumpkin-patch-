@@ -1,0 +1,185 @@
+{
+  "generatedBy": "voxel/tools/bake-furniture-set-icons.py",
+  "source": "assets/furniture-set-concepts/source.png",
+  "sourceSha256": "59972cd98d5a693f6cc4c28e7d64db5552584bb5d90858a28ee0edde38fd954d",
+  "sourceSize": [
+    1774,
+    887
+  ],
+  "grid": {
+    "columns": 4,
+    "rows": 2,
+    "cell": 128,
+    "inset": 10
+  },
+  "items": [
+    {
+      "id": "moonlit-reading-set",
+      "column": 0,
+      "row": 0,
+      "sourceBounds": [
+        0,
+        0,
+        443,
+        443
+      ],
+      "alphaBounds": [
+        35,
+        66,
+        423,
+        408
+      ],
+      "renderSize": [
+        108,
+        95
+      ]
+    },
+    {
+      "id": "rattlewood-workshop-set",
+      "column": 1,
+      "row": 0,
+      "sourceBounds": [
+        443,
+        0,
+        887,
+        443
+      ],
+      "alphaBounds": [
+        46,
+        18,
+        375,
+        429
+      ],
+      "renderSize": [
+        86,
+        108
+      ]
+    },
+    {
+      "id": "midnight-reading-bench",
+      "column": 2,
+      "row": 0,
+      "sourceBounds": [
+        887,
+        0,
+        1330,
+        443
+      ],
+      "alphaBounds": [
+        58,
+        74,
+        404,
+        387
+      ],
+      "renderSize": [
+        108,
+        98
+      ]
+    },
+    {
+      "id": "shelf-floating",
+      "column": 3,
+      "row": 0,
+      "sourceBounds": [
+        1330,
+        0,
+        1774,
+        443
+      ],
+      "alphaBounds": [
+        55,
+        152,
+        391,
+        292
+      ],
+      "renderSize": [
+        108,
+        45
+      ]
+    },
+    {
+      "id": "household-plum-mug",
+      "column": 0,
+      "row": 1,
+      "sourceBounds": [
+        0,
+        443,
+        443,
+        887
+      ],
+      "alphaBounds": [
+        123,
+        114,
+        338,
+        317
+      ],
+      "renderSize": [
+        108,
+        102
+      ]
+    },
+    {
+      "id": "lantern-entry-console",
+      "column": 1,
+      "row": 1,
+      "sourceBounds": [
+        443,
+        443,
+        887,
+        887
+      ],
+      "alphaBounds": [
+        35,
+        66,
+        415,
+        380
+      ],
+      "renderSize": [
+        108,
+        89
+      ]
+    },
+    {
+      "id": "household-coat-hooks",
+      "column": 2,
+      "row": 1,
+      "sourceBounds": [
+        887,
+        443,
+        1330,
+        887
+      ],
+      "alphaBounds": [
+        36,
+        120,
+        408,
+        305
+      ],
+      "renderSize": [
+        108,
+        54
+      ]
+    },
+    {
+      "id": "shelf-bracket",
+      "column": 3,
+      "row": 1,
+      "sourceBounds": [
+        1330,
+        443,
+        1774,
+        887
+      ],
+      "alphaBounds": [
+        23,
+        128,
+        425,
+        305
+      ],
+      "renderSize": [
+        108,
+        48
+      ]
+    }
+  ]
+}

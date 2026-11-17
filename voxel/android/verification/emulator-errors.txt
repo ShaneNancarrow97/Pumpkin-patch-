@@ -1,0 +1,13 @@
+--------- beginning of system
+--------- beginning of main
+11-08 20:49:26.295   307   514 E HWComposer: getSupportedContentTypes: getSupportedContentTypes failed for display 8141241408256768: Unsupported (8)
+--------- beginning of kernel
+11-08 20:49:28.214     0     0 E apexd   : Can't open /system_ext/apex for reading : No such file or directory
+11-08 20:49:28.214     0     0 E apexd   : Can't open /product/apex for reading : No such file or directory
+11-08 20:49:28.214     0     0 E apexd   : Can't open /vendor/apex for reading : No such file or directory
+11-08 20:49:28.722   293   582 E SensorsMultiHal: Dropping 1 events after blockingWrite failed.
+11-08 20:49:30.288   508   508 E wifi_forwarder: qemu_pipe_open_ns:62: Could not connect to the 'pipe:qemud:wififorward' service: Invalid argument
+11-08 20:49:30.293   503   503 E netmgr  : qemu_pipe_open_ns:62: Could not connect to the 'pipe:qemud:network' service: Invalid argument
+11-08 20:49:30.293   503   503 E netmgr  : Failed to open QEMU pipe 'qemud:network': Invalid argument
+11-08 20:49:30.318   508   508 E wifi_forwarder: RemoteConnection failed to initialize: RemoteConnection failed to open pipe
+11-08 20:49:31.009   397   599 E iorapd  : Cannot get package manager service!

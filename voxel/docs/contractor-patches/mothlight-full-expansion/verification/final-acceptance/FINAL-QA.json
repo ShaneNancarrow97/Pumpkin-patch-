@@ -1,0 +1,25 @@
+{
+  "sha256": "ab6ac3af9f1a2024693952d6fd987a7ad2473fad622785473022271f1c7ad1a6",
+  "bytes": 60328415,
+  "integration": {
+    "passed": true,
+    "checks": 103,
+    "errors": 0,
+    "normalPhotos": 20,
+    "externalRequests": 0
+  },
+  "tvDialogue": {
+    "passed": true,
+    "checks": 4,
+    "errors": 0,
+    "normalPhotos": 1
+  },
+  "baselineSmoke": {
+    "passed": true,
+    "checks": 54,
+    "scope": "Unmodified smoke.mjs over byte-identical loopback HTML; renderer/composer draws held for logic only. Direct file URL is blocked by managed Chrome and its failed receipt is retained separately."
+  },
+  "scope": "Declared prepared farm/branch fixtures; actual walking and guarded UI actions, not an earned level1\u201320 campaign. Normal screenshots restore original drawing and real RAF. Mocked pad/viewport checks do not certify physical hardware performance.",
+  "artifactUnchangedAfterBrowsersClosed": true,
+  "photo13": "Carnival approach only; actual Corvus dialogue is asserted and photographed in tv-dialogue/21-tv-corvus-dialogue-controller.png."
+}

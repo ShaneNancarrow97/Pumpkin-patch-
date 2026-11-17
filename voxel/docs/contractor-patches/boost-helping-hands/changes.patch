@@ -1,0 +1,1211 @@
+diff --git a/voxel/build.mjs b/voxel/build.mjs
+index 6b51320..87e0f19 100644
+--- a/voxel/build.mjs
++++ b/voxel/build.mjs
+@@ -19,7 +19,7 @@ const writeHtml = {
+     build.onEnd((result) => {
+       if (result.errors.length) return;
+       const js = result.outputFiles[0].text.replace(/<\/script/gi, "<\\/script");
+-      const css = inline(["src/style.css", "src/icons.css", "src/ui/house-skins.css", "src/ui/maze-commerce.css", "src/ui/house-placement.css", "src/ui/intro.css", "src/ui/maze-ride.css", "src/ui/meadow-chat.css", "src/ui/upgrade-menu.css", "src/ui/hayride.css", "src/ui/hayride-ride.css", "src/ui/hollow-exterior.css", "src/ui/cooking.css", "src/ui/workshop-polish.css", "src/ui/service-menus.css", "src/ui/play-controls.css", "src/ui/carving.css", "src/ui/build-catalogue.css", "src/ui/service-premium.css", "src/ui/polish.css", "src/ui/menus.css"].map((f) => fs.readFileSync(path.join(root, f), "utf8")).join("\n"));
++      const css = inline(["src/style.css", "src/icons.css", "src/ui/house-skins.css", "src/ui/maze-commerce.css", "src/ui/house-placement.css", "src/ui/intro.css", "src/ui/maze-ride.css", "src/ui/meadow-chat.css", "src/ui/upgrade-menu.css", "src/ui/hayride.css", "src/ui/hayride-ride.css", "src/ui/hollow-exterior.css", "src/ui/cooking.css", "src/ui/workshop-polish.css", "src/ui/service-menus.css", "src/ui/play-controls.css", "src/ui/carving.css", "src/ui/build-catalogue.css", "src/ui/service-premium.css", "src/ui/polish.css", "src/ui/menus.css", "src/ui/farm-work.css"].map((f) => fs.readFileSync(path.join(root, f), "utf8")).join("\n"));
+       const html = fs.readFileSync(path.join(root, "src/index.html"), "utf8")
+         .replace("/* @build:style */", () => css).replace("/* @build:script */", () => js);
+       const out = outFile ?? path.join(root, "dist", dev ? "index.html" : "pumpkin-patch-voxel.html");
+diff --git a/voxel/smoke.mjs b/voxel/smoke.mjs
+index 2062920..3b89ef4 100644
+--- a/voxel/smoke.mjs
++++ b/voxel/smoke.mjs
+@@ -46,11 +46,11 @@ for (const [name, width, height] of [["desktop", 1280, 800], ["phone", 390, 844]
+   await page.locator("#plant-all").click();
+   await page.locator("#boost").click();
+   const s = await page.evaluate(() => PumpkinVoxel.state());
+-  check(s.plots.slice(0, 6).every((p) => p.phase === "growing") && s.taps === 1, `${name}: plant and boost`);
++  check(s.plots.slice(0, 6).filter((p) => p.phase === "growing").length === 1 && s.taps === 1, `${name}: plant one plot and boost`);
+   // Ripen everything rather than waiting in a slow software-rendered browser.
+   await page.evaluate(() => { for (const p of PumpkinVoxel.state().plots.slice(0, 6)) { p.progress = 1; p.phase = "ready"; } PumpkinVoxel.state().visitorTimer = 0.1; });
+   await page.locator("#harvest-all").click();
+-  check(await page.evaluate(() => PumpkinVoxel.state().harvested) === 6, `${name}: harvest`);
++  check(await page.evaluate(() => PumpkinVoxel.state().harvested) === 1, `${name}: pick one plot at base capacity`);
+   await page.waitForTimeout(2500);
+   if (shots) await page.screenshot({ path: `${shots}/${name}.png` });
+   for (const tab of ["shop", "wardrobe", "journal"]) {
+diff --git a/voxel/src/index.html b/voxel/src/index.html
+index 2a519f9..a4349db 100644
+--- a/voxel/src/index.html
++++ b/voxel/src/index.html
+@@ -42,9 +42,9 @@
+ <div class="piece-bar" id="piece-bar" role="region" aria-label="Selected furniture controls" hidden></div>
+ 
+ <div class="actions" id="actions">
+-  <button class="action" id="plant-all"><span class="ico i-plant" aria-hidden="true"></span>Plant <b id="plant-count">6</b></button>
++  <button class="action" id="plant-all"><span class="ico i-plant" aria-hidden="true"></span>Plant <b id="plant-count">1</b></button>
+   <button class="action" id="boost"><span class="ico i-boost" aria-hidden="true"></span>Boost</button>
+-  <button class="action gold" id="harvest-all"><span class="ico i-harvest" aria-hidden="true"></span>Harvest <b id="harvest-count">0</b></button>
++  <button class="action gold" id="harvest-all"><span class="ico i-harvest" aria-hidden="true"></span>Pick <b id="harvest-count">1</b></button>
+ </div>
+ 
+ <nav class="dock" id="dock" aria-label="Main navigation">
+diff --git a/voxel/src/life-activity.js b/voxel/src/life-activity.js
+index cb2a049..0fd8c03 100644
+--- a/voxel/src/life-activity.js
++++ b/voxel/src/life-activity.js
+@@ -9,7 +9,7 @@ export function createLifeActivity({state,player,commit,blocked,notice}){
+   function start(target,tool,hold=false){
+     const s=state(),p=player.state();if(!p.enabled||p.available===false||s.paused||blocked())return false;
+     const distance=target&&Math.hypot(target.x-p.position.x,target.z-p.position.z);
+-    const next=beginAction(s,{...target,distance},tool);if(!next)return false;
++    const next=beginAction(s,{...target,distance},tool,p.who);if(!next)return false;
+     job=next;pending=null;holding=hold;assisted=!hold;serial++;
+     player.act(next.kind,next.duration+.05,target);player.faceTarget?.(target);return true;
+   }
+diff --git a/voxel/src/main.js b/voxel/src/main.js
+index da87ead..87f101f 100644
+--- a/voxel/src/main.js
++++ b/voxel/src/main.js
+@@ -1,4 +1,5 @@
+ import { createLifeActivity } from './life-activity.js';
++import { mountBoostDial, renderBoostDial } from './ui/farm-work-ui.js';
+ import { createPlayControls } from './ui/play-controls.js';
+ import { homeLifeSheet, createHomeJourney } from './ui/home-life-sheet.js';
+ import { waterPlot, wateringStatus } from './rules/hands-on.js';
+@@ -52,6 +53,7 @@ function load() {
+   try { return M.restoreState(JSON.parse(localStorage.getItem(SAVE_KEY) || "null")); } catch { return M.freshState(); }
+ }
+ let state = load();
++mountBoostDial($("boost"));
+ let playControls, homeJourney, lifeActivity;
+ const save = () => { try { localStorage.setItem(SAVE_KEY, JSON.stringify(M.saveData(state))); } catch {} };
+ setInterval(save, 5000);
+@@ -231,8 +233,9 @@ function handle(e) {
+   }
+   if (e.type === "chat-line") scene.chatLine(e);
+   if (e.type === "missed" && e.reason !== "shop") scene.say(e.reason === "budget" ? "A smaller pumpkin next time." : "Back after harvest!");
+-  if (e.type === "harvest") { scene.harvested(e.plot, e.count); scene.sendTo(e.plot); }
+-  if (e.type === "plant") scene.sendTo(e.plot);
++  if (e.type === "harvest") { scene.harvested(e.plot, e.count); scene.sendTo(e.plot, e.owner); }
++  if (e.type === "plant") scene.sendTo(e.plot, e.owner);
++  if (e.type === "water") { scene.sendTo(e.plot, e.owner); const p = PLOTS[e.plot]; if (p) scene.actionBurst("water", p.x, p.z); }
+   if (e.type === "memory") {
+     const m = M.MEMORIES.find((x) => x.id === e.id);
+     notice("New scrapbook memory: " + m.title);
+@@ -247,14 +250,19 @@ function handle(e) {
+ function pickPlot(i) {
+   const n = M.harvest(state, i);
+   if (!n) { if (state.plots[i]?.phase === "ready" && M.barnBlocked(state)) notice(state.upgrades.cart ? "Barn full and the market cart is loaded. It sets off again within the minute." : "Barn full. Ripe pumpkins are safe—sell stock, add storage or buy a market cart in Build."); return 0; }
+-  scene.sendTo(i); scene.harvested(i, n);
++  showManualPick(i, n);
++  return n;
++}
++function showManualPick(i, n) {
++  if (!state.handsOn) scene.sendTo(i, farmOwner());
++  scene.harvested(i, n);
+   audio.tone(650);
+   if (state.harvested === n) say("natalie", "Our first pumpkin! Quick, put it in the shop before Shane gives it a name.");
+   const streak = M.rewardHarvestStreak(state);
+   if (streak.count >= 2) floatStreak(streak, PLOTS[i]);
+   if (streak.bonus) audio.tone(880);
+-  return n;
+ }
++const farmOwner = () => scene.player?.state().who ?? "natalie";
+ // What the streak does for visitors, in plain words: the bonus that actually
+ // reaches the path, or that the path is as busy as it gets.
+ function streakBoostText() {
+@@ -280,13 +288,24 @@ function tapPlot(i) {
+ }
+ function boost() {
+   if (state.paused) return;
+-  const { reward } = M.tap(state);
++  const { reward, accepted } = M.tap(state);
++  if (!accepted) return;
+   scene.tapPumpkin();
+   audio.tone(520);
+   if (reward) notice("The big pumpkin shook a pumpkin loose. +1 in stock.");
+ }
+-function plantAll() { if (state.paused) return; let n = 0; for (let i = 0; i < M.openPlots(state); i++) if (M.plant(state, i)) { scene.sendTo(i); n++; } if (n) { audio.tone(340); notice(`${n} seeds planted. Give them a little love!`); } }
+-function harvestAll() { if (state.paused) return; let n = 0; for (let i = 0; i < M.openPlots(state); i++) n += pickPlot(i); if (n) notice(`${n} pumpkins picked for the shop.`); }
++function plantOne() {
++  const i = M.plantNext(state);
++  if (i < 0) return;
++  if (!state.handsOn) scene.sendTo(i, farmOwner());
++  audio.tone(340); scene.actionBurst("plant", PLOTS[i].x, PLOTS[i].z);
++}
++// One press picks one trained batch, rather than sweeping every open bed.
++function pickSome(candidates = null) {
++  const picked = M.pickBatch(state, farmOwner(), candidates);
++  for (const p of picked) showManualPick(p.plot, p.count);
++  return picked.length;
++}
+ 
+ // Speech: tapping Shane or Natalie, and lines for big moments.
+ let bubbleTimer, sayTimer;
+@@ -484,8 +503,8 @@ $("place-rooms").onclick = () => { if (scene.place?.kind === "foyer") openHollow
+ $("place-cook").onclick = () => openCookingSheet(M.homeCookingAvailable(state) ? "recipes" : "equipment", "home");
+ $("place-decorate").onclick = () => { if (scene.place?.kind === "foyer") openFoyerSheet(); else { sheets.home.setTab("decorate"); openSheet("home"); } };
+ 
+-$("plant-all").onclick = plantAll;
+-$("harvest-all").onclick = harvestAll;
++$("plant-all").onclick = plantOne;
++$("harvest-all").onclick = () => pickSome();
+ $("boost").onclick = boost;
+ 
+ // The HUD, actions, goal and streak, every frame (cheap: only text changes).
+@@ -520,10 +539,14 @@ function render() {
+   text("level-name", lvl.name);
+   const open = state.plots.slice(0, M.openPlots(state));
+   const empty = open.filter((p) => p.phase === "empty").length, ripe = open.filter((p) => p.phase === "ready").length, full = M.barnBlocked(state);
+-  $("plant-all").hidden = !empty; text("plant-count", empty);
++  $("plant-all").hidden = !empty; text("plant-count", 1);
++  $("plant-all").setAttribute("aria-label", `Plant one seed · ${empty} empty plots`);
++  renderBoostDial($("boost"), M.boostStatus(state));
++  $("boost").disabled = state.paused || M.boostStatus(state).overheated;
+   // A full barn stacks its note under the label (style.css), so Harvest still fits beside Boost on a phone.
+-  $("harvest-all").hidden = !ripe; text("harvest-count", full ? "Barn full" : ripe); $("harvest-all").classList.toggle("barn-full", full);
+-  $("harvest-all").setAttribute("aria-label", full ? "Barn full: sell pumpkins, add storage or buy a market cart" : `Harvest ${ripe} ready plots`);
++  const batch = Math.min(ripe, M.helperStatus(state, farmOwner()).capacity);
++  $("harvest-all").hidden = !ripe; text("harvest-count", full ? "Barn full" : batch); $("harvest-all").classList.toggle("barn-full", full);
++  $("harvest-all").setAttribute("aria-label", full ? "Barn full: sell pumpkins, add storage or buy a market cart" : `${farmOwner() === "shane" ? "Shane" : "Natalie"}: pick ${batch} ready ${batch === 1 ? "plot" : "plots"}`);
+   const ready = M.claimable(state), next = M.FAVOURS.find((f) => !state.claimed.includes(f.id));
+   $("goal").classList.toggle("ready", ready.length > 0);
+   text("goal-text", ready.length ? (ready.length > 1 ? `${ready.length} favours are ready to claim` : ready[0].guest + " has a reward for you") : next ? `${next.title} · ${M.favourProgress(state, next)}/${next.target}` : "Every favour done. The neighbours adore you.");
+@@ -692,15 +715,19 @@ document.addEventListener("keydown", (e) => {
+   }
+   if (scene.place || openTab || e.repeat) return;                                 // a held key is one press
+   if (e.key === " ") { e.preventDefault(); boost(); }
+-  if (e.key === "p" || e.key === "P") plantAll();
+-  if (e.key === "h" || e.key === "H") harvestAll();
++  if (e.key === "p" || e.key === "P") plantOne();
++  if (e.key === "h" || e.key === "H") pickSome();
+ });
+ 
+ // The controller layer uses the same purchases and farming rules as taps.
+ // Timed crop work commits here once, using the same stock and streak rules as taps.
+ function commitPlayerWork(kind,t){
+   const at=t.type==='plot'?PLOTS[t.index]:t;
+-  let ok=false;if(kind==='plant')ok=M.plant(state,t.index);else if(kind==='harvest')ok=!!pickPlot(t.index);else if(kind==='water')ok=waterPlot(state,t.index);else if(kind==='clean')ok=M.cleanLitter(state,t.id);
++  let ok=false;if(kind==='plant')ok=M.plant(state,t.index);else if(kind==='harvest'){
++    const origin=PLOTS[t.index],position=scene.player.state().position;
++    const nearby=PLOTS.map((p,index)=>({index,d:Math.hypot(p.x-origin.x,p.z-origin.z),reach:Math.hypot(p.x-position.x,p.z-position.z)})).filter(p=>p.index===t.index||p.d<=3.2&&p.reach<=3.2).sort((a,b)=>(a.index===t.index?-1:b.index===t.index?1:a.d-b.d||a.index-b.index)).map(p=>p.index);
++    ok=!!pickSome(nearby);
++  }else if(kind==='water')ok=waterPlot(state,t.index);else if(kind==='clean')ok=M.cleanLitter(state,t.id);
+   if(ok){M.recordHomeActivity?.(state,kind);if(at)scene.actionBurst(kind,at.x,at.z);if(kind!=='harvest')chime(...({plant:[330,494],water:[587,784],clean:[784,1047]})[kind]);save();}
+   return !!ok;
+ }
+diff --git a/voxel/src/model.js b/voxel/src/model.js
+index 37ca2a0..40709de 100644
+--- a/voxel/src/model.js
++++ b/voxel/src/model.js
+@@ -25,6 +25,7 @@ import { freshHayride, restoreHayride, updateHayride, saveHayrideVisitors, resto
+ import { freshVisitorEvents, restoreVisitorEvents, updateVisitorEvents } from "./rules/visitor-events.js";
+ import { freshKitchen, restoreKitchen, updateKitchen } from "./rules/cooking.js";
+ import { freshCleanliness, restoreCleanliness, updateCleanliness } from "./rules/cleanliness.js";
++import { freshFarmWork, restoreFarmWork } from "./rules/farm-work.js";
+ 
+ export * from "./rules/farm.js";
+ export * from "./rules/stock.js";
+@@ -36,7 +37,9 @@ export * from "./rules/wardrobe.js";
+ export * from "./rules/progress.js";
+ export * from "./rules/unlocks.js";
+ 
+-export const STATE_VERSION = 14;
++export const STATE_VERSION = 15;
++export * from "./rules/farm-work.js";
++export * from "./rules/farm-buttons.js";
+ export * from "./rules/visitor-events.js";
+ export * from "./content/visitor-events.js";
+ export * from "./content/farm-layout.js";
+@@ -68,7 +71,7 @@ export function freshState() {
+     version: STATE_VERSION,
+     coins: 40, earned: 0, sold: 0, harvested: 0, taps: 0, time: 0, wholesale: 0,
+     plots: freshPlots(), plotLevels: Array(MAX_PLOTS).fill(0), plotCrops: Array(MAX_PLOTS).fill(0),
+-    upgrades: freshUpgrades(), visitorUpgrades: freshVisitorUpgrades(), helperTimer: 0, streak: freshStreak(),
++    upgrades: freshUpgrades(), visitorUpgrades: freshVisitorUpgrades(), helperTimer: 0, streak: freshStreak(), farmWork: freshFarmWork(),
+     stock: freshStock(), fresh: freshBatches(), wanted: freshWanted(), orders: freshOrders(), holds: [],
+     visitorEvents: freshVisitorEvents(), stall: freshStall(), visitors: [], arriving: [], nextVisitor: 0, nextParty: 0, visitorTimer: 3,
+     shop: freshShop(), bigSpender: freshBigSpender(), festival: freshFestival(), customerCare: freshCustomerCare(),
+@@ -102,7 +105,12 @@ export function restoreState(raw) {
+   s.plots = Array.from({ length: MAX_PLOTS }, (_, i) => {
+     const p = raw.plots[i];
+     const variety = Math.min(MAX_VARIETY_INDEX, count(p?.variety));
+-    return ["growing", "ready"].includes(p?.phase) ? { phase: p.phase, progress: Math.max(0, Math.min(1, Number(p.progress) || 0)), variety } : { phase: "empty", progress: 0, variety: s.plotCrops[i] };
++    if (!["growing", "ready"].includes(p?.phase)) return { phase: "empty", progress: 0, variety: s.plotCrops[i] };
++    const crop = { phase: p.phase, progress: Math.max(0, Math.min(1, Number(p.progress) || 0)), variety };
++    // Preserve grace and watering through a reload, without accepting future timers.
++    if (p.phase === "ready") crop.ripe = Number.isFinite(p.ripe) ? Math.max(0, Math.min(s.time, p.ripe)) : s.time;
++    if (p.phase === "growing" && Number.isFinite(p.wateredAt)) crop.wateredAt = Math.max(0, Math.min(s.time, p.wateredAt));
++    return crop;
+   });
+   // Tiers are kept and held to today's maxima (a save at an old maximum is a tier partway up now).
+   const u = raw.upgrades ?? {}, top = Object.fromEntries(UPGRADES.map((x) => [x.id, x.max]));
+@@ -145,6 +153,7 @@ export function restoreState(raw) {
+   s.claimed = [...new Set(claimed.filter((id) => FAVOURS.some((f) => f.id === id)))];
+   s.memories = Array.isArray(raw.memories) ? [...new Set(raw.memories.filter((id) => typeof id === "string"))] : [];
+   s.progression = restoreProgression(raw.progression, s, !(raw.version >= 4), !(raw.version >= 14));
++  s.farmWork = restoreFarmWork(raw.farmWork, s);
+   s.kitchen = restoreKitchen(raw.kitchen, s, raw.version);
+   s.visitorEvents = restoreVisitorEvents(raw.visitorEvents, s);
+   s.festival = restoreFestival(raw.festival);
+@@ -165,7 +174,7 @@ export const saveData = (s) => ({ ...s, hollowVisitors: saveHollowVisitors(s), h
+ // Advances the farm by dt seconds and returns what happened, for the scene to show.
+ export function update(s, dt) {
+   const events = [];
+-  if (s.paused) return events;
++  if (s.paused || !Number.isFinite(dt) || dt <= 0) return events;
+   // The streak's boost is read from the clock, so the arrival timers just count down faster while it lasts.
+   s.time += dt;
+   updateFarm(s, dt, events);
+diff --git a/voxel/src/rules/farm-buttons.js b/voxel/src/rules/farm-buttons.js
+new file mode 100644
+index 0000000..1fcb704
+--- /dev/null
++++ b/voxel/src/rules/farm-buttons.js
+@@ -0,0 +1,25 @@
++// Button work is bounded by the selected owner's training, using the normal
++// transactions so yield, fresh batches, barn space and the market cart agree.
++import { plant, harvest, openPlots } from './farm.js';
++import { helperStatus } from './farm-work.js';
++
++export function plantNext(s) {
++  if (s.paused) return -1;
++  for (let i = 0; i < openPlots(s); i++) if (plant(s, i)) return i;
++  return -1;
++}
++
++export function pickBatch(s, owner = 'natalie', candidates = null) {
++  if (s.paused) return [];
++  const status = helperStatus(s, owner);
++  if (!status) return [];
++  const result = [], seen = new Set(), capacity = status.capacity;
++  for (const i of candidates ?? Array.from({ length: openPlots(s) }, (_, n) => n)) {
++    if (result.length >= capacity) break;
++    if (!Number.isInteger(i) || i < 0 || i >= openPlots(s) || seen.has(i)) continue;
++    seen.add(i);
++    const count = harvest(s, i);
++    if (count) result.push({ plot: i, count });
++  }
++  return result;
++}
+diff --git a/voxel/src/rules/farm-work.js b/voxel/src/rules/farm-work.js
+new file mode 100644
+index 0000000..9223ab1
+--- /dev/null
++++ b/voxel/src/rules/farm-work.js
+@@ -0,0 +1,189 @@
++// Farm work is saved progress, not a sprite timer: each owner learns their own
++// skills, and the big pumpkin keeps its heat through a save or scene change.
++import { patchLevel } from "./levels.js";
++import { HELPER_WAIT, openPlots, plant, harvest, barnBlocked } from "./farm.js";
++import { waterPlot, wateringStatus } from "./hands-on.js";
++
++export const HELPER_IDS = Object.freeze(["shane", "natalie"]);
++export const HELPER_SPEED = Object.freeze([1, .8, .6, .45]);
++export const BOOST_HEAT = Object.freeze({ capacity: 100, recoverAt: 35, perUse: [10, 9, 8, 7], cooling: [8, 10, 13, 16], strength: [1, 1.25, 1.5, 1.75] });
++export const HELPER_UPGRADES = Object.freeze([
++  { id: "hire", name: "Helping hands", text: "Tend one job at a time, and rest while you take control.", costs: [250], levels: [1] },
++  { id: "plant", name: "Planting speed", text: "Plant each seed more quickly.", costs: [150, 600, 1800], levels: [1, 5, 10] },
++  { id: "water", name: "Watering speed", text: "Water each thirsty crop more quickly.", costs: [150, 600, 1800], levels: [1, 5, 10] },
++  { id: "capacity", name: "Picking capacity", text: "Pick two, then three ripe plots in one turn.", costs: [350, 1400], levels: [5, 9] },
++]);
++export const BOOST_UPGRADES = Object.freeze([
++  { id: "power", name: "Pumpkin power", text: "Each accepted boost adds more growth.", costs: [150, 750, 2600], levels: [1, 5, 10] },
++  { id: "cooling", name: "Cooler candle", text: "Less heat per boost and quicker cooling.", costs: [120, 600, 2200], levels: [1, 5, 10] },
++]);
++const tier = (n, max) => Number.isSafeInteger(n) && n > 0 ? Math.min(max, n) : 0;
++const finite = (n, low, high, fallback = low) => Number.isFinite(n) ? Math.max(low, Math.min(high, n)) : fallback;
++const ownerValid = owner => HELPER_IDS.includes(owner);
++const freshHelper = () => ({ hired: false, plant: 0, water: 0, capacity: 0, timer: 0, cursor: 0, kind: null });
++export const freshFarmWork = () => ({ version: 1, boost: { power: 0, cooling: 0, heat: 0, overheated: false, lastUse: -1 }, helpers: { shane: freshHelper(), natalie: freshHelper() } });
++
++// Only missing pre-feature data grants the old shared purchase to both owners.
++// Once separate records exist, one owner's hire must never hire the other too.
++export function restoreFarmWork(raw, s) {
++  const work = freshFarmWork(), object = raw && typeof raw === "object" && !Array.isArray(raw);
++  if (!object) {
++    if (s.upgrades.auto) for (const owner of HELPER_IDS) work.helpers[owner].hired = true;
++    return work;
++  }
++  const b = raw.boost;
++  work.boost.power = tier(b?.power, 3); work.boost.cooling = tier(b?.cooling, 3);
++  work.boost.heat = finite(b?.heat, 0, BOOST_HEAT.capacity);
++  work.boost.overheated = work.boost.heat >= BOOST_HEAT.capacity || b?.overheated === true && work.boost.heat > BOOST_HEAT.recoverAt;
++  work.boost.lastUse = finite(b?.lastUse, -1, Math.max(0, s.time), -1);
++  for (const owner of HELPER_IDS) {
++    const h = raw.helpers?.[owner], out = work.helpers[owner];
++    out.hired = h?.hired === true;
++    out.plant = tier(h?.plant, 3); out.water = tier(h?.water, 3); out.capacity = tier(h?.capacity, 2);
++    out.cursor = tier(h?.cursor, Math.max(0, s.plots.length - 1));
++    // A saved clock cannot identify its original crop object. Restart that job
++    // instead of transferring partial work to whichever crop is there now.
++    out.kind = null; out.timer = 0;
++  }
++  return work;
++}
++
++const ensureWork = s => s.farmWork ??= restoreFarmWork(undefined, s);
++const helperRecord = (s, owner) => s.farmWork?.helpers?.[owner] ?? freshHelper();
++
++// Status is a read-only view shared by the menus and the controlled actions.
++export function helperStatus(s, owner) {
++  if (!ownerValid(owner)) return null;
++  const h = helperRecord(s, owner), plantLevel = tier(h.plant, 3), waterLevel = tier(h.water, 3), capacityLevel = tier(h.capacity, 2);
++  const plantFactor = HELPER_SPEED[plantLevel], waterFactor = HELPER_SPEED[waterLevel];
++  return { hired: h.hired === true, plantLevel, waterLevel, capacityLevel, plantFactor, waterFactor, plantSeconds: 2.4 * plantFactor, waterSeconds: 3 * waterFactor, pickSeconds: 2, capacity: capacityLevel + 1 };
++}
++
++// Upgrade quotes contain their prerequisites as well as their price. The rule
++// repeats every check so stale menu buttons cannot buy a locked or paused tier.
++export function helperUpgradeInfo(s, owner, kind) {
++  if (!ownerValid(owner)) return null;
++  const u = HELPER_UPGRADES.find(x => x.id === kind);
++  if (!u) return null;
++  const h = helperRecord(s, owner), level = kind === "hire" ? +!!h.hired : tier(h[kind], u.costs.length);
++  const max = u.costs.length, done = level >= max, cost = done ? 0 : u.costs[level], requiredLevel = done ? 1 : u.levels[level];
++  const unlocked = patchLevel(s).level >= requiredLevel && (kind === "hire" || h.hired === true);
++  return { id: kind, name: u.name, level, max, cost, requiredLevel, done, unlocked, affordable: s.coins >= cost, canBuy: !s.paused && !done && unlocked && s.coins >= cost };
++}
++
++export function buyHelperUpgrade(s, owner, kind) {
++  const info = helperUpgradeInfo(s, owner, kind);
++  if (!info?.canBuy) return false;
++  const h = ensureWork(s).helpers[owner];
++  s.coins -= info.cost;
++  if (kind === "hire") h.hired = true;
++  else h[kind]++;
++  s.upgrades.auto = 1;
++  return true;
++}
++
++// This old entry point is kept for earlier saves, tests and API integrations.
++export function grantLegacyHelpers(s) {
++  const work = ensureWork(s);
++  for (const owner of HELPER_IDS) work.helpers[owner].hired = true;
++}
++
++export function boostStatus(s) {
++  const b = s.farmWork?.boost ?? freshFarmWork().boost, powerLevel = tier(b.power, 3), coolingLevel = tier(b.cooling, 3), heat = finite(b.heat, 0, 100);
++  return { powerLevel, coolingLevel, heat, overheated: heat >= 100 || b.overheated === true && heat > BOOST_HEAT.recoverAt, strength: BOOST_HEAT.strength[powerLevel], heatPerUse: BOOST_HEAT.perUse[coolingLevel], coolPerSecond: BOOST_HEAT.cooling[coolingLevel], capacity: BOOST_HEAT.capacity, recoverAt: BOOST_HEAT.recoverAt };
++}
++
++export function boostUpgradeInfo(s, kind) {
++  const u = BOOST_UPGRADES.find(x => x.id === kind);
++  if (!u) return null;
++  const level = tier(s.farmWork?.boost?.[kind], u.costs.length), max = u.costs.length, done = level >= max, cost = done ? 0 : u.costs[level], requiredLevel = done ? 1 : u.levels[level], unlocked = patchLevel(s).level >= requiredLevel;
++  return { id: kind, name: u.name, level, max, cost, requiredLevel, done, unlocked, affordable: s.coins >= cost, canBuy: !s.paused && !done && unlocked && s.coins >= cost };
++}
++
++export function buyBoostUpgrade(s, kind) {
++  const info = boostUpgradeInfo(s, kind);
++  if (!info?.canBuy) return false;
++  s.coins -= info.cost; ensureWork(s).boost[kind]++;
++  return true;
++}
++
++// Accepted taps alone heat the candle or count towards the eighth-tap pumpkin.
++export function useBoost(s) {
++  if (s.paused) return { accepted: false, reason: "paused" };
++  const status = boostStatus(s), work = ensureWork(s), b = work.boost;
++  if (status.overheated) return { accepted: false, reason: "overheated" };
++  if (s.time - b.lastUse < .14 - 1e-9) return { accepted: false, reason: "cooldown" };
++  b.lastUse = s.time; b.heat = Math.min(100, status.heat + status.heatPerUse); b.overheated = b.heat >= 100;
++  s.lastTap = s.time;
++  return { accepted: true, strength: status.strength };
++}
++
++// Cooling uses active game time: a tea break or a reload cannot cool for free.
++export function updateBoost(s, dt) {
++  if (s.paused || !Number.isFinite(dt) || dt <= 0) return;
++  const b = ensureWork(s).boost, status = boostStatus(s);
++  b.heat = Math.max(0, status.heat - status.coolPerSecond * dt);
++  if (b.heat <= BOOST_HEAT.recoverAt) b.overheated = false;
++}
++
++// Actual crop references are transient: a new plant in the same bed is still a
++// different job. Each helper reserves one target before either clock advances.
++const helperJobs = new WeakMap();
++const orderedPlots = (s, h) => Array.from({ length: openPlots(s) }, (_, k) => (h.cursor + k) % openPlots(s));
++const ripeForHelpers = (s, i) => s.plots[i]?.phase === "ready" && s.time - (s.plots[i].ripe ?? -Infinity) >= HELPER_WAIT;
++function validJob(s, job) {
++  if (!job || job.plot < 0 || job.plot >= openPlots(s) || s.plots[job.plot] !== job.crop) return false;
++  if (job.kind === "plant") return job.crop.phase === "empty";
++  if (job.kind === "water") return wateringStatus(s, job.plot).available;
++  return ripeForHelpers(s, job.plot) && !barnBlocked(s);
++}
++
++// A cyclic scan shares jobs without permanently favouring the first few beds.
++function nextJob(s, h, reserved) {
++  const indices = orderedPlots(s, h).filter(i => !reserved.has(i));
++  const pick = !barnBlocked(s) && indices.find(i => ripeForHelpers(s, i));
++  if (pick !== false && pick !== undefined) return { kind: "harvest", plot: pick, crop: s.plots[pick] };
++  const empty = indices.find(i => s.plots[i].phase === "empty");
++  if (empty !== undefined) return { kind: "plant", plot: empty, crop: s.plots[empty] };
++  const water = indices.find(i => wateringStatus(s, i).available);
++  return water === undefined ? null : { kind: "water", plot: water, crop: s.plots[water] };
++}
++
++// One completion per owner per step bounds catch-up and prevents a field-wide
++// sweep. Capacity is ripe plots per picking turn, never extra crop yield.
++export function updateHelpers(s, dt, events) {
++  if (s.paused || s.handsOn || !Number.isFinite(dt) || dt <= 0) return;
++  const work = ensureWork(s), reserved = new Set(), entries = HELPER_IDS.map(owner => ({ owner, h: work.helpers[owner], status: helperStatus(s, owner), job: null }));
++  // Retain every valid reservation first, so a helper starting a new job cannot
++  // steal a target whose other helper is already most of the way through.
++  for (const entry of entries) {
++    const { h, status } = entry, previous = helperJobs.get(h);
++    if (status.hired && validJob(s, previous) && !reserved.has(previous.plot)) {
++      entry.job = previous; reserved.add(previous.plot);
++    } else { helperJobs.delete(h); h.timer = 0; h.kind = null; }
++  }
++  for (const entry of entries) {
++    if (!entry.status.hired || entry.job) continue;
++    entry.job = nextJob(s, entry.h, reserved);
++    if (!entry.job) continue;
++    helperJobs.set(entry.h, entry.job); entry.h.kind = entry.job.kind; reserved.add(entry.job.plot);
++  }
++  for (const { owner, h, status, job } of entries) {
++    if (!job) continue;
++    h.timer += dt;
++    const seconds = job.kind === "plant" ? status.plantSeconds : job.kind === "water" ? status.waterSeconds : status.pickSeconds;
++    if (h.timer + 1e-9 < seconds) continue;
++    h.timer = 0; h.kind = null; helperJobs.delete(h); reserved.delete(job.plot);
++    if (job.kind === "harvest") {
++      // Extra basket places never take another helper's reserved primary crop.
++      const candidates = [job.plot, ...orderedPlots(s, h).filter(i => i !== job.plot && !reserved.has(i) && ripeForHelpers(s, i))];
++      for (const i of candidates.slice(0, status.capacity)) {
++        const count = harvest(s, i);
++        if (!count) break;
++        h.cursor = (i + 1) % openPlots(s); events.push({ type: "harvest", owner, plot: i, count });
++      }
++    } else if (job.kind === "plant" ? plant(s, job.plot) : waterPlot(s, job.plot)) {
++      h.cursor = (job.plot + 1) % openPlots(s); events.push({ type: job.kind, owner, plot: job.plot });
++    }
++  }
++}
+diff --git a/voxel/src/rules/farm.js b/voxel/src/rules/farm.js
+index f603a02..03b1504 100644
+--- a/voxel/src/rules/farm.js
++++ b/voxel/src/rules/farm.js
+@@ -8,6 +8,7 @@ import { tierOpen } from "./unlocks.js";
+ import { economy } from "../../../src/content/economy.js";
+ import { addStock, stockCount } from "./stock.js";
+ import { MAX_PLOTS, PLOT_COUNTS } from "../content/farm-layout.js";
++import { useBoost, updateBoost, updateHelpers, grantLegacyHelpers } from "./farm-work.js";
+ export { MAX_PLOTS, PLOT_COUNTS, fieldDepth, farmPathEnd, farmExpansionTier } from "../content/farm-layout.js";
+ 
+ export const VARIETIES = PUMPKIN_VARIETIES;
+@@ -15,7 +16,7 @@ export const VARIETIES = PUMPKIN_VARIETIES;
+ export const UPGRADES = [
+   { id: "tools", name: "A better watering can", text: "Pumpkins grow 18% faster.", cost: 90, max: 6 },
+   { id: "yield", name: "A little extra love", text: "One more pumpkin per harvest.", cost: 150, max: 5 },
+-  { id: "auto", name: "Helping hands", text: "Shane and Natalie plant and pick for you, and rest while you play as them.", cost: 500, max: 1 },
++  { id: "auto", name: "Helping hands", text: "Shane and Natalie plant, water and pick for you, and rest while you play as them.", cost: 500, max: 1 },
+   { id: "plots", name: "Room for more", text: "Open more beds, then buy the south field for eighteen and twenty-four plots.", costs: [300, 660, 2200, 5500], max: 4 },
+   { id: "cart", name: "A market cart", text: "When the barn is full, Shane drives the extra pumpkins down to the village market for a share of the price, so the picking never has to stop.", costs: [400, 2500, 9000] },
+   { id: "storage", name: "A bigger pumpkin barn", text: "Store more pumpkins before the harvest pauses. Keeps ripe crops safe when full.", costs: [60, 180, 500, 1400, 4000, 10000], max: 6 },
+@@ -101,29 +102,30 @@ export function harvest(s, i) {
+ // every eighth tap shakes a pumpkin loose.
+ // Taps closer than a seventh of a second are a held key or a bot: ignored.
+ export function tap(s) {
+-  if (s.time - (s.lastTap ?? -Infinity) < 0.14) return { boost: false, reward: 0 };
+-  s.lastTap = s.time;
++  const use = useBoost(s);
++  if (!use.accepted) return { ...use, boost: false, reward: 0 };
+   s.taps++;
+   let growing = 0;
+   for (let i = 0; i < openPlots(s); i++) {
+     const p = s.plots[i];
+     if (p.phase !== "growing") continue;
+     growing++;
+-    p.progress = Math.min(1, p.progress + 1.5 / (22 * Math.pow(0.82, s.upgrades.tools)));
++    p.progress = Math.min(1, p.progress + use.strength * 1.5 / (22 * Math.pow(0.82, s.upgrades.tools)));
+     if (p.progress >= 1) { p.phase = "ready"; p.ripe = s.time; }
+   }
+   let reward = 0;
+   if (!growing && s.taps % 8 === 0 && store(s, bestVariety(s), 1)) { s.harvested++; reward = 1; }
+-  return { boost: growing > 0, reward };
++  return { accepted: true, boost: growing > 0, reward };
+ }
+ 
+ export function buyUpgrade(s, id) {
+   const u = UPGRADES.find((x) => x.id === id);
+-  if (!u || s.upgrades[id] >= u.max || !tierOpen(s, "farm", id, s.upgrades[id])) return false;
++  if (s.paused || !u || s.upgrades[id] >= u.max || !tierOpen(s, "farm", id, s.upgrades[id])) return false;
+   const c = upgradeCost(s, id);
+   if (s.coins < c) return false;
+   s.coins -= c;
+   s.upgrades[id]++;
++  if (id === "auto") grantLegacyHelpers(s);
+   return true;
+ }
+ 
+@@ -169,23 +171,12 @@ export function rewardHarvestStreak(s) {
+ }
+ 
+ export function updateFarm(s, dt, events) {
++  updateBoost(s, dt);
+   for (let i = 0; i < openPlots(s); i++) {
+     const p = s.plots[i];
+     if (p.phase !== "growing") continue;
+     p.progress = Math.min(1, p.progress + dt / growTime(s, i));
+     if (p.progress >= 1) { p.phase = "ready"; p.ripe = s.time; events.push({ type: "ripe", plot: i }); }
+   }
+-  // Helping hands step back while the player is steering Shane or Natalie:
+-  // the farm is theirs to work by hand.
+-  if (!s.upgrades.auto || s.handsOn) return;
+-  s.helperTimer += dt;
+-  if (s.helperTimer < 2) return;
+-  s.helperTimer %= 2;
+-  // Helpers leave a fresh pumpkin a few seconds for Shane and Natalie, so a
+-  // player picking by hand keeps the picks (and the streak) that are theirs.
+-  for (let i = 0; i < openPlots(s); i++) {
+-    const p = s.plots[i], n = p.phase === "ready" && s.time - (p.ripe ?? -Infinity) >= HELPER_WAIT ? harvest(s, i) : 0;
+-    if (n) events.push({ type: "harvest", plot: i, count: n });
+-    if (plant(s, i)) events.push({ type: "plant", plot: i });
+-  }
++  updateHelpers(s, dt, events);
+ }
+diff --git a/voxel/src/rules/hands-on.js b/voxel/src/rules/hands-on.js
+index 6b4d1be..39df6e6 100644
+--- a/voxel/src/rules/hands-on.js
++++ b/voxel/src/rules/hands-on.js
+@@ -1,15 +1,14 @@
+ // Water rewards attention without replacing growth upgrades or yielding coins.
+ import { openPlots } from './farm.js';
+-const lastWater = new WeakMap();
+ export const WATER = Object.freeze({ cooldown: 12, progress: .12 });
+ export function wateringStatus(s, index) {
+-  const p=s.plots[index], last=lastWater.get(p);
+-  const seconds=last===undefined?0:Math.max(0,last+WATER.cooldown-s.time);
++  const p=s.plots[index], last=p?.wateredAt;
++  const seconds=Number.isFinite(last)?Math.max(0,last+WATER.cooldown-s.time):0;
+   return { available:!s.paused && Number.isInteger(index) && index>=0 && index<openPlots(s) && p?.phase==='growing' && seconds===0, seconds };
+ }
+ export function waterPlot(s,index) {
+   if(!wateringStatus(s,index).available)return false;
+-  const p=s.plots[index];lastWater.set(p,s.time);p.progress=Math.min(1,p.progress+WATER.progress);
++  const p=s.plots[index];p.wateredAt=s.time;p.progress=Math.min(1,p.progress+WATER.progress);
+   if(p.progress>=1){p.phase='ready';p.ripe=s.time;}
+   return true;
+ }
+diff --git a/voxel/src/rules/life-actions.js b/voxel/src/rules/life-actions.js
+index 63fe684..d99cf8e 100644
+--- a/voxel/src/rules/life-actions.js
++++ b/voxel/src/rules/life-actions.js
+@@ -2,6 +2,7 @@
+ // after receiving one completion; releasing early never changes the farm.
+ import { barnBlocked, openPlots } from './farm.js';
+ import { wateringStatus } from './hands-on.js';
++import { helperStatus } from './farm-work.js';
+ 
+ export const LIFE_ACTIONS = Object.freeze({
+   plant: Object.freeze({ seconds: .8, label: 'Planting' }),
+@@ -32,12 +33,14 @@ export function toolForTarget(s, target, tool = 'hand') {
+ 
+ // Snapshot the crop identity as well as its phase. Another helper may replace
+ // that crop during the gesture; the original gesture must not affect the new one.
+-export function beginAction(s, target, tool = 'hand') {
++export function beginAction(s, target, tool = 'hand', owner = 'natalie') {
+   const kind = toolForTarget(s, target, tool);
+   if (!actionAvailable(s, target, kind) || finite(target.distance) && target.distance > ACTION_REACH) return null;
+   const saved = target.type === 'plot' ? { type: 'plot', index: target.index } : { type: 'litter', id: target.id };
+   for (const key of ['x', 'z']) if (finite(target[key])) saved[key] = target[key];
+-  return { kind, target: saved, elapsed: 0, duration: LIFE_ACTIONS[kind].seconds, label: LIFE_ACTIONS[kind].label, status: 'active', crop: target.type === 'plot' ? s.plots[target.index] : null };
++  const trained = helperStatus(s, owner) ?? helperStatus(s, 'natalie');
++  const factor = kind === 'plant' ? trained.plantFactor : kind === 'water' ? trained.waterFactor : 1;
++  return { kind, target: saved, elapsed: 0, duration: LIFE_ACTIONS[kind].seconds * factor, label: LIFE_ACTIONS[kind].label, status: 'active', crop: target.type === 'plot' ? s.plots[target.index] : null };
+ }
+ 
+ export const actionProgress = job => !job || job.status === 'cancelled' || job.status === 'invalid' ? 0 : Math.max(0, Math.min(1, job.elapsed / job.duration));
+diff --git a/voxel/src/rules/progress.js b/voxel/src/rules/progress.js
+index 36d4ee9..6724364 100644
+--- a/voxel/src/rules/progress.js
++++ b/voxel/src/rules/progress.js
+@@ -49,7 +49,7 @@ export const MEMORIES = [
+   { id: "first", icon: "seed", title: "Our first little harvest", text: "Pick 5 pumpkins.", memory: "Five pumpkins. One big beginning.", met: (s) => s.harvested >= 5 },
+   { id: "visitors", icon: "heart", title: "The neighbourhood favourite", text: "Serve 10 happy visitors.", memory: "Word travels fast when the pumpkins are good.", met: (s) => s.sold >= 10 },
+   { id: "moon", icon: "moon", title: "A little moonlight", text: "Upgrade a plot to Moonlight seeds.", memory: "This plot now grows pale pumpkins worth £24 each.", met: (s) => s.plotLevels.some((l) => l > 0) },
+-  { id: "helper", icon: "hands", title: "Better together", text: "Buy the Helping hands upgrade.", memory: "Shane and Natalie now keep the farm growing.", met: (s) => s.upgrades.auto > 0 },
++  { id: "helper", icon: "hands", title: "Better together", text: "Recruit Shane or Natalie as a helping hand.", memory: "A little teamwork keeps the farm growing.", met: (s) => s.upgrades.auto > 0 },
+   { id: "empire", icon: "crown", title: "An autumn empire", text: "Earn £1,000 in total.", memory: "From a handful of seeds to something wonderful.", met: (s) => s.earned >= 1000 },
+   { id: "clicker", icon: "spark", title: "Pumpkin whisperer", text: "Tap the big pumpkin 100 times.", memory: "Good things grow with a little encouragement.", met: (s) => s.taps >= 100 },
+   { id: "hollow", icon: "house", title: "The doors creak open", text: "Restore the Hollow House.", memory: "Axel swept the cobwebs, then put most of them back.", met: (s) => s.hollowHouse?.status === "ready" },
+diff --git a/voxel/src/scene.js b/voxel/src/scene.js
+index 9d8d16f..d046b37 100644
+--- a/voxel/src/scene.js
++++ b/voxel/src/scene.js
+@@ -820,7 +820,14 @@ export function createScene(canvas, state, hooks) {
+       get passing() { return player.passing; },
+       setEnabled(on,who){playerLook.x=playerLook.z=0;playerOrbit.yaw=0;playerOrbit.pitch=view.place==='room'?INTERIOR.pitch:PITCH;const result=player.setEnabled(on,who);if(on){const p=player.state().position;view.x=view.place==='room'?p.x-places.place.w/2:p.x;view.z=view.place==='room'?p.z-places.place.d*.42:p.z;}if(!view.place)view.zoom=on?Math.max(view.zoom,canvas.clientWidth>=740?2.3:1.35):1;if(!on)restoreCast();frame();return result;},
+     },
+-    sendTo(plotIndex) { const p = PLOTS[plotIndex], a = nearestActor(p.x, p.z); a?.queue.push({ x: p.x - 0.9, z: p.z + 0.4 }); },
++    sendTo(plotIndex, owner) {
++      const p = PLOTS[plotIndex]; if (!p) return;
++      const a = owner ? actors[owner] : nearestActor(p.x, p.z);
++      if (!a || a.delivery || player.state().enabled && player.state().who === owner) return;
++      // A busy helper keeps only its next two stops; queues never grow with a fast harvest.
++      if (a.queue.length >= 2) a.queue.shift();
++      a.queue.push({ x: p.x - 0.9, z: p.z + 0.4 });
++    },
+     tapPumpkin() { tapPulse = 1; floatText("✦", BIG_PUMPKIN.x, 3.6, BIG_PUMPKIN.z, "spark"); },
+     // A sale: Skyla reacts, and the takings float up from whichever counter you can see.
+     sale(amount, route) {
+diff --git a/voxel/src/ui/collection-sheets.js b/voxel/src/ui/collection-sheets.js
+index 9153c1f..db656c1 100644
+--- a/voxel/src/ui/collection-sheets.js
++++ b/voxel/src/ui/collection-sheets.js
+@@ -60,6 +60,8 @@ export function collectionSheets(ui) {
+       if (at === level && at > 1) out.push(`${table.find((u) => u.id === id)?.name ?? id}, ${ORDINAL[tier] ?? tier + 1 + "th"} tier`);
+     });
+     M.UNLOCKS.house.forEach((at, i) => { if (at === level) out.push(`Grow the house into the ${M.HOUSE_LEVELS[i + 1].name}`); });
++    for (const u of M.HELPER_UPGRADES) u.levels.forEach((at, tier) => { if (at === level && at > 1) out.push(`${u.name}, ${ORDINAL[tier]} tier for Shane and Natalie`); });
++    for (const u of M.BOOST_UPGRADES) u.levels.forEach((at, tier) => { if (at === level && at > 1) out.push(`${u.name}, ${ORDINAL[tier]} tier`); });
+     if (M.MEADOW.level === level) out.push("Moonbrew Meadow");
+     M.COCOA_TIERS.forEach((t) => { if (t.level === level) out.push(`Sandy’s ${t.name}`); });
+     if (M.HOLLOW_PROPERTY.level === level) out.push("The Hollow House");
+diff --git a/voxel/src/ui/farm-sheets.js b/voxel/src/ui/farm-sheets.js
+index bf1a297..bc3aa2c 100644
+--- a/voxel/src/ui/farm-sheets.js
++++ b/voxel/src/ui/farm-sheets.js
+@@ -5,6 +5,7 @@ import { hospitalityIcon } from "./hospitality-icons.js";
+ import * as M from "../model.js";
+ import { customerCareUpgrades, customerCareSummary, bindCustomerCareUpgrades } from "./customer-care-sheet.js";
+ import { festivalMeadowSheet } from "./festival-meadow-sheet.js";
++import { farmWorkTabs, helperUpgradeCards, boostUpgradeCards, bindFarmWorkPurchases } from "./farm-work-ui.js";
+ import { money, segmented, plural } from "./kit.js";
+ import hettieArt from "../../assets/hettie-janitor-icon.webp";
+ import hattieArt from "../../assets/hattie-janitor-icon.webp";
+@@ -94,15 +95,20 @@ export function farmSheets(ui) {
+   let tab = "farm";
+   const cocoaMenu = festivalMeadowSheet(ui).festival; cocoaMenu.setTab("cocoa");
+   let visitorSection="arrivals";
++  let farmSection="patch";
+   const tabs = () => segmented("shoptab", "Shop sections", [["farm", "Farm"], ["seeds", "Seeds"], ["shop", "Shop"], ["cocoa", "Cocoa"], ["stall", "Stock"], ["visitors", "Visitors"]], tab).replace('class="segmented"', 'class="segmented build-sections"');
+ 
+   // Spread the word lives in the Visitors tab with the rest of its kind.
+   function farm(s) {
+-    return M.UPGRADES.filter((u) => u.id !== "sign").map((u) => {
++    const nav = farmWorkTabs(farmSection);
++    if (farmSection === "helpers") return `<div class="service-sheet farm-upgrade-sheet" data-menu-view="farm:helpers">${nav}${helperUpgradeCards(s, ui)}</div>`;
++    if (farmSection === "boost") return `<div class="service-sheet farm-upgrade-sheet" data-menu-view="farm:boost">${nav}${boostUpgradeCards(s)}</div>`;
++    const cards = M.UPGRADES.filter((u) => !["sign", "auto"].includes(u.id)).map((u) => {
+       const level = s.upgrades[u.id], max = level >= u.max, price = M.upgradeCost(s, u.id), at = max ? 0 : opensAt(s, "farm", u.id, level);
+       return `<article class="card${max ? " done" : ""}">${icon(u.id)}<div><h3>${u.name}</h3><p>${u.id === "storage" ? `${M.stockCount(s)}/${M.barnCapacity(s)} stored. ${s.upgrades.storage >= u.max ? "Barn fully expanded." : `Next tier adds ${M.STORAGE_BONUS[(s.upgrades.storage||0)+1]-M.STORAGE_BONUS[s.upgrades.storage||0]} spaces.`}` : u.id === "cart" ? `${u.text} ${cartLine(s)}` : u.text}</p>${levelNote(at)}${tiers(level, u.max)}</div>
+         ${at ? levelButton(at) : priceButton("buy", u.id, price, s.coins, max && "Owned")}</article>`;
+     }).join("");
++    return `<div class="service-sheet farm-upgrade-sheet" data-menu-view="farm:patch">${nav}${cards}</div>`;
+   }
+ 
+   function seeds(s) {
+@@ -192,6 +198,8 @@ export function farmSheets(ui) {
+       },
+       bind(body) {
+         const s = ui.state;
++        body.querySelectorAll("[data-farm-section]").forEach(b=>b.onclick=()=>{farmSection=b.dataset.farmSection;ui.draw();});
++        bindFarmWorkPurchases(body, ui);
+         body.querySelectorAll("[data-visitor-section]").forEach(b=>b.onclick=()=>{visitorSection=b.dataset.visitorSection;ui.draw();});
+         body.querySelectorAll('[data-occasion]').forEach(b=>b.onclick=()=>{if(M.buyVisitorEventUpgrade(s,b.dataset.occasion)){ui.save();ui.draw();}});
+         body.querySelectorAll('[data-occasion-toggle]').forEach(b=>b.onclick=()=>{const id=b.dataset.occasionToggle;if(M.setVisitorEventEnabled(s,id,!s.visitorEvents[id].enabled)){ui.save();ui.draw();}});
+diff --git a/voxel/src/ui/farm-work-ui.js b/voxel/src/ui/farm-work-ui.js
+new file mode 100644
+index 0000000..e7a12b3
+--- /dev/null
++++ b/voxel/src/ui/farm-work-ui.js
+@@ -0,0 +1,109 @@
++// Owner-by-owner farm training and the little heat gauge beside Boost.
++import * as M from '../model.js';
++import { money } from './kit.js';
++import { serviceNav } from './service-kit.js';
++
++const OWNERS = [['shane', 'Shane'], ['natalie', 'Natalie']];
++const TRAINING = {
++  plant: ['Quicker planting', 'plant', 'Planting'],
++  water: ['Quicker watering', 'tools', 'Watering'],
++  capacity: ['A bigger picking basket', 'stock', 'Picking'],
++};
++const secs = n => `${Math.round(n * 10) / 10}s`;
++const slots = n => `${n} ${n === 1 ? 'plot' : 'plots'}`;
++const pips = (level, max) => `<span class="farm-work-pips" role="img" aria-label="Tier ${level} of ${max}">${Array.from({ length: max }, (_, i) => `<i class="${i < level ? 'on' : ''}"></i>`).join('')}</span>`;
++const art = id => `<span class="farm-work-art" aria-hidden="true"><span class="ico i-${id}"></span></span>`;
++
++// Metadata owns prices and level gates; the UI never infers whether a buy is valid.
++function purchase(s, info, attr, value, label) {
++  if (info.done) return `<span class="farm-work-owned">Fully trained</span>`;
++  if (!info.unlocked) return `<button class="button farm-buy" disabled>Level ${info.requiredLevel}</button>`;
++  const short = Math.max(0, info.cost - s.coins);
++  return `<button class="button gold purchase-button farm-buy" data-${attr}="${value}" ${s.paused || short ? 'disabled' : ''} aria-label="${label}, ${money(info.cost)}">${money(info.cost)}${short ? `<small>need ${money(short)}</small>` : ''}</button>`;
++}
++
++// A preview changes only the chosen tier in a shallow rule-state copy.
++function nextHelper(s, who, kind) {
++  const work = s.farmWork;
++  return M.helperStatus({ ...s, farmWork: { ...work, helpers: { ...work.helpers, [who]: { ...work.helpers[who], [kind]: work.helpers[who][kind] + 1 } } } }, who);
++}
++function nextBoost(s, kind) {
++  const work = s.farmWork;
++  return M.boostStatus({ ...s, farmWork: { ...work, boost: { ...work.boost, [kind]: work.boost[kind] + 1 } } });
++}
++
++export const farmWorkTabs = current => serviceNav('farm-section', 'Farm upgrade sections', [['patch', 'Patch'], ['helpers', 'Helping hands'], ['boost', 'Boost']], current);
++
++// Two portrait-led cards keep each owner's purchase and skills together.
++export function helperUpgradeCards(s, ui) {
++  const cards = OWNERS.map(([who, name]) => {
++    const now = M.helperStatus(s, who), hire = M.helperUpgradeInfo(s, who, 'hire'), portrait = ui.portrait(who);
++    const head = `<header class="farm-helper-head"><span class="farm-helper-face">${portrait ? `<img src="${portrait}" alt="">` : art('auto')}</span><div><h3>${name}</h3><span class="farm-helper-state${now.hired ? ' is-hired' : ''}">${now.hired ? 'Helping hand' : 'Ready to help'}</span></div>${!now.hired ? purchase(s, hire, 'helper-buy', `${who}:hire`, `Hire ${name}`) : ''}</header>`;
++    const metrics = `<div class="farm-helper-metrics"><span><b>${secs(now.plantSeconds)}</b>plant</span><span><b>${secs(now.waterSeconds)}</b>water</span><span><b>${slots(now.capacity)}</b>per pick</span></div>`;
++    if (!now.hired) return `<article class="farm-helper-card">${head}<p class="farm-helper-invite">Plant, water and pick with ${name}. Hire once, then train their skills separately.</p>${metrics}</article>`;
++    const rows = Object.entries(TRAINING).map(([kind, [label, icon, verb]]) => {
++      const info = M.helperUpgradeInfo(s, who, kind), next = !info.done ? nextHelper(s, who, kind) : null;
++      const value = status => kind === 'capacity' ? slots(status.capacity) : secs(kind === 'plant' ? status.plantSeconds : status.waterSeconds);
++      const effect = next ? `${value(now)} <span aria-hidden="true">→</span> <b>${value(next)}</b>${kind === 'capacity' ? ' per pick' : ' per plot'}` : `${value(now)}${kind === 'capacity' ? ' per pick' : ' per plot'}`;
++      return `<div class="farm-training-row">${art(icon)}<div class="farm-training-copy"><h4>${label}</h4><p>${effect}</p>${pips(info.level, info.max)}</div>${purchase(s, info, 'helper-buy', `${who}:${kind}`, `${name}: ${verb}`)}</div>`;
++    }).join('');
++    return `<article class="farm-helper-card">${head}${metrics}<div class="farm-training">${rows}</div></article>`;
++  }).join('');
++  return `<div class="farm-work farm-helping-hands"><div class="farm-work-intro"><h3>A little teamwork</h3><p>One helping hand for each of you. Skills belong to that character, including when you take control.</p></div><div class="farm-helper-list">${cards}</div><p class="farm-work-footnote">Helping hands rest while you play. Ripe crops wait a moment for your own picking streak; a full barn keeps the crop safe.</p></div>`;
++}
++
++// Upgrades show exact before/after effects, not a second live heat display.
++export function boostUpgradeCards(s) {
++  const now = M.boostStatus(s);
++  const cards = ['power', 'cooling'].map(kind => {
++    const info = M.boostUpgradeInfo(s, kind), next = !info.done ? nextBoost(s, kind) : null;
++    const title = kind === 'power' ? 'Pumpkin power' : 'Keep your cool';
++    const description = kind === 'power' ? 'More growth from every accepted boost.' : 'Use less heat, then cool down faster between boosts.';
++    const effect = kind === 'power'
++      ? `<span>Growth per boost</span><b>×${now.strength}${next ? ` <span aria-hidden="true">→</span> ×${next.strength}` : ''}</b>`
++      : `<span>Heat per boost</span><b>${now.heatPerUse}%${next ? ` <span aria-hidden="true">→</span> ${next.heatPerUse}%` : ''}</b><span>Cooling per second</span><b>${now.coolPerSecond}%${next ? ` <span aria-hidden="true">→</span> ${next.coolPerSecond}%` : ''}</b>`;
++    return `<article class="farm-boost-card"><header>${art(kind === 'power' ? 'boost' : 'tools')}<div><h3>${title}</h3><p>${description}</p></div></header><div class="farm-boost-effects">${effect}</div><footer>${pips(info.level, info.max)}${purchase(s, info, 'boost-buy', kind, title)}</footer></article>`;
++  }).join('');
++  return `<div class="farm-work farm-boost-upgrades"><div class="farm-work-intro"><h3>A spark, not a sprint</h3><p>The dial beside Boost fills with each use. At 100% it overheats; let it fall to 35% before boosting again.</p></div><div class="farm-boost-list">${cards}</div><p class="farm-work-footnote">Heat cools during play and rests during a tea break. Upgrades improve each use; they never remove the limit.</p></div>`;
++}
++
++export function bindFarmWorkPurchases(body, ui) {
++  body.querySelectorAll('[data-helper-buy]').forEach(button => button.onclick = () => {
++    const [who, kind] = button.dataset.helperBuy.split(':');
++    if (!M.buyHelperUpgrade(ui.state, who, kind)) return;
++    const name = OWNERS.find(([id]) => id === who)?.[1] ?? who;
++    ui.tone(820); ui.notice(kind === 'hire' ? `${name} is ready to lend a hand.` : `${name}’s ${kind === 'capacity' ? 'picking basket' : kind === 'plant' ? 'planting' : 'watering'} improved.`);
++    ui.save?.(); ui.draw();
++  });
++  body.querySelectorAll('[data-boost-buy]').forEach(button => button.onclick = () => {
++    if (!M.buyBoostUpgrade(ui.state, button.dataset.boostBuy)) return;
++    ui.tone(820); ui.notice(button.dataset.boostBuy === 'power' ? 'A little more pumpkin power.' : 'Boost cooling improved.');
++    ui.save?.(); ui.draw();
++  });
++}
++
++const dialRefs = new WeakMap();
++export const boostDialMarkup = () => `<span class="boost-dial" aria-hidden="true"><svg viewBox="0 0 42 24" focusable="false"><path class="boost-dial-track" d="M5 21a16 16 0 0 1 32 0"/><path class="boost-dial-danger" d="M32.3 9.7A16 16 0 0 1 37 21"/><g class="boost-dial-needle" transform="rotate(-80 21 20)"><path d="M21 20V7"/><circle cx="21" cy="20" r="2"/></g></svg><span class="boost-dial-value">0%</span></span>`;
++
++// Mount once: event listeners, keyboard focus and the button node stay intact.
++export function mountBoostDial(button) {
++  if (!button || dialRefs.has(button)) return;
++  const label = document.createElement('span'); label.className = 'boost-button-label';
++  for (const child of [...button.childNodes]) if (child.nodeType === 3 && child.textContent.trim()) { label.textContent = child.textContent.trim(); child.replaceWith(label); break; }
++  if (!label.isConnected) { label.textContent = 'Boost'; button.append(label); }
++  button.insertAdjacentHTML('beforeend', boostDialMarkup()); button.classList.add('boost-with-dial');
++  dialRefs.set(button, { label, needle: button.querySelector('.boost-dial-needle'), value: button.querySelector('.boost-dial-value'), key: '' });
++}
++
++export function renderBoostDial(button, status) {
++  if (!button || !status) return;
++  mountBoostDial(button);
++  const refs = dialRefs.get(button), heat = Math.max(0, Math.min(100, Number(status.heat) || 0)), hot = !!status.overheated;
++  refs.needle.setAttribute('transform', `rotate(${(heat * 1.6 - 80).toFixed(1)} 21 20)`);
++  const key = `${Math.round(heat)}:${hot}`;
++  if (key === refs.key) return;
++  refs.key = key; refs.value.textContent = `${Math.round(heat)}%`; refs.label.textContent = hot ? 'Cooling' : 'Boost';
++  button.classList.toggle('is-overheated', hot); button.classList.toggle('is-hot', heat >= 80);
++  button.setAttribute('aria-label', hot ? `Boost cooling: ${Math.round(heat)}% heat. Ready again at 35%.` : `Boost crops. Heat ${Math.round(heat)}%; overheats at 100%.`);
++  button.title = hot ? 'Cooling down — ready again at 35% heat' : `Boost growth · ${Math.round(heat)}% heat`;
++}
+diff --git a/voxel/src/ui/farm-work.css b/voxel/src/ui/farm-work.css
+new file mode 100644
+index 0000000..811af8d
+--- /dev/null
++++ b/voxel/src/ui/farm-work.css
+@@ -0,0 +1,33 @@
++/* Personal farm skills, with one calm section open at a time. */
++:root{--farm-work-paper:#352b40;--farm-work-line:#bca0bb30;--farm-work-muted:#d0c0d3;--farm-work-gold:#f3c880;--farm-work-ready:#bad3ab}
++.farm-work{display:flex;flex-direction:column;gap:16px;min-width:0;color:var(--ink)}
++.farm-work-intro h3{margin:0 0 5px;font:500 21px/1.25 var(--display);letter-spacing:-.02em}
++.farm-work-intro p,.farm-work-footnote{font:400 13px/1.55 var(--body);color:var(--farm-work-muted);margin:0}
++.farm-work-footnote{padding:12px 2px 0;border-top:1px solid var(--farm-work-line)}
++.farm-helper-list,.farm-boost-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;min-width:0}
++.farm-helper-card,.farm-boost-card{min-width:0;padding:17px;border:1px solid var(--farm-work-line);border-radius:19px;background:linear-gradient(140deg,#51405c70,#302638d9 74%);box-shadow:inset 0 1px #fff2de09,0 9px 24px #08040c16}
++.farm-helper-head{display:flex;align-items:center;gap:12px;min-width:0}.farm-helper-head>div{flex:1;min-width:0}
++.farm-helper-head h3,.farm-boost-card h3{font:600 18px/1.25 var(--body);letter-spacing:-.02em;margin:0}
++.farm-helper-face{flex:0 0 53px;width:53px;height:61px;border-radius:14px;overflow:hidden;display:grid;place-items:center;background:#170f2059;border:1px solid #d3acb822}
++.farm-helper-face img{width:100%;height:100%;object-fit:contain;image-rendering:auto;filter:drop-shadow(0 3px 3px #0005)}
++.farm-helper-state{display:inline-flex;align-items:center;gap:5px;font:500 12px/1.4 var(--body);color:var(--farm-work-muted);margin-top:5px}.farm-helper-state:before{content:'';width:5px;height:5px;border-radius:50%;background:#ba9faf}.farm-helper-state.is-hired{color:var(--farm-work-ready)}.farm-helper-state.is-hired:before{background:var(--farm-work-ready)}
++.farm-helper-invite{font:400 13px/1.5 var(--body);color:var(--farm-work-muted);margin:15px 0 0}
++.farm-helper-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:16px 0 2px;padding:12px 0;border-top:1px solid var(--farm-work-line);border-bottom:1px solid var(--farm-work-line)}
++.farm-helper-metrics>span{display:flex;flex-direction:column;align-items:center;gap:3px;font:400 12px/1.3 var(--body);color:var(--farm-work-muted);text-align:center}.farm-helper-metrics b{font:600 14px/1.2 var(--body);color:#f8e5c4;font-variant-numeric:tabular-nums}
++.farm-training{display:flex;flex-direction:column}.farm-training-row{display:flex;align-items:center;gap:10px;min-width:0;padding:15px 0;border-bottom:1px solid var(--farm-work-line)}.farm-training-row:last-child{border-bottom:0;padding-bottom:0}
++.farm-work-art{display:grid;place-items:center;flex:0 0 34px;width:34px;height:38px;border-radius:11px;background:#1c132530;border:1px solid #e4c2ad0b}.farm-work-art .ico{--s:28px;margin:0}
++.farm-training-copy{flex:1;min-width:0}.farm-training-copy h4{font:600 13px/1.35 var(--body);margin:0 0 4px}.farm-training-copy p{font:400 12px/1.45 var(--body);color:var(--farm-work-muted);margin:0;font-variant-numeric:tabular-nums}.farm-training-copy p>b{color:#f7ddad;font-weight:600}.farm-training-copy p>span{color:#a58cac;padding:0 2px}
++.farm-work-pips{display:inline-flex;gap:4px;align-items:center;min-height:10px;margin-top:6px}.farm-work-pips i{width:12px;height:3px;border-radius:99px;background:#c7aace25}.farm-work-pips i.on{background:var(--farm-work-gold);box-shadow:0 0 5px #e8b36a19}
++.farm-work .farm-buy{flex-shrink:0;min-width:78px;min-height:44px;padding:7px 10px;border-radius:12px;font:600 13px/1.2 var(--body);font-variant-numeric:tabular-nums;white-space:normal;text-align:center}
++.farm-work .farm-buy small{display:block;font:400 12px/1.3 var(--body);margin-top:3px;color:inherit;opacity:.85}
++.farm-work .farm-buy.gold{background:linear-gradient(180deg,#f7d696,#e7af61 68%,#cf9147);border:1px solid #ffe3b2;color:#352013;box-shadow:inset 0 1px #fff0c9aa,0 3px 8px #09030b3d;text-shadow:0 1px #fff0ce77}
++.farm-work .farm-buy:disabled{opacity:1;background:#3a2e43;border:1px solid #a28aa236;color:#bbaaaf;box-shadow:none;text-shadow:none}.farm-work .farm-buy.gold:disabled{background:#6b533f;color:#dfc8a4;border-color:#d7ae693b}
++.farm-work-owned{max-width:78px;color:var(--farm-work-ready);font:500 12px/1.4 var(--body);text-align:right}
++.farm-boost-card>header{display:flex;gap:11px;align-items:flex-start}.farm-boost-card>header>div{min-width:0}.farm-boost-card>header .farm-work-art{width:43px;height:45px;flex-basis:43px}.farm-boost-card>header .ico{--s:34px}.farm-boost-card h3{font-size:16px}.farm-boost-card header p{font:400 13px/1.5 var(--body);color:var(--farm-work-muted);margin:6px 0 0}
++.farm-boost-effects{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;margin:20px 0;padding:14px 0;border-block:1px solid var(--farm-work-line);font:400 12px/1.4 var(--body);color:var(--farm-work-muted)}.farm-boost-effects b{font:600 13px/1.4 var(--body);color:#ffe0ad;font-variant-numeric:tabular-nums}.farm-boost-effects b>span{font-weight:400;color:#a98eb3;padding:0 3px}.farm-boost-card footer{display:flex;justify-content:space-between;align-items:center;gap:12px}.farm-boost-card footer .farm-work-pips{margin:0}
++/* The tiny gauge lives inside the existing action; no extra HUD panel. */
++#boost.boost-with-dial{gap:8px;padding:0 12px;min-width:126px}.boost-button-label{min-width:0}.boost-dial{display:flex;flex:0 0 42px;width:42px;flex-direction:column;align-items:center;line-height:1;color:#ffe1ad;pointer-events:none}.boost-dial svg{display:block;width:42px;height:23px;overflow:visible}.boost-dial-track{fill:none;stroke:#b68d5b69;stroke-width:3;stroke-linecap:round}.boost-dial-danger{fill:none;stroke:#c9776a;stroke-width:3;stroke-linecap:round}.boost-dial-needle{stroke:#ffe7bb;stroke-width:1.7;stroke-linecap:round;fill:#ffe7bb}.boost-dial-value{font:600 12px/1 var(--body);font-variant-numeric:tabular-nums;margin-top:-1px;color:inherit}.boost-with-dial.is-hot .boost-dial{color:#ffc2a0}.boost-with-dial.is-hot .boost-dial-needle{stroke:#ffc2a0;fill:#ffc2a0}
++#boost.boost-with-dial.is-overheated{border-color:#ba898e99;background:linear-gradient(150deg,#4d303d,#2a2335);color:#e1c3cd;box-shadow:inset 0 0 0 1px #e2ada520,0 0 12px #b56f7b25;opacity:1}#boost.is-overheated::after{animation:none;opacity:0}#boost.is-overheated .boost-dial{color:#f1acaa}.boost-with-dial .boost-button-label{font-size:14px}
++@media(max-width:700px){.farm-helper-list,.farm-boost-list{grid-template-columns:minmax(0,1fr)}.farm-helper-card,.farm-boost-card{padding:16px}.farm-helper-head h3{font-size:18px}}
++@media(max-width:430px){#boost.boost-with-dial{min-width:105px;gap:6px;padding-inline:10px}#boost.boost-with-dial>.ico{display:none}.farm-helper-card,.farm-boost-card{padding:14px}.farm-training-row{gap:8px}.farm-training-row>.farm-work-art{flex-basis:28px;width:28px}.farm-work .farm-buy{min-width:73px;padding:7px 8px}.farm-helper-head{gap:9px}.farm-helper-face{flex-basis:47px;width:47px;height:56px}}
++@media(prefers-reduced-motion:reduce){.boost-dial-needle{transition:none}}
+diff --git a/voxel/test/farm-buttons.test.mjs b/voxel/test/farm-buttons.test.mjs
+new file mode 100644
+index 0000000..35e7473
+--- /dev/null
++++ b/voxel/test/farm-buttons.test.mjs
+@@ -0,0 +1,60 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import * as M from '../src/model.js';
++import { beginAction } from '../src/rules/life-actions.js';
++import { waterPlot, wateringStatus, WATER } from '../src/rules/hands-on.js';
++
++function trained(owner = 'natalie') {
++  const s = M.freshState(); s.coins = 100000; s.progression.claimed = M.LEVELS.map(l => l.level);
++  M.buyHelperUpgrade(s, owner, 'hire');
++  return s;
++}
++const ripen = s => { for (const p of s.plots.slice(0, M.openPlots(s))) Object.assign(p, { phase: 'ready', progress: 1, ripe: 0 }); };
++
++test('a planting press changes exactly one open bed and pause prevents a press', () => {
++  const s=M.freshState(); assert.equal(M.plantNext(s),0); assert.equal(s.plots.filter(p=>p.phase==='growing').length,1);
++  assert.equal(M.plantNext(s),1); s.paused=true; assert.equal(M.plantNext(s),-1);
++  assert.equal(s.plots.filter(p=>p.phase==='growing').length,2);
++});
++
++test('manual picking follows each owner’s1→2→3capacity and does not multiply yield', () => {
++  const s=trained(); s.upgrades.yield=1; ripen(s);
++  assert.equal(M.pickBatch(s,'natalie').length,1); assert.equal(M.stockCount(s),2);
++  assert.ok(M.buyHelperUpgrade(s,'natalie','capacity'));
++  assert.equal(M.pickBatch(s,'natalie').length,2); assert.equal(M.stockCount(s),6);
++  assert.ok(M.buyHelperUpgrade(s,'natalie','capacity')); ripen(s);
++  assert.equal(M.pickBatch(s,'natalie').length,3); assert.equal(M.stockCount(s),12);
++  assert.equal(M.pickBatch(s,'shane').length,1); assert.equal(M.stockCount(s),14);
++});
++
++test('a capacity batch respects partial barn space and rejects duplicate or closed targets', () => {
++  const s=trained(); M.buyHelperUpgrade(s,'natalie','capacity'); M.buyHelperUpgrade(s,'natalie','capacity'); ripen(s);
++  s.stock[0]=M.barnCapacity(s)-1;
++  const rows=M.pickBatch(s,'natalie',[0,0,23,-1,1]);
++  assert.deepEqual(rows,[{plot:0,count:1}]); assert.equal(s.plots[1].phase,'ready'); assert.equal(M.stockCount(s),M.barnCapacity(s));
++  s.paused=true; assert.deepEqual(M.pickBatch(s,'natalie'),[]);
++});
++
++test('controlled planting and watering use only the chosen owner’s training', () => {
++  const s=trained('shane'); M.buyHelperUpgrade(s,'shane','plant'); M.buyHelperUpgrade(s,'shane','water');
++  assert.equal(beginAction(s,{type:'plot',index:0},'plant','shane').duration,.8*.8);
++  assert.equal(beginAction(s,{type:'plot',index:0},'plant','natalie').duration,.8);
++  M.plant(s,0);
++  assert.equal(beginAction(s,{type:'plot',index:0},'water','shane').duration,1.1*.8);
++});
++
++test('water cooldown and fresh ripe grace survive saves without free repeated growth', () => {
++  const s=M.freshState(); s.time=20; M.plant(s,0); assert.ok(waterPlot(s,0));
++  s.plots[1]={phase:'ready',progress:1,variety:0,ripe:19};
++  const restored=M.restoreState(JSON.parse(JSON.stringify(M.saveData(s))));
++  assert.equal(restored.version,15); assert.equal(restored.plots[0].progress,WATER.progress);
++  assert.equal(wateringStatus(restored,0).seconds,12); assert.equal(waterPlot(restored,0),false);
++  assert.equal(restored.plots[1].ripe,19);
++  restored.time+=12; assert.ok(waterPlot(restored,0));
++});
++
++test('invalid frame intervals do not damage the clock or trigger work', () => {
++  const s=trained(), before=JSON.stringify(M.saveData(s));
++  for(const dt of [NaN,Infinity,-1,0]) assert.deepEqual(M.update(s,dt),[]);
++  assert.equal(JSON.stringify(M.saveData(s)),before);
++});
+diff --git a/voxel/test/farm-work.test.mjs b/voxel/test/farm-work.test.mjs
+new file mode 100644
+index 0000000..947bdce
+--- /dev/null
++++ b/voxel/test/farm-work.test.mjs
+@@ -0,0 +1,206 @@
++import test from "node:test";
++import assert from "node:assert/strict";
++import * as M from "../src/model.js";
++import * as F from "../src/rules/farm-work.js";
++import { waterPlot, wateringStatus } from "../src/rules/hands-on.js";
++
++const fresh = () => { const s = M.freshState(); s.farmWork = F.freshFarmWork(); s.coins = 1e6; s.visitorTimer = s.shop.arrivalTimer = 1e9; return s; };
++const allLevels = s => { s.progression.claimed = M.LEVELS.map(l => l.level); return s; };
++const eventsAfter = (s, dt) => { const events = []; s.time += dt; F.updateHelpers(s, dt, events); return events; };
++const ready = (s, indices = [0, 1, 2, 3, 4, 5]) => { for (const i of indices) s.plots[i] = { phase: "ready", progress: 1, variety: 0, ripe: s.time - M.HELPER_WAIT }; };
++const near = (a, b) => assert.ok(Math.abs(a - b) < 1e-8, `${a} ≈ ${b}`);
++
++test("one helper is a separate paid hire; their skills and prices are independent", () => {
++  const s = fresh(), cash = s.coins;
++  assert.equal(F.buyHelperUpgrade(s, "shane", "water"), false, "skills require that owner's hire");
++  assert.ok(F.buyHelperUpgrade(s, "shane", "hire"));
++  assert.equal(s.coins, cash - 250); assert.equal(s.upgrades.auto, 1);
++  assert.equal(F.helperStatus(s, "natalie").hired, false);
++  assert.equal(F.buyHelperUpgrade(s, "shane", "hire"), false);
++  assert.ok(F.buyHelperUpgrade(s, "shane", "plant"));
++  near(F.helperStatus(s, "shane").plantSeconds, 1.92);
++  assert.equal(F.helperStatus(s, "natalie").plantSeconds, 2.4);
++  assert.equal(F.helperUpgradeInfo(s, "shane", "plant").requiredLevel, 5);
++  assert.equal(F.buyHelperUpgrade(s, "shane", "plant"), false, "the second skill waits for level5");
++  assert.equal(F.buyHelperUpgrade(s, "shane", "capacity"), false);
++  allLevels(s);
++  assert.ok(F.buyHelperUpgrade(s, "shane", "capacity")); assert.equal(F.helperStatus(s, "shane").capacity, 2);
++  assert.ok(F.buyHelperUpgrade(s, "shane", "capacity")); assert.equal(F.helperStatus(s, "shane").capacity, 3);
++  assert.equal(F.buyHelperUpgrade(s, "shane", "capacity"), false);
++  assert.equal(F.helperStatus(s, "natalie").capacity, 1);
++  s.paused = true; const pauseCash = s.coins;
++  assert.equal(F.buyHelperUpgrade(s, "natalie", "hire"), false); assert.equal(s.coins, pauseCash);
++  assert.equal(F.helperUpgradeInfo(s, "nobody", "hire"), null);
++  assert.equal(F.buyHelperUpgrade(s, "shane", "unknown"), false);
++});
++
++test("old shared auto purchase grants both once, while separate saved hires remain separate", () => {
++  const s = fresh(); s.upgrades.auto = 1;
++  const legacy = F.restoreFarmWork(undefined, s);
++  assert.equal(legacy.helpers.shane.hired, true); assert.equal(legacy.helpers.natalie.hired, true);
++  assert.equal(legacy.boost.heat, 0);
++  const separate = F.freshFarmWork(); separate.helpers.shane.hired = true; separate.helpers.shane.plant = 2;
++  const loaded = F.restoreFarmWork(JSON.parse(JSON.stringify(separate)), s);
++  assert.equal(loaded.helpers.shane.hired, true); assert.equal(loaded.helpers.shane.plant, 2);
++  assert.equal(loaded.helpers.natalie.hired, false);
++  const bundle = fresh(); assert.ok(M.buyUpgrade(bundle, "auto"));
++  assert.equal(bundle.coins, 1e6 - 500); assert.equal(F.helperStatus(bundle, "shane").hired, true); assert.equal(F.helperStatus(bundle, "natalie").hired, true);
++});
++
++test("helper turns sow a single plot and faster planting changes real throughput", () => {
++  const base = fresh(); F.buyHelperUpgrade(base, "shane", "hire");
++  assert.deepEqual(eventsAfter(base, 2.39), []);
++  assert.deepEqual(eventsAfter(base, .01), [{ type: "plant", owner: "shane", plot: 0 }]);
++  assert.equal(base.plots.filter(p => p.phase === "growing").length, 1);
++  const fast = fresh(); F.buyHelperUpgrade(fast, "shane", "hire"); F.buyHelperUpgrade(fast, "shane", "plant");
++  assert.equal(eventsAfter(fast, 1.92)[0]?.type, "plant");
++  assert.equal(fast.plots.filter(p => p.phase === "growing").length, 1);
++  assert.equal(eventsAfter(fast, 999).length, 1, "large catch-up never sweeps the field");
++  const both = fresh(); M.buyUpgrade(both, "auto");
++  assert.deepEqual(eventsAfter(both, 2.4).map(e => [e.owner, e.plot]), [["shane", 0], ["natalie", 1]]);
++});
++
++test("picking capacity is ripe plots per turn and shares the real storage/yield rules", () => {
++  const s = allLevels(fresh()); F.buyHelperUpgrade(s, "shane", "hire");
++  F.buyHelperUpgrade(s, "shane", "capacity"); F.buyHelperUpgrade(s, "shane", "capacity");
++  ready(s); s.upgrades.yield = 2;
++  const events = eventsAfter(s, 2);
++  assert.equal(events.length, 3); assert.ok(events.every(e => e.type === "harvest" && e.owner === "shane" && e.count === 3));
++  assert.equal(s.harvested, 9); assert.equal(M.stockCount(s), 9);
++  assert.equal(s.plots.filter(p => p.phase === "ready").length, 3);
++  assert.equal(s.streak.count, 0); assert.equal(M.visitorBonus(s), 0);
++  const partial = allLevels(fresh()); F.buyHelperUpgrade(partial, "shane", "hire");
++  F.buyHelperUpgrade(partial, "shane", "capacity"); F.buyHelperUpgrade(partial, "shane", "capacity");
++  ready(partial); partial.upgrades.yield = 1;
++  partial.stock[0] = M.barnCapacity(partial) - 3;
++  assert.equal(eventsAfter(partial, 2).filter(e => e.type === "harvest").length, 1);
++  assert.equal(M.stockCount(partial), M.barnCapacity(partial) - 1);
++  assert.equal(partial.plots.filter(p => p.phase === "ready").length, 5);
++});
++
++test("helpers leave the grace period, rest during play mode and never pick a full barn", () => {
++  const s = fresh(); F.buyHelperUpgrade(s, "shane", "hire"); ready(s);
++  for (const p of s.plots.slice(0, 6)) p.ripe = s.time;
++  assert.equal(eventsAfter(s, 2).length, 0);
++  s.handsOn = true; const before = JSON.stringify(s.farmWork.helpers);
++  assert.deepEqual(eventsAfter(s, 30), []); assert.equal(JSON.stringify(s.farmWork.helpers), before);
++  s.handsOn = false; assert.equal(eventsAfter(s, 2)[0].type, "harvest");
++  const full = fresh(); F.buyHelperUpgrade(full, "shane", "hire"); ready(full);
++  full.stock[0] = M.barnCapacity(full); const cash = full.coins;
++  assert.deepEqual(eventsAfter(full, 10), []); assert.equal(full.harvested, 0); assert.equal(full.coins, cash);
++  assert.equal(full.plots[0].phase, "ready");
++});
++
++test("helper watering respects the shared cooldown and prioritises planting and ripe crops", () => {
++  const s = fresh(); F.buyHelperUpgrade(s, "natalie", "hire");
++  for (let i = 0; i < M.openPlots(s); i++) M.plant(s, i);
++  const before = s.coins;
++  assert.deepEqual(eventsAfter(s, 3), [{ type: "water", owner: "natalie", plot: 0 }]);
++  near(s.plots[0].progress, .12); assert.equal(s.coins, before);
++  assert.equal(wateringStatus(s, 0).available, false); assert.equal(waterPlot(s, 0), false);
++  M.harvest(s, 1); s.plots[1] = { phase: "empty", progress: 0, variety: 0 };
++  assert.deepEqual(eventsAfter(s, 2.4), [{ type: "plant", owner: "natalie", plot: 1 }]);
++  s.plots[4] = { phase: "ready", progress: 1, variety: 0, ripe: s.time - 9 };
++  assert.equal(eventsAfter(s, 2)[0]?.type, "harvest");
++});
++
++test("partial helper work belongs to the actual crop and cannot jump to a new target", () => {
++  const s = fresh(); F.buyHelperUpgrade(s, "shane", "hire");
++  for (let i = 0; i < M.openPlots(s); i++) M.plant(s, i);
++  assert.deepEqual(eventsAfter(s, 2.9), []);
++  assert.ok(waterPlot(s, 0), "the player finishes the original watering job");
++  assert.deepEqual(eventsAfter(s, .1), []); near(s.plots[1].progress, 0);
++  assert.deepEqual(eventsAfter(s, 2.9), [{ type: "water", owner: "shane", plot: 1 }]);
++  const replaced = fresh(); F.buyHelperUpgrade(replaced, "shane", "hire");
++  assert.deepEqual(eventsAfter(replaced, 2.3), []);
++  replaced.plots[0] = { phase: "empty", progress: 0, variety: 0 };
++  assert.deepEqual(eventsAfter(replaced, .1), [], "even an identical-looking replacement is a new job");
++  assert.deepEqual(eventsAfter(replaced, 2.3), [{ type: "plant", owner: "shane", plot: 0 }]);
++});
++
++test("both helpers reserve distinct jobs and a larger basket preserves the other reservation", () => {
++  const s = fresh(); M.buyUpgrade(s, "auto");
++  for (let i = 0; i < M.openPlots(s); i++) M.plant(s, i);
++  assert.deepEqual(eventsAfter(s, 2.9), []);
++  const both = eventsAfter(s, .1);
++  assert.deepEqual(both.map(e => [e.owner, e.plot]), [["shane", 0], ["natalie", 1]]);
++  near(s.plots[0].progress, .12); near(s.plots[1].progress, .12);
++  const baskets = allLevels(fresh()); M.buyUpgrade(baskets, "auto"); ready(baskets);
++  F.buyHelperUpgrade(baskets, "shane", "capacity"); F.buyHelperUpgrade(baskets, "shane", "capacity");
++  assert.deepEqual(eventsAfter(baskets, 1.9), []);
++  const picked = eventsAfter(baskets, .1);
++  assert.deepEqual(picked.filter(e => e.owner === "shane").map(e => e.plot), [0, 2, 3]);
++  assert.deepEqual(picked.filter(e => e.owner === "natalie").map(e => e.plot), [1]);
++  const partial = fresh(); F.buyHelperUpgrade(partial, "shane", "hire");
++  eventsAfter(partial, 2.3);
++  const loaded = M.restoreState(JSON.parse(JSON.stringify(M.saveData(partial))));
++  assert.equal(loaded.farmWork.helpers.shane.timer, 0);
++  assert.deepEqual(eventsAfter(loaded, .1), [], "reload restarts a partial job without crop identity");
++});
++
++test("boost heat rejects repeated and overheated taps without growth, rewards or tap count", () => {
++  const s = fresh(); M.plant(s, 0);
++  const one = M.tap(s); assert.equal(one.accepted, true); assert.equal(one.boost, true);
++  near(F.boostStatus(s).heat, 10); const progress = s.plots[0].progress;
++  assert.equal(M.tap(s).reason, "cooldown"); near(F.boostStatus(s).heat, 10); near(s.plots[0].progress, progress); assert.equal(s.taps, 1);
++  for (let i = 0; i < 9; i++) { s.time += .2; assert.equal(M.tap(s).accepted, true); }
++  assert.equal(F.boostStatus(s).heat, 100); assert.equal(F.boostStatus(s).overheated, true);
++  const snapshot = JSON.stringify({ plots: s.plots, taps: s.taps, stock: s.stock, coins: s.coins, farmWork: s.farmWork });
++  s.time += 1; assert.equal(M.tap(s).reason, "overheated");
++  assert.equal(JSON.stringify({ plots: s.plots, taps: s.taps, stock: s.stock, coins: s.coins, farmWork: s.farmWork }), snapshot);
++  F.updateBoost(s, 8); near(F.boostStatus(s).heat, 36); assert.equal(F.boostStatus(s).overheated, true);
++  F.updateBoost(s, .125); near(F.boostStatus(s).heat, 35); assert.equal(F.boostStatus(s).overheated, false);
++  s.time += .2; assert.equal(M.tap(s).accepted, true);
++});
++
++test("cooling and power upgrades are paid, level gated and change bounded boost effects", () => {
++  const base = fresh(), improved = fresh(); M.plant(base, 0); M.plant(improved, 0);
++  const cash = improved.coins; assert.ok(F.buyBoostUpgrade(improved, "power")); assert.ok(F.buyBoostUpgrade(improved, "cooling"));
++  assert.equal(improved.coins, cash - 270); assert.equal(F.boostUpgradeInfo(improved, "power").requiredLevel, 5);
++  assert.equal(F.buyBoostUpgrade(improved, "power"), false);
++  M.tap(base); M.tap(improved); near(improved.plots[0].progress / base.plots[0].progress, 1.25);
++  near(F.boostStatus(improved).heat, 9); near(F.boostStatus(improved).coolPerSecond, 10);
++  const before = JSON.stringify(improved.farmWork); improved.paused = true;
++  assert.equal(M.tap(improved).reason, "paused"); assert.equal(F.buyBoostUpgrade(improved, "cooling"), false);
++  F.updateBoost(improved, 999); assert.equal(JSON.stringify(improved.farmWork), before);
++  improved.paused = false; allLevels(improved);
++  for (let i = 0; i < 2; i++) { assert.ok(F.buyBoostUpgrade(improved, "power")); assert.ok(F.buyBoostUpgrade(improved, "cooling")); }
++  assert.equal(F.buyBoostUpgrade(improved, "power"), false); assert.equal(F.buyBoostUpgrade(improved, "cooling"), false);
++  const status = F.boostStatus(improved); near(status.strength, 1.75); near(status.heatPerUse, 7); near(status.coolPerSecond, 16);
++});
++
++test("saved heat, hysteresis, skill ownership and tap cadence survive bounded restoration", () => {
++  const s = allLevels(fresh()); F.buyHelperUpgrade(s, "shane", "hire"); F.buyHelperUpgrade(s, "shane", "plant");
++  s.time = 40; s.farmWork.boost.heat = 82; s.farmWork.boost.overheated = true; s.farmWork.boost.lastUse = 40;
++  const raw = JSON.parse(JSON.stringify(s.farmWork)), loaded = { ...s, farmWork: F.restoreFarmWork(raw, s) };
++  assert.equal(F.boostStatus(loaded).heat, 82); assert.equal(F.boostStatus(loaded).overheated, true);
++  assert.equal(F.helperStatus(loaded, "shane").plantLevel, 1); assert.equal(F.helperStatus(loaded, "natalie").hired, false);
++  assert.equal(M.tap(loaded).reason, "overheated");
++  raw.boost.overheated = false; raw.boost.heat = 20; loaded.farmWork = F.restoreFarmWork(raw, s);
++  assert.equal(M.tap(loaded).reason, "cooldown");
++  const junk = F.restoreFarmWork({ boost: { power: 99, cooling: -1, heat: Infinity, lastUse: 1e99 }, helpers: { shane: { hired: true, plant: 99, water: 99, capacity: 99, timer: Infinity, kind: "plant", cursor: 1e9 } } }, s);
++  assert.equal(junk.boost.power, 3); assert.equal(junk.boost.cooling, 0); assert.equal(junk.boost.heat, 0); assert.equal(junk.boost.lastUse, s.time);
++  assert.equal(junk.helpers.shane.plant, 3); assert.equal(junk.helpers.shane.capacity, 2); assert.equal(junk.helpers.shane.timer, 0);
++  assert.ok(junk.helpers.shane.cursor < s.plots.length);
++});
++
++test("the public save migration keeps legacy hires and a new single-owner hot candle", () => {
++  const old = fresh(); old.upgrades.auto = 1;
++  const rawOld = JSON.parse(JSON.stringify(M.saveData(old))); rawOld.version = 14; delete rawOld.farmWork;
++  const migrated = M.restoreState(rawOld);
++  assert.equal(migrated.version, 15); assert.ok(F.helperStatus(migrated, "shane").hired); assert.ok(F.helperStatus(migrated, "natalie").hired);
++  const one = fresh(); F.buyHelperUpgrade(one, "natalie", "hire"); F.buyHelperUpgrade(one, "natalie", "water");
++  one.time = 12; one.farmWork.boost.heat = 90; one.farmWork.boost.overheated = true;
++  const loaded = M.restoreState(JSON.parse(JSON.stringify(M.saveData(one))));
++  assert.equal(F.helperStatus(loaded, "shane").hired, false); assert.equal(F.helperStatus(loaded, "natalie").waterLevel, 1);
++  assert.equal(F.boostStatus(loaded).heat, 90); assert.equal(M.tap(loaded).reason, "overheated");
++});
++
++test("eighth accepted tap still grants exactly one real pumpkin within barn capacity", () => {
++  const s = fresh();
++  for (let i = 0; i < 8; i++) { if (i) s.time += .2; M.tap(s); }
++  assert.equal(M.stockCount(s), 1); assert.equal(s.harvested, 1); assert.equal(s.taps, 8);
++  const full = fresh(); full.stock[0] = M.barnCapacity(full); const cash = full.coins;
++  for (let i = 0; i < 8; i++) { if (i) full.time += .2; M.tap(full); }
++  assert.equal(M.stockCount(full), M.barnCapacity(full)); assert.equal(full.harvested, 0); assert.equal(full.coins, cash);
++});
+diff --git a/voxel/test/harvest-rush.test.mjs b/voxel/test/harvest-rush.test.mjs
+index a4539ea..cbe279a 100644
+--- a/voxel/test/harvest-rush.test.mjs
++++ b/voxel/test/harvest-rush.test.mjs
+@@ -112,6 +112,7 @@ test("the outdoor capacity holds the next whole party at the gate", () => {
+ 
+ test("helpers never build a streak, and the tea break stops the countdown", () => {
+   const s = M.freshState(); s.upgrades.auto = 1;
++  M.grantLegacyHelpers(s);
+   for (const p of s.plots.slice(0, 6)) Object.assign(p, { phase: "ready", progress: 1 });
+   const events = M.update(s, 2.1);
+   assert.ok(events.some((e) => e.type === "harvest"));
+diff --git a/voxel/test/helpers-rest.test.mjs b/voxel/test/helpers-rest.test.mjs
+index 860f115..66da2a8 100644
+--- a/voxel/test/helpers-rest.test.mjs
++++ b/voxel/test/helpers-rest.test.mjs
+@@ -6,6 +6,7 @@ import * as M from "../src/model.js";
+ test("helping hands rest while the player is in control", () => {
+   const s = M.freshState();
+   s.upgrades.auto = 1;
++  M.grantLegacyHelpers(s);
+   s.plots[0] = { phase: "ready", progress: 1, variety: 0 }; s.plots[0].ripe = -100;
+   s.handsOn = true;
+   M.update(s, 3);
+diff --git a/voxel/test/home-progression.test.mjs b/voxel/test/home-progression.test.mjs
+index a59cc8e..e3da0e9 100644
+--- a/voxel/test/home-progression.test.mjs
++++ b/voxel/test/home-progression.test.mjs
+@@ -40,7 +40,7 @@ test("version13 saves retain their earned level and rewards but new levels need
+   old.earned = 110000; old.progression.claimed = Array.from({ length: 12 }, (_, i) => i + 1);
+   delete old.progression.homeActivities; delete old.progression.homeLegacyThrough; delete old.progression.homeVersion;
+   const loaded = M.restoreState(JSON.parse(JSON.stringify(M.saveData(old))));
+-  assert.equal(loaded.version, 14); assert.equal(M.patchLevel(loaded).level, 12);
++  assert.equal(loaded.version, M.STATE_VERSION); assert.equal(M.patchLevel(loaded).level, 12);
+   assert.equal(loaded.progression.homeLegacyThrough, 12); assert.deepEqual(M.awardLevels(loaded), []);
+   assert.equal(loaded.coins, old.coins); loaded.earned = M.LEVELS[12].at;
+   assert.equal(M.patchLevel(loaded).level, 12); assert.equal(M.homeGoal(loaded).action, "recipes");
+diff --git a/voxel/test/model.test.mjs b/voxel/test/model.test.mjs
+index 7302313..d6a9286 100644
+--- a/voxel/test/model.test.mjs
++++ b/voxel/test/model.test.mjs
+@@ -27,8 +27,9 @@ test("the big pumpkin hurries growing plots, and shakes a pumpkin loose every ei
+   assert.equal(M.tap(s).boost, true);
+   assert.ok(s.plots[0].progress > 0.05);
+   s.plots[0] = { phase: "empty", progress: 0, variety: 0 };
++  s.visitorTimer = s.shop.arrivalTimer = 1e6;
+   let rewards = 0;
+-  for (let i = 0; i < 15; i++) { s.time += 0.2; rewards += M.tap(s).reward; }
++  for (let i = 0; i < 15; i++) { run(s, 1.3); rewards += M.tap(s).reward; }
+   assert.equal(s.taps, 16);
+   assert.equal(rewards, 2);
+   assert.equal(M.available(s), 2);
+@@ -46,8 +47,8 @@ test("upgrades cost 2.2 times more each level and stop at their maximum", () =>
+   assert.ok(!M.buyUpgrade(s, "plots"), "max 4");
+   assert.equal(M.openPlots(s), 24);
+   assert.ok(M.buyUpgrade(s, "auto"));
+-  run(s, 2.1);
+-  assert.ok(s.plots.every((p) => p.phase === "growing"), "helping hands planted everything");
++  run(s, 2.5);
++  assert.equal(s.plots.filter((p) => p.phase === "growing").length, 2, "each helper plants one plot in a work cycle");
+ });
+ 
+ test("better seeds per plot, and any owned variety can be chosen", () => {
+diff --git a/voxel/test/storage-and-visitors.test.mjs b/voxel/test/storage-and-visitors.test.mjs
+index cb8e710..27a26ce 100644
+--- a/voxel/test/storage-and-visitors.test.mjs
++++ b/voxel/test/storage-and-visitors.test.mjs
+@@ -1,5 +1,5 @@
+ import test from "node:test";import assert from "node:assert/strict";import * as M from "../src/model.js";import {VISITOR_KINDS} from "../src/content/visitors.js";
+ test("dedicated barn upgrades are paid, increase space, and survive a save without erasing existing stock",()=>{const s=M.freshState();s.coins=1e6;s.earned = 2e6; s.progression.claimed = M.LEVELS.map((l) => l.level); let capacity=M.barnCapacity(s);for(let i=0;i<6;i++){const cash=s.coins;assert.ok(M.buyUpgrade(s,"storage"));assert.ok(s.coins<cash);assert.ok(M.barnCapacity(s)>capacity);capacity=M.barnCapacity(s);}assert.equal(M.buyUpgrade(s,"storage"),false);s.stock=[10000,2,3,4];const r=M.restoreState(JSON.parse(JSON.stringify(M.saveData(s))));assert.deepEqual(r.stock,[...s.stock,...Array(Math.max(0,M.VARIETIES.length-s.stock.length)).fill(0)]);assert.equal(r.upgrades.storage,6);assert.equal(M.harvest(r,0),0);});
+-test("a full barn stops helpers and tap bonuses without losing a ripe crop or minting money",()=>{const s=M.freshState();const cap=M.barnCapacity(s);s.stock=[cap,0,0,0];s.upgrades.auto=1;s.visitorTimer=s.shop.arrivalTimer=1e6;s.plots[0]={phase:"ready",progress:1,variety:3,ripe:0};s.time=20;const coins=s.coins;M.update(s,3);assert.equal(s.plots[0].phase,"ready");for(let i=0;i<16;i++){s.time+=.2;M.tap(s);}assert.equal(s.coins,coins);assert.equal(s.harvested,0);assert.equal(M.stockCount(s),cap);});
++test("a full barn stops helpers and tap bonuses without losing a ripe crop or minting money",()=>{const s=M.freshState();const cap=M.barnCapacity(s);s.stock=[cap,0,0,0];s.upgrades.auto=1;M.grantLegacyHelpers(s);s.visitorTimer=s.shop.arrivalTimer=1e6;s.plots[0]={phase:"ready",progress:1,variety:3,ripe:0};s.time=20;const coins=s.coins;M.update(s,3);assert.equal(s.plots[0].phase,"ready");for(let i=0;i<16;i++){s.time+=.2;M.tap(s);}assert.equal(s.coins,coins);assert.equal(s.harvested,0);assert.equal(M.stockCount(s),cap);});
+ test("outdoor crowd capacity grows from sixteen to fifty, with saved tiers",()=>{const s=M.freshState();s.coins=1e7;s.earned = 2e6; s.progression.claimed = M.LEVELS.map((l) => l.level); s.visitorUpgrades.party=1;assert.equal(M.visitorCapacity(s),16);const caps=[20,24,28,32,38,44,50];for(const cap of caps){assert.ok(M.buyVisitorUpgrade(s,"crowd"));assert.equal(M.visitorCapacity(s),cap);}assert.equal(M.buyVisitorUpgrade(s,"crowd"),false);const r=M.restoreState(JSON.parse(JSON.stringify(M.saveData(s))));assert.equal(M.visitorCapacity(r),50);const old=M.freshState();old.visitorUpgrades.crowd=4;assert.equal(M.visitorCapacity(M.restoreState(JSON.parse(JSON.stringify(M.saveData(old))))),32,"a save at the old top keeps its thirty-two");});
+ test("eleven stable visitor kinds preserve the original ten alongside the rare Baron",()=>{assert.deepEqual(VISITOR_KINDS.slice(0,5),["ghost","witch","vampire","skeleton","scarecrow"]);assert.deepEqual(VISITOR_KINDS.slice(5,10),["mummy","zombie","werewolf","dead-pirate","clown"]);assert.equal(VISITOR_KINDS[10],"baron");for(let kind=5;kind<10;kind++){const s=M.freshState();s.nextVisitor=kind;s.visitorTimer=.01;M.update(s,.1);assert.equal(s.visitors[0].kind,kind);}});

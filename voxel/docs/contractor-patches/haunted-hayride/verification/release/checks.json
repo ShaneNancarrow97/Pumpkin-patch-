@@ -1,0 +1,643 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Hollow-Hayride.html",
+  "sha256": "155314864110115f42a8249ebddece25c4a6220bad0cb80e03686f1c349d7452",
+  "passed": false,
+  "checks": [
+    {
+      "ok": true,
+      "label": "model and scene QA hooks are available"
+    },
+    {
+      "ok": true,
+      "label": "the published game migrates into the hayride save version"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "navigation"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "navigation"
+    },
+    {
+      "ok": true,
+      "label": "level 7 cannot purchase the hayride"
+    },
+    {
+      "ok": true,
+      "label": "locked attraction explains the level-8 purchase gate"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "purchase"
+    },
+    {
+      "ok": true,
+      "label": "purchase spends coins once and starts with closed admissions",
+      "data": {
+        "purchased": true,
+        "tier": 1,
+        "open": false,
+        "ticketPrice": 8,
+        "invested": 7500,
+        "ticketsSold": 0,
+        "income": 0,
+        "completed": 0,
+        "missed": 0,
+        "runHome": 0,
+        "departures": 0,
+        "partyAt": null,
+        "nextVisit": 0,
+        "nextRun": 1,
+        "receipts": [],
+        "haunts": {
+          "owned": [],
+          "active": []
+        },
+        "convoy": {
+          "phase": "loading",
+          "elapsed": 0,
+          "progress": 0,
+          "loadWait": 0,
+          "runId": "hayride-run-0",
+          "manifest": []
+        },
+        "lastEvent": null
+      }
+    },
+    {
+      "ok": true,
+      "label": "purchase reveals operational controls on the same page"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "Increase ticket price"
+    },
+    {
+      "ok": true,
+      "label": "real price control increases the posted ticket"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "Reduce ticket price"
+    },
+    {
+      "ok": true,
+      "label": "real price control decreases the posted ticket"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "open"
+    },
+    {
+      "ok": true,
+      "label": "admissions open through the live management page"
+    },
+    {
+      "ok": true,
+      "label": "desktop: scrollable management fits with 44px targets",
+      "data": {
+        "width": 1280,
+        "height": 800,
+        "horizontalOverflow": false,
+        "clipped": [],
+        "small": [],
+        "scrollable": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "four identifiable visitors obtain ordinary visit plans"
+    },
+    {
+      "ok": true,
+      "label": "the actual queue and boarding approach collect no early ticket",
+      "data": {
+        "purchased": true,
+        "tier": 1,
+        "open": true,
+        "ticketPrice": 8,
+        "invested": 7500,
+        "ticketsSold": 0,
+        "income": 0,
+        "completed": 0,
+        "missed": 0,
+        "runHome": 0,
+        "departures": 0,
+        "partyAt": 0.6165999999999985,
+        "nextVisit": 4,
+        "nextRun": 1,
+        "receipts": [],
+        "haunts": {
+          "owned": [],
+          "active": []
+        },
+        "convoy": {
+          "phase": "loading",
+          "elapsed": 0,
+          "progress": 0,
+          "loadWait": 0,
+          "runId": "hayride-run-0",
+          "manifest": []
+        },
+        "lastEvent": null
+      }
+    },
+    {
+      "ok": true,
+      "label": "boarding fills the wagon and records exactly four paid tickets",
+      "data": {
+        "purchased": true,
+        "tier": 1,
+        "open": true,
+        "ticketPrice": 8,
+        "invested": 7500,
+        "ticketsSold": 4,
+        "income": 32,
+        "completed": 0,
+        "missed": 0,
+        "runHome": 0,
+        "departures": 1,
+        "partyAt": 0.6165999999999985,
+        "nextVisit": 4,
+        "nextRun": 1,
+        "receipts": [
+          {
+            "visitId": "hayride-3",
+            "runId": "hayride-run-0",
+            "visitor": 703,
+            "seat": 3,
+            "amount": 8,
+            "at": 6.716599999999991
+          },
+          {
+            "visitId": "hayride-2",
+            "runId": "hayride-run-0",
+            "visitor": 702,
+            "seat": 2,
+            "amount": 8,
+            "at": 5.216599999999996
+          },
+          {
+            "visitId": "hayride-1",
+            "runId": "hayride-run-0",
+            "visitor": 701,
+            "seat": 1,
+            "amount": 8,
+            "at": 3.7166000000000006
+          },
+          {
+            "visitId": "hayride-0",
+            "runId": "hayride-run-0",
+            "visitor": 700,
+            "seat": 0,
+            "amount": 8,
+            "at": 2.2165999999999992
+          }
+        ],
+        "haunts": {
+          "owned": [],
+          "active": []
+        },
+        "convoy": {
+          "phase": "circuit",
+          "elapsed": 0.5,
+          "progress": 0.005555555555555556,
+          "loadWait": 4.5,
+          "runId": "hayride-run-0",
+          "manifest": [
+            {
+              "visitId": "hayride-0",
+              "runId": "hayride-run-0",
+              "visitor": 700,
+              "seat": 0,
+              "amount": 8,
+              "at": 2.2165999999999992
+            },
+            {
+              "visitId": "hayride-1",
+              "runId": "hayride-run-0",
+              "visitor": 701,
+              "seat": 1,
+              "amount": 8,
+              "at": 3.7166000000000006
+            },
+            {
+              "visitId": "hayride-2",
+              "runId": "hayride-run-0",
+              "visitor": 702,
+              "seat": 2,
+              "amount": 8,
+              "at": 5.216599999999996
+            },
+            {
+              "visitId": "hayride-3",
+              "runId": "hayride-run-0",
+              "visitor": 703,
+              "seat": 3,
+              "amount": 8,
+              "at": 6.716599999999991
+            }
+          ]
+        },
+        "lastEvent": {
+          "kind": "departure",
+          "at": 6.716599999999991
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "ticket revenue reconciles without retail or tip duplication"
+    },
+    {
+      "ok": true,
+      "label": "each passenger spends one ticket from their original purse"
+    },
+    {
+      "ok": true,
+      "label": "replaying the boarding action cannot charge again"
+    },
+    {
+      "ok": true,
+      "label": "a full wagon departs once",
+      "data": {
+        "phase": "circuit",
+        "elapsed": 0.5,
+        "progress": 0.005555555555555556,
+        "loadWait": 4.5,
+        "runId": "hayride-run-0",
+        "manifest": [
+          {
+            "visitId": "hayride-0",
+            "runId": "hayride-run-0",
+            "visitor": 700,
+            "seat": 0,
+            "amount": 8,
+            "at": 2.2165999999999992
+          },
+          {
+            "visitId": "hayride-1",
+            "runId": "hayride-run-0",
+            "visitor": 701,
+            "seat": 1,
+            "amount": 8,
+            "at": 3.7166000000000006
+          },
+          {
+            "visitId": "hayride-2",
+            "runId": "hayride-run-0",
+            "visitor": 702,
+            "seat": 2,
+            "amount": 8,
+            "at": 5.216599999999996
+          },
+          {
+            "visitId": "hayride-3",
+            "runId": "hayride-run-0",
+            "visitor": 703,
+            "seat": 3,
+            "amount": 8,
+            "at": 6.716599999999991
+          }
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "the paid convoy leaves the farm map during its woodland circuit"
+    },
+    {
+      "ok": true,
+      "label": "station remains visible and pickable in its focused camera",
+      "data": {
+        "x": 469.33333333333337,
+        "y": 398.3805872222947
+      }
+    },
+    {
+      "ok": true,
+      "label": "tapping the voxel station opens the small attraction card"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "navigation"
+    },
+    {
+      "ok": true,
+      "label": "the context card opens management deliberately"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "experience"
+    },
+    {
+      "ok": true,
+      "label": "the real Ride along action opens a free owner briefing"
+    },
+    {
+      "ok": true,
+      "label": "Fold ride briefing: ride controls fit with 44px targets",
+      "data": {
+        "width": 874,
+        "height": 787,
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "navigation"
+    },
+    {
+      "ok": true,
+      "label": "Start enters the wagon camera without entering another farm place",
+      "data": {
+        "active": true,
+        "title": "The Hollow Hayride",
+        "tier": 1,
+        "elapsed": 0.2,
+        "duration": 92.5,
+        "rideDuration": 90,
+        "progress": 0,
+        "paused": false,
+        "completed": false,
+        "zoneName": "Rear boarding",
+        "eventsFired": [],
+        "currentCue": null,
+        "gentle": true,
+        "lightning": true,
+        "lightningIntensity": 0,
+        "lookYaw": 0,
+        "lookPitch": 0,
+        "lookBounds": {
+          "yaw": 1.5079644737231006,
+          "pitch": 0.4487989505128276
+        },
+        "inputActive": true,
+        "camera": {
+          "x": -17,
+          "y": 2.8172768,
+          "z": 35.091836799999996,
+          "yaw": 0,
+          "pitch": -0.0536761560815212
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "the owner ride hides ordinary HUD and farming controls"
+    },
+    {
+      "ok": true,
+      "label": "the boarding camera has a finite native world pose",
+      "data": {
+        "x": -17,
+        "y": 2.8172768,
+        "z": 35.091836799999996,
+        "yaw": 0,
+        "pitch": -0.0536761560815212
+      }
+    },
+    {
+      "ok": true,
+      "label": "dragging the actual canvas looks around within wagon bounds",
+      "data": {
+        "active": true,
+        "title": "The Hollow Hayride",
+        "tier": 1,
+        "elapsed": 0.7665999999999767,
+        "duration": 92.5,
+        "rideDuration": 90,
+        "progress": 0,
+        "paused": false,
+        "completed": false,
+        "zoneName": "Rear boarding",
+        "eventsFired": [],
+        "currentCue": null,
+        "gentle": true,
+        "lightning": true,
+        "lightningIntensity": 0,
+        "lookYaw": -0.8203639508613423,
+        "lookPitch": 0.12585128791622865,
+        "lookBounds": {
+          "yaw": 1.5079644737231006,
+          "pitch": 0.4487989505128276
+        },
+        "inputActive": true,
+        "camera": {
+          "x": -17,
+          "y": 2.6729068945929297,
+          "z": 34.43186008956768,
+          "yaw": -0.8203639508613423,
+          "pitch": 0.08113061725702139
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "farm keyboard shortcuts do not act under the ride camera"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "Pause hayride"
+    },
+    {
+      "ok": true,
+      "label": "Pause stops only the owner presentation clock"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "navigation"
+    },
+    {
+      "ok": true,
+      "label": "the continuous wagon rail reaches the manor after the patch and spider tunnel",
+      "data": {
+        "active": true,
+        "title": "The Hollow Hayride",
+        "tier": 1,
+        "elapsed": 52.900000000000006,
+        "duration": 92.5,
+        "rideDuration": 90,
+        "progress": 0.56,
+        "paused": false,
+        "completed": false,
+        "zoneName": "The bride’s manor",
+        "eventsFired": [
+          "scarecrows",
+          "spiders",
+          "bride"
+        ],
+        "currentCue": {
+          "type": "encounter",
+          "id": "hayride-bride",
+          "stop": "bride",
+          "name": "The bride’s manor",
+          "sound": "whisper",
+          "at": 51.1,
+          "intensity": 0.25
+        },
+        "gentle": true,
+        "lightning": true,
+        "lightningIntensity": 0,
+        "lookYaw": 0,
+        "lookPitch": 0,
+        "lookBounds": {
+          "yaw": 1.5079644737231006,
+          "pitch": 0.4487989505128276
+        },
+        "inputActive": true,
+        "camera": {
+          "x": -46.97490794509611,
+          "y": 2.13,
+          "z": 15.280917034595399,
+          "yaw": 3.1000437612966536,
+          "pitch": 0
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "tab interruption pauses the owner ride"
+    },
+    {
+      "ok": true,
+      "label": "returning to the tab waits for explicit Resume"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "navigation"
+    },
+    {
+      "ok": true,
+      "label": "the full owner circuit finishes all five scare scenes once",
+      "data": {
+        "active": true,
+        "title": "The Hollow Hayride",
+        "tier": 1,
+        "elapsed": 92.5,
+        "duration": 92.5,
+        "rideDuration": 90,
+        "progress": 1,
+        "paused": false,
+        "completed": true,
+        "zoneName": "Zombie prison bus",
+        "eventsFired": [
+          "scarecrows",
+          "spiders",
+          "bride",
+          "pursuit",
+          "bus"
+        ],
+        "currentCue": null,
+        "gentle": true,
+        "lightning": true,
+        "lightningIntensity": 0,
+        "lookYaw": 0,
+        "lookPitch": 0,
+        "lookBounds": {
+          "yaw": 1.5079644737231006,
+          "pitch": 0.4487989505128276
+        },
+        "inputActive": false,
+        "camera": {
+          "x": -17,
+          "y": 2.13,
+          "z": 31.949999999999996,
+          "yaw": 0,
+          "pitch": 0
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "a completed experience emits no duplicate scenes"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "navigation"
+    },
+    {
+      "ok": true,
+      "label": "Replay starts a fresh presentation without another paid visit"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "Pause hayride"
+    },
+    {
+      "ok": true,
+      "label": "portrait paused ride: ride controls fit with 44px targets",
+      "data": {
+        "width": 390,
+        "height": 844,
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape paused ride: ride controls fit with 44px targets",
+      "data": {
+        "width": 844,
+        "height": 390,
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "navigation"
+    },
+    {
+      "ok": true,
+      "label": "Exit immediately restores the ordinary farm camera and controls"
+    },
+    {
+      "ok": true,
+      "label": "free ride, pause, five scenes, replay and Exit preserve the complete farm save and paid ledgers"
+    },
+    {
+      "ok": false,
+      "label": "repeated owner rides keep warmed scene resource counts stable",
+      "data": {
+        "beforeResources": {
+          "geometries": 51,
+          "textures": 14
+        },
+        "warmedResources": {
+          "geometries": 51,
+          "textures": 14
+        },
+        "afterResources": {
+          "geometries": 52,
+          "textures": 14
+        }
+      }
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "samples": [],
+  "limitations": [],
+  "rendering": "Chromium SwiftShader, performance profile, bloom/shadows/mist/lake lights off; desktop and phone/Fold layouts; real UI clicks with stability polling bypassed; game-time advancement uses ordinary rules"
+}

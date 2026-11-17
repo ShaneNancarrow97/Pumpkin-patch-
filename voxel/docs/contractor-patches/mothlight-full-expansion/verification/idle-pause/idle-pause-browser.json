@@ -1,0 +1,205 @@
+{
+  "html": "/workspace/Pumpkin-Patch-Idle-Pause.html",
+  "sha256": "7d98627500fd97fab432ecc5dffed906339a043fffed6c17983a1002708c7114",
+  "bytes": 60337037,
+  "checks": [
+    {
+      "pass": true,
+      "label": "No warning before the final30 seconds",
+      "detail": {
+        "phase": "active",
+        "remaining": 31,
+        "paused": false
+      }
+    },
+    {
+      "pass": true,
+      "label": "Countdown starts at3 minutes",
+      "detail": {
+        "phase": "warning",
+        "remaining": 30,
+        "paused": false
+      }
+    },
+    {
+      "pass": true,
+      "label": "desktop: compact countdown fits",
+      "detail": {
+        "x": 475,
+        "y": 78,
+        "width": 330,
+        "height": 67.796875
+      }
+    },
+    {
+      "pass": true,
+      "label": "phone: compact countdown fits",
+      "detail": {
+        "x": 30,
+        "y": 78,
+        "width": 330,
+        "height": 67.796875
+      }
+    },
+    {
+      "pass": true,
+      "label": "landscape: compact countdown fits",
+      "detail": {
+        "x": 574,
+        "y": 8,
+        "width": 260,
+        "height": 61.796875
+      }
+    },
+    {
+      "pass": true,
+      "label": "fold: compact countdown fits",
+      "detail": {
+        "x": 335,
+        "y": 78,
+        "width": 330,
+        "height": 67.796875
+      }
+    },
+    {
+      "pass": true,
+      "label": "tv: compact countdown fits",
+      "detail": {
+        "x": 712.5,
+        "y": 117,
+        "width": 495,
+        "height": 100.6875
+      }
+    },
+    {
+      "pass": true,
+      "label": "The last second still runs normally",
+      "detail": {
+        "phase": "warning",
+        "remaining": 1,
+        "paused": false
+      }
+    },
+    {
+      "pass": true,
+      "label": "Game pauses exactly at210 seconds",
+      "detail": {
+        "phase": "paused",
+        "remaining": 0,
+        "paused": true
+      }
+    },
+    {
+      "pass": true,
+      "label": "Farm simulation and income remain frozen",
+      "detail": {
+        "before": {
+          "time": 0.9165999999999984,
+          "coins": 40
+        },
+        "after": {
+          "time": 0.9165999999999984,
+          "coins": 40
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "Resume is a comfortable phone target",
+      "detail": {
+        "x": 46,
+        "y": 434.59375,
+        "width": 298,
+        "height": 44
+      }
+    },
+    {
+      "pass": true,
+      "label": "One tap resumes and clears the card"
+    },
+    {
+      "pass": true,
+      "label": "Ordinary input preserves a manual tea break"
+    },
+    {
+      "pass": true,
+      "label": "Held right stick keeps controller play active"
+    },
+    {
+      "pass": true,
+      "label": "Releasing the controller starts a fresh3\u00bd-minute deadline"
+    },
+    {
+      "pass": true,
+      "label": "A controller button resumes an automatic break"
+    },
+    {
+      "pass": true,
+      "label": "Automatic break pauses the maze POV"
+    },
+    {
+      "pass": true,
+      "label": "Activity resumes the maze stopped by this break"
+    },
+    {
+      "pass": true,
+      "label": "A previously manual POV pause stays paused"
+    },
+    {
+      "pass": true,
+      "label": "Automatic break pauses the tractor POV"
+    },
+    {
+      "pass": true,
+      "label": "Activity resumes the tractor stopped by this break"
+    },
+    {
+      "pass": true,
+      "label": "Village opens normally"
+    },
+    {
+      "pass": true,
+      "label": "The village shares the same idle pause"
+    },
+    {
+      "pass": true,
+      "label": "Keyboard resumes within the village"
+    },
+    {
+      "pass": true,
+      "label": "A real chapter can be followed before completion"
+    },
+    {
+      "pass": true,
+      "label": "Completion clears the tracker and keeps its brief receipt without granting again",
+      "detail": {
+        "tracked": null,
+        "expanded": false,
+        "savedPin": null,
+        "title": "Hollow Green",
+        "receipt": true,
+        "sameCoins": true
+      }
+    },
+    {
+      "pass": true,
+      "label": "Re-entering repairs an old completed saved pin"
+    },
+    {
+      "pass": true,
+      "label": "No page errors",
+      "detail": []
+    }
+  ],
+  "errors": [],
+  "screenshots": [
+    "idle-countdown-desktop.png",
+    "idle-pause-phone.png",
+    "completed-pin-cleared-green.png"
+  ],
+  "scope": "Unchanged offline HTML on loopback, normal SwiftShader rendering. Injected monotonic clock advances only inactivity; actual game rules, inputs, pause callbacks and UI run normally. Declared level6 save. Mocked standard controller and viewport checks do not certify physical hardware.",
+  "passed": true,
+  "observations": [
+    "The completion/re-entry screenshot is on Hollow Green. The original QA used the wrong Rowan hall ID; the corrected Rowan interior has its own focused receipt."
+  ]
+}

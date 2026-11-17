@@ -1,0 +1,44 @@
+{
+  "runtime_commit": "6f6666a015666cdb15d3cde4dde2dadff0788ae9",
+  "base": "e99cd6e84d409e318392db2019d407487abba4ee",
+  "html_sha256": "232535a2d4fdb6a3273314b8f152e10a175ae8db1ff7bbdbe81d3d725d2e1290",
+  "html_bytes": 61789302,
+  "independent_rebuild_identical": true,
+  "full_suite": {
+    "pass": 1489,
+    "fail": 0
+  },
+  "later_targeted_checks": {
+    "rowan_navigation": 1,
+    "map": 17
+  },
+  "catalogue_parity": 114,
+  "compatibility_smoke": 54,
+  "ui_browser": 81,
+  "native_browser": 7,
+  "save_version": 20,
+  "evidence": {
+    "full-tests.txt": {
+      "sha256": "b8ae20629d17a46c44e112eaee82ac6df2f37730996616795dbcb4e4a3da270e"
+    },
+    "rowan-navigation.txt": {
+      "sha256": "c9ae0e5636eade12673defcf54d3e2cfdda0c09261b129b9280ab80d195650ef"
+    },
+    "map-tests.txt": {
+      "sha256": "3bf4c2c63f1d54de5b5fb8ed867f94c22f0c206105f5e3924138688215ea861a"
+    },
+    "compatibility-smoke.txt": {
+      "sha256": "52c118995eec0dd4f7b937dc47cab8e08671423ef5f9854c5b6429fc36efea00"
+    },
+    "catalogue-parity.json": {
+      "sha256": "22f29aff80503159d3e0eef00ff6ec62d0d6db309b12becdb6d59c806c488f95"
+    },
+    "browser-ui.json": {
+      "sha256": "28184578f704b6247ff8c03c837de4385bb9b4ce94bef01cdfd7614e5ea8dba2"
+    },
+    "browser-native.json": {
+      "sha256": "ed6b1b19347a033c572e4e3fba83705e52484b8516c3df6a5792f7e6af9df559"
+    }
+  },
+  "scope": "UI/HTML/CSS and two navigation corrections. Broad DOM/controller pass explicitly holds world draws after native frames, restores native draws for the actual map snapshot and holds them for map controls. Separate hero pass uses normal WebGL game RAF throughout. No physical Bluetooth/device FPS certification; no rendering/model/content change."
+}

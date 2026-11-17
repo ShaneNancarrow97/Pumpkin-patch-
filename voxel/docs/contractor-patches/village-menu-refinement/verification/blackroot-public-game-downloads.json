@@ -1,0 +1,61 @@
+{
+  "date": "2026-11-09T01:01:11.089622+00:00",
+  "artifactCommit": "5b4a79e1df6ff68e8cdf20ac136facd987db829d",
+  "allPassed": true,
+  "files": [
+    {
+      "file": "Pumpkin-Patch-Village-Blackroot.html",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/5b4a79e1df6ff68e8cdf20ac136facd987db829d/Pumpkin-Patch-Village-Blackroot.html",
+      "status": 200,
+      "contentType": "text/plain; charset=utf-8",
+      "bytes": 58984404,
+      "sha256": "e98d2ffc583051836aa21f33eccb04559ea413b4e4ebec31bd4cc8cd529abaaf",
+      "passed": true
+    },
+    {
+      "file": "Pumpkin-Patch-Village-Blackroot.zip",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/5b4a79e1df6ff68e8cdf20ac136facd987db829d/Pumpkin-Patch-Village-Blackroot.zip",
+      "status": 200,
+      "contentType": "application/zip",
+      "bytes": 42412073,
+      "sha256": "3b65261267af892ce27c5c5227a36927307def4d7eeb317ec31f7022db2e4177",
+      "passed": true
+    },
+    {
+      "file": "Pumpkin-Patch-Village-Blackroot-Claude-Patch.zip",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/5b4a79e1df6ff68e8cdf20ac136facd987db829d/Pumpkin-Patch-Village-Blackroot-Claude-Patch.zip",
+      "status": 200,
+      "contentType": "application/zip",
+      "bytes": 57098268,
+      "sha256": "01ae724b797f5e8f947725a03558a69002d0ebd390947d40399c875b2f3e0869",
+      "passed": true
+    },
+    {
+      "file": "Blackroot-Dialogue-TV.png",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/5b4a79e1df6ff68e8cdf20ac136facd987db829d/Blackroot-Dialogue-TV.png",
+      "status": 200,
+      "contentType": "image/png",
+      "bytes": 1739928,
+      "sha256": "af76df41f373e93cf6ef352ea7c9ffa7d2933dfd7abcf054c6d90d7800f92fa6",
+      "passed": true
+    },
+    {
+      "file": "Blackroot-Dialogue-Fold.png",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/5b4a79e1df6ff68e8cdf20ac136facd987db829d/Blackroot-Dialogue-Fold.png",
+      "status": 200,
+      "contentType": "image/png",
+      "bytes": 711774,
+      "sha256": "73e0fc89440af20facb79156e0a23724cebb0d27260d1eae59c7ca8f940dec17",
+      "passed": true
+    },
+    {
+      "file": "Blackroot-Mushrooms.png",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/5b4a79e1df6ff68e8cdf20ac136facd987db829d/Blackroot-Mushrooms.png",
+      "status": 200,
+      "contentType": "image/png",
+      "bytes": 702394,
+      "sha256": "18b922f3d6b61252affd220bce2ab2404bf5ccc729a381e5fb04218b58fddef5",
+      "passed": true
+    }
+  ]
+}

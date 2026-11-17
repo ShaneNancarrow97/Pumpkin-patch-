@@ -1,0 +1,103 @@
+/* Level requirements and earned-reward receipts. Read-only cards never purchase. */
+#level-celebration .level-receipt {
+  --receipt-ink: #f9f0df; --receipt-muted: #d7c6dc; --receipt-gold: #f6ce91;
+  width: min(560px, 100%); max-height: calc(100dvh / var(--tv-zoom, 1) - 28px);
+  display: flex; flex-direction: column; overflow: hidden; padding: 0;
+  border: 1px solid #d7afd155; border-radius: 25px; color: var(--receipt-ink);
+  background: radial-gradient(ellipse at 80% 0, #69436065, transparent 55%), linear-gradient(155deg, #35273e, #241b30 52%, #1b1726);
+  box-shadow: 0 22px 80px #05020bc9, inset 0 1px #fff5df20;
+  text-align: left; font-family: var(--body, sans-serif);
+}
+#level-celebration .level-receipt-heading { position: relative; flex: none; min-height: 112px; padding: 20px 57px 17px 120px; border-bottom: 1px solid #e7c7981b; }
+#level-celebration .level-close { top: 10px; right: 10px; min-width: 44px; min-height: 44px; width: 44px; height: 44px; font: 25px/1 sans-serif; border-radius: 50%; background: #17122060; border-color: transparent; }
+#level-celebration .level-medal { position: absolute; top: 15px; left: 19px; width: 86px; height: 86px; border: 0; border-radius: 0; background: none; box-shadow: none; margin: 0; }
+#level-celebration .level-medal .level-badge-number { font-family: var(--body, sans-serif); }
+#level-celebration .level-receipt .eyebrow { margin: 1px 0 6px; color: var(--receipt-gold); font: 600 12px/1.3 var(--body, sans-serif); letter-spacing: .035em; text-transform: none; }
+#level-celebration .level-receipt h2 { margin: 0; font: 650 24px/1.2 var(--body, sans-serif); letter-spacing: -.025em; color: var(--receipt-ink); }
+#level-celebration .level-subtitle { margin: 8px 0 0; color: var(--receipt-muted); font-size: 13px; line-height: 1.5; }
+#level-celebration .level-receipt-body { min-height: 0; padding: 18px 21px 14px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #a889b2 #211a2b; }
+#level-celebration .level-requirements { margin: 0 0 20px; padding: 15px; border: 1px solid #cfadd82b; border-radius: 17px; background: #d2afe208; }
+#level-celebration .level-requirements-heading { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 6px 12px; margin-bottom: 15px; }
+#level-celebration .level-requirements-heading h3, #level-celebration .level-carousel-heading h3 { margin: 0; font: 650 16px/1.3 var(--body, sans-serif); color: var(--receipt-ink); }
+#level-celebration .level-requirements-heading > span { font-size: 12px; color: #d9bfed; }
+#level-celebration .level-earning-goal { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; font-size: 13px; }
+#level-celebration .level-earning-goal > b { margin-left: auto; font-size: 17px; color: var(--receipt-ink); font-variant-numeric: tabular-nums; }
+#level-celebration .level-earning-goal small { color: var(--receipt-muted); font-size: 13px; font-weight: 400; }
+#level-celebration .level-goal-status { flex-basis: 100%; text-align: right; font-size: 12px; color: var(--receipt-gold); }
+#level-celebration .level-goal-status.is-met { color: #bce2bc; }
+#level-celebration .level-earnings-track { height: 5px; margin: 8px 0 9px; overflow: hidden; border-radius: 8px; background: #120d1c; box-shadow: inset 0 1px 2px #0006; }
+#level-celebration .level-earnings-track > i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #b79bcf, #f2c780); box-shadow: 0 0 10px #e9c78544; }
+#level-celebration .level-requirements-note { margin: 6px 0 0; color: var(--receipt-muted); font-size: 12px; line-height: 1.5; }
+#level-celebration .level-home-checklist { list-style: none; padding: 11px 0 0; margin: 10px 0 0; border-top: 1px solid #dac4dc1c; }
+#level-celebration .level-home-checklist li { display: grid; grid-template-columns: 17px 1fr auto; gap: 8px; align-items: start; padding: 7px 0; font-size: 13px; line-height: 1.4; }
+#level-celebration .level-home-checklist li > span:first-child { color: var(--receipt-gold); text-align: center; }
+#level-celebration .level-home-checklist li > b { border-radius: 5px; padding: 2px 6px; background: #d5ab6320; color: #f4ce96; font-size: 12px; font-weight: 500; white-space: nowrap; }
+#level-celebration .level-home-checklist li.is-met > b { color: #bce2bc; background: #83b98a14; }
+#level-celebration .level-home-checklist li.is-met > span:first-child { color: #bce2bc; }
+#level-celebration .level-home-nudge { margin-top: 10px; display: flex; align-items: center; gap: 12px; padding-top: 9px; border-top: 1px solid #dac4dc1c; }
+#level-celebration .level-home-nudge > p { margin: 0; font-size: 12px; line-height: 1.5; color: var(--receipt-muted); }
+#level-celebration [data-level-home], #level-celebration [data-level-village] { flex: none; min-height: 44px; padding: 9px 13px; font-size: 13px; border-radius: 11px; background: #765238; color: #fff2d5; border: 1px solid #dbad6f70; }
+#level-celebration .level-carousel-heading { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 6px 10px; margin: 0 0 12px; }
+#level-celebration .level-carousel-heading > span { font-size: 12px; color: var(--receipt-muted); }
+#level-celebration .level-card-stage { touch-action: pan-y; }
+#level-celebration .level-trading-card {
+  position: relative; display: grid; grid-template-columns: 111px 1fr; grid-template-rows: auto auto 1fr auto; gap: 7px 14px;
+  min-height: 218px; padding: 16px; overflow: hidden; border-radius: 18px; border: 1px solid #d8a87565;
+  background: radial-gradient(ellipse at 2% 50%, #e7b47916, transparent 60%), linear-gradient(135deg, #58405d, #34263f 58%, #2c2235);
+  box-shadow: 0 8px 23px #0b061728, inset 0 1px #fff3d323, inset 0 0 0 4px #c9a06e08;
+}
+#level-celebration .level-trading-card[hidden] { display: none !important; }
+#level-celebration .level-trading-card::after { content: '✧'; position: absolute; bottom: 7px; right: 10px; color: #ecd6af50; font: 18px/1 sans-serif; pointer-events: none; }
+#level-celebration .level-trading-top { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 5px; }
+#level-celebration .level-trading-badge { font-size: 12px; font-weight: 600; color: #f6d9a3; }
+#level-celebration .level-card-price { padding: 4px 8px; border-radius: 7px; background: #e8b8661c; color: #ffe2a9; font-size: 13px; font-weight: 600; white-space: nowrap; }
+#level-celebration [data-level-origin="gift"] .level-trading-badge { color: #d8c7f1; }
+#level-celebration .level-trading-art { grid-column: 1; grid-row: 2 / 5; align-self: center; width: 111px; height: 116px; display: grid; place-items: center; filter: drop-shadow(0 6px 8px #09051080); }
+#level-celebration .level-trading-art .thumb { display: grid; place-items: center; min-width: 96px; min-height: 96px; margin: 0; background: none; border: 0; }
+#level-celebration .level-trading-art .thumb .pix { transform-origin: center; }
+#level-celebration .level-costume-art { width: 96px; height: 116px; display: grid; place-items: center; }
+#level-celebration .level-costume-art img { width: 100%; height: 100%; object-fit: contain; }
+#level-celebration .level-trading-card h3 { grid-column: 2; margin: 0; font: 650 20px/1.2 var(--body, sans-serif); letter-spacing: -.015em; color: #fff2dd; }
+#level-celebration .level-trading-card > p { grid-column: 2; margin: 0; font-size: 13px; line-height: 1.5; color: #e6d9e8; }
+#level-celebration .level-trading-card > footer { grid-column: 2; display: grid; gap: 5px; padding-top: 9px; margin-top: 4px; border-top: 1px solid #e9d6ed22; font-size: 12px; line-height: 1.4; }
+#level-celebration .level-trading-card > footer b { color: #efc98d; font-weight: 600; }
+#level-celebration .level-trading-card > footer small { color: var(--receipt-muted); font-size: 12px; }
+#level-celebration .level-carousel-controls { display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; gap: 8px; align-items: center; margin-top: 12px; }
+#level-celebration .level-carousel-controls > button { width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0; border: 1px solid #dfc1db35; border-radius: 50%; background: #cab0da10; color: #ffe7b8; font: 30px/1 sans-serif; }
+#level-celebration .level-carousel-controls > button:disabled { opacity: .3; }
+#level-celebration .level-card-tabs { display: flex; align-items: center; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none; scroll-padding-inline: 8px; min-height: 44px; }
+#level-celebration .level-card-tabs::-webkit-scrollbar { display: none; }
+#level-celebration .level-card-tabs > button { flex: 0 0 44px; width: 44px; height: 44px; min-width: 44px; min-height: 44px; display: grid; place-items: center; border: 0; border-radius: 10px; background: transparent; padding: 0; }
+#level-celebration .level-card-tabs > button > span { display: block; width: 7px; height: 7px; border-radius: 50%; background: #d1b7dc5c; box-shadow: 0 0 0 1px #d8c2e020; transition: transform .15s, background .15s; }
+#level-celebration .level-card-tabs > button[aria-selected="true"] > span { background: #f7d29c; transform: scale(1.35); box-shadow: 0 0 0 4px #f4cc8720; }
+#level-celebration .level-card-count { margin: 4px 0 0; color: #e0c7e8; font-size: 12px; line-height: 1.4; text-align: center; font-variant-numeric: tabular-nums; }
+#level-celebration .level-carousel-hint { margin: 6px 0 0; color: var(--receipt-muted); font-size: 12px; line-height: 1.5; text-align: center; }
+#level-celebration .level-receipt-footer { flex: none; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; padding: 13px 21px 15px; border-top: 1px solid #e7c79822; background: #1b162560; }
+#level-celebration .level-continue { min-height: 48px; margin: 0; border: 1px solid #ffdb9d80; border-radius: 13px; background: linear-gradient(#e2b16e, #b47d46); box-shadow: inset 0 1px #fff2cf75, 0 3px 10px #0d071b50; color: #2d1d29; font: 700 14px/1.3 var(--body, sans-serif); }
+#level-celebration .level-details { min-height: 44px; margin: 0; padding: 8px; border: 0; border-radius: 10px; background: transparent; color: #e0c5ed; font: 500 12px/1.4 var(--body, sans-serif); text-decoration: underline; text-underline-offset: 3px; }
+#level-celebration button:focus-visible { outline: 2px solid #f8d28f; outline-offset: 3px; }
+#level-celebration .level-card-tabs > button:focus-visible { outline-offset: -3px; }
+@media (max-width: 410px) {
+  #level-celebration .level-receipt-heading { min-height: 104px; padding: 17px 49px 15px 99px; }
+  #level-celebration .level-medal { transform: scale(.85); transform-origin: left top; top: 18px; left: 13px; }
+  #level-celebration .level-receipt h2 { font-size: 21px; }
+  #level-celebration .level-receipt-body { padding: 14px 13px; }
+  #level-celebration .level-receipt-footer { padding: 12px 13px; gap: 5px; }
+  #level-celebration .level-trading-card { grid-template-columns: 82px 1fr; gap: 7px 10px; padding: 14px; }
+  #level-celebration .level-trading-art { width: 82px; transform: scale(.85); transform-origin: center; }
+  #level-celebration .level-trading-card h3 { font-size: 18px; }
+  #level-celebration .level-home-checklist li { grid-template-columns: 14px 1fr; }
+  #level-celebration .level-home-checklist li > b { grid-column: 2; justify-self: start; }
+  #level-celebration .level-home-nudge { align-items: stretch; flex-direction: column; }
+}
+@media (max-height: 540px) {
+  #level-celebration .level-receipt-heading { min-height: 75px; padding: 12px 56px 12px 94px; }
+  #level-celebration .level-medal { top: 8px; left: 17px; transform: scale(.7); transform-origin: left top; }
+  #level-celebration .level-receipt h2 { font-size: 21px; }
+  #level-celebration .level-subtitle { margin-top: 4px; }
+  #level-celebration .level-receipt-footer { padding-top: 9px; padding-bottom: 9px; }
+  #level-celebration .level-receipt-body { padding-top: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #level-celebration .level-receipt, #level-celebration .level-card-tabs > button > span { animation: none; transition: none; }
+}

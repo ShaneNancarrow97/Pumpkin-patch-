@@ -1,0 +1,563 @@
+{
+  "file": "/tmp/Pumpkin-Patch-Village-Settings.html",
+  "htmlSha256": "43057ebb2980cf22982859fd08f6ffa0e87a651baa9781504db1eaf2aa0a1ed4",
+  "bytes": 61832139,
+  "harnessSha256": "296636b34088275923c15a7cdc6010b26bb2a7810227428f90712c8be17b3046",
+  "fixtureSha256": "4bad58a02093143a30c234f7c636366779dc3f37c4782322e954445f9e166153",
+  "mode": "native-webgpu",
+  "display": {
+    "viewport": [
+      960,
+      540
+    ],
+    "deviceScaleFactor": 0.5,
+    "nativePixelScope": "Native 480x270 buffer bounds software GPU cost; this validates rendering behaviour, not full-resolution visual quality or device FPS."
+  },
+  "scope": "Exact HTML on loopback. Native game RAF/rendering; no held draws, manual tick, advance or manual render. Graphics choices use actual HTML controls. Actual WebGPU canvas pixels are captured separately because this software Chromium runner has a known stale page-compositor limitation. No physical phone/TV FPS claim.",
+  "preferences": {
+    "music": false,
+    "sound": false,
+    "voiceEnabled": false,
+    "frameRate": "30",
+    "renderQuality": "sharp",
+    "voxelCharacters": false,
+    "glow": true,
+    "shadows": true,
+    "villageRenderer": "webgl",
+    "villagePost": "off",
+    "villageShadows": false,
+    "villageDistance": "far",
+    "villageGrass": "off"
+  },
+  "checks": [
+    {
+      "label": "Initial village uses the compatible renderer",
+      "pass": true
+    },
+    {
+      "label": "Header gear opens five village graphics controls",
+      "pass": true
+    },
+    {
+      "label": "Explicit WebGPU overrides the initial WebGL query and becomes ready",
+      "pass": true
+    },
+    {
+      "label": "Native GPU frames continue without fallback",
+      "pass": true
+    },
+    {
+      "label": "Post Off skips optional bloom, grade and FXAA; scene and display conversion remain",
+      "pass": true,
+      "actual": {
+        "post": {
+          "effects": "off",
+          "bloomStrength": 0,
+          "gradeAmount": 0,
+          "hdr": false,
+          "bloom": false,
+          "shadows": false,
+          "displayGrade": false,
+          "fxaa": false,
+          "glowScale": 1,
+          "toneMapping": "ACES",
+          "output": "sRGB"
+        },
+        "renderPasses": 2,
+        "shadowBudget": {
+          "frames": 5,
+          "requests": 0,
+          "refreshes": 0,
+          "deferred": 0,
+          "forced": 0,
+          "invalidations": 3
+        }
+      }
+    },
+    {
+      "label": "Native GPU frames continue without fallback",
+      "pass": true
+    },
+    {
+      "label": "native-gpu-effects-off.png: actual GPU canvas contains an opaque detailed world",
+      "pass": true,
+      "actual": {
+        "width": 480,
+        "height": 270,
+        "opaqueFraction": 1,
+        "colours": 2048,
+        "pixelSha256": "1bdbd1d25b9a8211eff0e97c30986a5cae9a95d5cb6d9e8b569933868619a59b"
+      }
+    },
+    {
+      "label": "Native GPU frames continue without fallback",
+      "pass": true
+    },
+    {
+      "label": "Increasing post effects enables the actual GPU post pipeline",
+      "pass": true,
+      "actual": {
+        "effects": "balanced",
+        "bloomStrength": 0.36,
+        "gradeAmount": 1,
+        "hdr": true,
+        "bloom": true,
+        "shadows": false,
+        "displayGrade": true,
+        "fxaa": true,
+        "glowScale": 1,
+        "toneMapping": "ACES",
+        "output": "sRGB"
+      }
+    },
+    {
+      "label": "Native GPU frames continue without fallback",
+      "pass": true
+    },
+    {
+      "label": "native-gpu-effects-balanced.png: actual GPU canvas contains an opaque detailed world",
+      "pass": true,
+      "actual": {
+        "width": 480,
+        "height": 270,
+        "opaqueFraction": 1,
+        "colours": 2048,
+        "pixelSha256": "66cb70f8fc224db991ca8083e8f93d9dc1526ae6e8e0a913a0ba4ab2e6668dfb"
+      }
+    },
+    {
+      "label": "Native GPU frames continue without fallback",
+      "pass": true
+    },
+    {
+      "label": "Automatic retains the healthy GPU with a single overlay",
+      "pass": true
+    },
+    {
+      "label": "Switching back to WebGL removes the GPU presentation canvas",
+      "pass": true
+    },
+    {
+      "label": "Returning to the farm restores its original glow and shadow choices",
+      "pass": true
+    },
+    {
+      "label": "Village settings never overwrite farm glow or shadows",
+      "pass": true,
+      "actual": {
+        "villageRenderer": "webgl",
+        "villagePost": "off",
+        "villageShadows": false,
+        "villageDistance": "far",
+        "villageGrass": "off",
+        "glow": true,
+        "shadows": true
+      }
+    },
+    {
+      "label": "Settings finish without page, shader or loading errors",
+      "pass": true
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "native-gpu-effects-off.png",
+      "drawHeld": false,
+      "actualGpuCanvas": true,
+      "sha256": "72ab36e242126d056ba75dc733018031eca11485c4fed0723aba20d9d6ea5c3d",
+      "width": 480,
+      "height": 270,
+      "opaqueFraction": 1,
+      "colours": 2048,
+      "pixelSha256": "1bdbd1d25b9a8211eff0e97c30986a5cae9a95d5cb6d9e8b569933868619a59b"
+    },
+    {
+      "file": "native-gpu-effects-balanced.png",
+      "drawHeld": false,
+      "actualGpuCanvas": true,
+      "sha256": "2a5f047f7d2be251086e4ed445918402cfe59dc00a6d464581c7708ef5b8160d",
+      "width": 480,
+      "height": 270,
+      "opaqueFraction": 1,
+      "colours": 2048,
+      "pixelSha256": "66cb70f8fc224db991ca8083e8f93d9dc1526ae6e8e0a913a0ba4ab2e6668dfb"
+    }
+  ],
+  "states": {
+    "gpuOff": {
+      "preferences": {
+        "villageRenderer": "webgpu",
+        "villagePost": "off",
+        "villageShadows": false,
+        "villageDistance": "far",
+        "villageGrass": "off"
+      },
+      "renderer": {
+        "requested": "webgpu",
+        "backend": "webgpu",
+        "stage": "ready",
+        "reason": null,
+        "failureStack": null,
+        "frames": 4,
+        "actualBackend": "webgpu",
+        "renderFrames": 5,
+        "completedFrames": 4,
+        "inFlight": true,
+        "maxFramesInFlight": 1,
+        "skippedSubmissions": 198,
+        "mirroredObjects": 2501,
+        "ownedGeometryViews": 578,
+        "geometryViewsCreated": 582,
+        "geometryViewsRetired": 4,
+        "ownedLineGeometries": 0,
+        "lights": {
+          "point": 8,
+          "hemisphere": 1,
+          "directional": 2,
+          "ambient": 0
+        },
+        "materials": {
+          "ready": true,
+          "converted": 1879,
+          "effectMaterials": 6,
+          "unsupported": 0,
+          "roles": {
+            "ground-detail": 1,
+            "finish": 1097,
+            "pbr-atlas": 717,
+            "water": 14,
+            "voxel-ao": 111,
+            "alpha-hash": 434,
+            "grass": 306,
+            "native-fade": 2,
+            "crisp-sprite": 14,
+            "sprite-rim": 9,
+            "cutout-shadow": 14
+          },
+          "derivedInstanceBytes": 4950132,
+          "textureSynchronizations": 2371,
+          "textureUploads": 26,
+          "activeMaterials": 1875,
+          "materialRetirements": 4,
+          "layoutScans": 2840,
+          "textureWrappers": 26,
+          "activeEffectMaterials": 8,
+          "activePointGeometries": 2,
+          "activeBindings": 3983
+        },
+        "calls": 279,
+        "triangles": 1371125,
+        "renderPasses": 2,
+        "shadowBudget": {
+          "frames": 5,
+          "requests": 0,
+          "refreshes": 0,
+          "deferred": 0,
+          "forced": 0,
+          "invalidations": 3
+        },
+        "shaderCache": {
+          "normalizedStages": 192,
+          "builders": 273,
+          "vertexPrograms": 160,
+          "fragmentPrograms": 33
+        },
+        "textures": 23,
+        "bufferWidth": 480,
+        "bufferHeight": 270,
+        "post": {
+          "effects": "off",
+          "bloomStrength": 0,
+          "gradeAmount": 0,
+          "hdr": false,
+          "bloom": false,
+          "shadows": false,
+          "displayGrade": false,
+          "fxaa": false,
+          "glowScale": 1,
+          "toneMapping": "ACES",
+          "output": "sRGB"
+        }
+      },
+      "world": {
+        "distance": {
+          "requested": "far",
+          "effective": "far",
+          "mode": "play",
+          "targetDistance": 250,
+          "drawDistance": 250,
+          "fogDensity": 0.007631650701007597,
+          "visiblePatches": 111,
+          "totalPatches": 135
+        },
+        "grass": {
+          "patches": 159,
+          "activePatches": 0,
+          "fullPatches": 0,
+          "middlePatches": 0,
+          "farPatches": 0,
+          "vertices": 0,
+          "fullVertices": 0,
+          "instances": 0,
+          "fullInstances": 0,
+          "flowerInstances": 0,
+          "visible": false,
+          "quality": "off",
+          "selectionPasses": 0,
+          "patchChecks": 0
+        }
+      },
+      "active": true,
+      "post": {
+        "enabled": false,
+        "bloomStrength": 0,
+        "gradeEnabled": false
+      },
+      "shadows": false,
+      "farm": {
+        "bloom": true,
+        "shadows": true
+      },
+      "position": {
+        "x": 87,
+        "z": -16.5
+      },
+      "place": {
+        "kind": "village",
+        "id": "mothlight"
+      },
+      "glShadows": false
+    },
+    "gpuBalanced": {
+      "preferences": {
+        "villageRenderer": "webgpu",
+        "villagePost": "balanced",
+        "villageShadows": false,
+        "villageDistance": "far",
+        "villageGrass": "off"
+      },
+      "renderer": {
+        "requested": "webgpu",
+        "backend": "webgpu",
+        "stage": "ready",
+        "reason": null,
+        "failureStack": null,
+        "frames": 8,
+        "actualBackend": "webgpu",
+        "renderFrames": 9,
+        "completedFrames": 9,
+        "inFlight": false,
+        "maxFramesInFlight": 1,
+        "skippedSubmissions": 946,
+        "mirroredObjects": 2501,
+        "ownedGeometryViews": 579,
+        "geometryViewsCreated": 586,
+        "geometryViewsRetired": 7,
+        "ownedLineGeometries": 0,
+        "lights": {
+          "point": 8,
+          "hemisphere": 1,
+          "directional": 2,
+          "ambient": 0
+        },
+        "materials": {
+          "ready": true,
+          "converted": 1879,
+          "effectMaterials": 6,
+          "unsupported": 0,
+          "roles": {
+            "ground-detail": 1,
+            "finish": 1097,
+            "pbr-atlas": 717,
+            "water": 14,
+            "voxel-ao": 111,
+            "alpha-hash": 434,
+            "grass": 306,
+            "native-fade": 2,
+            "crisp-sprite": 14,
+            "sprite-rim": 9,
+            "cutout-shadow": 14
+          },
+          "derivedInstanceBytes": 4950132,
+          "textureSynchronizations": 2475,
+          "textureUploads": 26,
+          "activeMaterials": 1875,
+          "materialRetirements": 4,
+          "layoutScans": 5112,
+          "textureWrappers": 26,
+          "activeEffectMaterials": 8,
+          "activePointGeometries": 2,
+          "activeBindings": 3983
+        },
+        "calls": 292,
+        "triangles": 1371138,
+        "renderPasses": 15,
+        "shadowBudget": {
+          "frames": 9,
+          "requests": 0,
+          "refreshes": 0,
+          "deferred": 0,
+          "forced": 0,
+          "invalidations": 3
+        },
+        "shaderCache": {
+          "normalizedStages": 198,
+          "builders": 282,
+          "vertexPrograms": 165,
+          "fragmentPrograms": 42
+        },
+        "textures": 49,
+        "bufferWidth": 480,
+        "bufferHeight": 270,
+        "post": {
+          "effects": "balanced",
+          "bloomStrength": 0.36,
+          "gradeAmount": 1,
+          "hdr": true,
+          "bloom": true,
+          "shadows": false,
+          "displayGrade": true,
+          "fxaa": true,
+          "glowScale": 1,
+          "toneMapping": "ACES",
+          "output": "sRGB"
+        }
+      },
+      "world": {
+        "distance": {
+          "requested": "far",
+          "effective": "far",
+          "mode": "play",
+          "targetDistance": 250,
+          "drawDistance": 250,
+          "fogDensity": 0.007629480899486561,
+          "visiblePatches": 111,
+          "totalPatches": 135
+        },
+        "grass": {
+          "patches": 159,
+          "activePatches": 0,
+          "fullPatches": 0,
+          "middlePatches": 0,
+          "farPatches": 0,
+          "vertices": 0,
+          "fullVertices": 0,
+          "instances": 0,
+          "fullInstances": 0,
+          "flowerInstances": 0,
+          "visible": false,
+          "quality": "off",
+          "selectionPasses": 0,
+          "patchChecks": 0
+        }
+      },
+      "active": true,
+      "post": {
+        "enabled": true,
+        "bloomStrength": 0.36,
+        "gradeEnabled": true
+      },
+      "shadows": false,
+      "farm": {
+        "bloom": true,
+        "shadows": true
+      },
+      "position": {
+        "x": 87,
+        "z": -16.5
+      },
+      "place": {
+        "kind": "village",
+        "id": "mothlight"
+      },
+      "glShadows": false
+    },
+    "farm": {
+      "preferences": {
+        "villageRenderer": "webgl",
+        "villagePost": "off",
+        "villageShadows": false,
+        "villageDistance": "far",
+        "villageGrass": "off"
+      },
+      "renderer": {
+        "requested": "webgl",
+        "backend": "webgl",
+        "stage": "disabled",
+        "reason": null,
+        "failureStack": null,
+        "frames": 13
+      },
+      "world": {
+        "distance": {
+          "requested": "far",
+          "effective": "far",
+          "mode": "play",
+          "targetDistance": 250,
+          "drawDistance": 250,
+          "fogDensity": 0.0076249577446809306,
+          "visiblePatches": 111,
+          "totalPatches": 135
+        },
+        "grass": {
+          "patches": 159,
+          "activePatches": 0,
+          "fullPatches": 0,
+          "middlePatches": 0,
+          "farPatches": 0,
+          "vertices": 0,
+          "fullVertices": 0,
+          "instances": 0,
+          "fullInstances": 0,
+          "flowerInstances": 0,
+          "visible": false,
+          "quality": "off",
+          "selectionPasses": 0,
+          "patchChecks": 0
+        }
+      },
+      "active": false,
+      "post": {
+        "enabled": true,
+        "bloomStrength": 0.5,
+        "gradeEnabled": false
+      },
+      "shadows": true,
+      "farm": {
+        "bloom": true,
+        "shadows": true
+      },
+      "position": {
+        "x": 87,
+        "z": -16.5
+      },
+      "place": null,
+      "glShadows": true
+    }
+  },
+  "errors": [],
+  "consoleErrors": [],
+  "warnings": [
+    "[.WebGL-0x207c2114e400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+    "[.WebGL-0x207c2114e400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+    "[.WebGL-0x207c2114e400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+    "[.WebGL-0x207c2114e400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)",
+    "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+    "WARNING: Multiple instances of Three.js being imported."
+  ],
+  "externalRequests": [],
+  "failedRequests": [],
+  "browserVersion": "154.0.8037.57",
+  "launchArgs": [
+    "--no-sandbox",
+    "--disable-dev-shm-usage",
+    "--use-angle=swiftshader",
+    "--enable-unsafe-swiftshader",
+    "--ignore-gpu-blocklist",
+    "--enable-unsafe-webgpu",
+    "--enable-features=Vulkan",
+    "--use-vulkan=swiftshader",
+    "--disable-vulkan-surface"
+  ],
+  "passed": true
+}

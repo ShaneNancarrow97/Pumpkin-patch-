@@ -1,0 +1,59 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Shocktober-Premium.html",
+  "checks": [
+    {
+      "ok": true,
+      "label": "all thirty generated icons load from the bundled atlas"
+    },
+    {
+      "ok": true,
+      "label": "all five navigation shortcuts use the generated artwork and retain labels"
+    },
+    {
+      "ok": true,
+      "label": "More destinations use one consistent icon family"
+    },
+    {
+      "ok": true,
+      "label": "Build opens a clearly titled management menu"
+    },
+    {
+      "ok": true,
+      "label": "mummy, zombie, werewolf, undead pirate and clown each render four walking frames"
+    },
+    {
+      "ok": true,
+      "label": "walking changes the sprite frame for all five new visitors"
+    },
+    {
+      "ok": true,
+      "label": "phone: navigation fits and retains touch targets"
+    },
+    {
+      "ok": true,
+      "label": "phone: generated menu icons cause no horizontal overflow"
+    },
+    {
+      "ok": true,
+      "label": "fold: navigation fits and retains touch targets"
+    },
+    {
+      "ok": true,
+      "label": "fold: generated menu icons cause no horizontal overflow"
+    },
+    {
+      "ok": true,
+      "label": "landscape: navigation fits and retains touch targets"
+    },
+    {
+      "ok": true,
+      "label": "landscape: generated menu icons cause no horizontal overflow"
+    },
+    {
+      "ok": true,
+      "label": "no page or console errors"
+    }
+  ],
+  "errors": [],
+  "rendering": "Chromium/SwiftShader, bloom/shadows off; viewport emulation, not physical-device certification"
+}

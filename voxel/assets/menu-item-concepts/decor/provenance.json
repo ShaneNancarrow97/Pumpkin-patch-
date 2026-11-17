@@ -1,0 +1,67 @@
+{
+  "tool": "image_gen.imagegen",
+  "purpose": "Generated painted menu sprites for existing native Mothlight decorations; no mechanics or model changes",
+  "styleReference": "voxel/assets/home/garden-icons.webp",
+  "review": "Both sources inspected visually. Object silhouettes match village-decor.js catalogue and village-models.js structures. No text, UI tiles or scenery; true RGBA transparency. Measured crop boundaries contain zero pixels with alpha >=32 so adjacent art does not leak. Some ornament, wood grain and leaf dressing is illustration detail rather than literal voxel geometry.",
+  "sheets": [
+    {
+      "file": "decor-a.png",
+      "generatedSource": "/workspace/generated_images/exec-83c1baa1-f06b-4de9-b467-7543af57d148.png",
+      "prompt": "prompt-a.txt",
+      "references": [
+        "voxel/assets/home/garden-icons.webp"
+      ],
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "nominalGrid": [
+        3,
+        3
+      ],
+      "ids": [
+        "moth-lamp",
+        "toadstool-lamp",
+        "moth-lantern-string",
+        "signpost",
+        "market-crates",
+        "reading-stand",
+        "book-cart",
+        "stool",
+        "timber-gate"
+      ],
+      "sha256": "c9f04c4551602e1a5f898d2b464009069afd960aff6816b7952285d466320e5d",
+      "cropping": "crops.json; use explicit per-item x,y,w,h, not exact thirds"
+    },
+    {
+      "file": "decor-b.png",
+      "generatedSource": "/workspace/generated_images/exec-63f5e0b8-6b25-43e3-96e2-d468510523d9.png",
+      "prompt": "prompt-b.txt",
+      "references": [
+        "voxel/assets/home/garden-icons.webp",
+        "voxel/assets/menu-item-concepts/decor/decor-a.png"
+      ],
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "nominalGrid": [
+        3,
+        3
+      ],
+      "ids": [
+        "flower-barrow",
+        "sundial",
+        "bunting-posts",
+        "workbench",
+        "wheelbarrow",
+        "moth-statue",
+        "scarecrow-statue",
+        "pumpkin-arch",
+        "moon-gate"
+      ],
+      "sha256": "4ad9c5cb5719d7febe04b11a92af6298c643e2ac71d2f2e4774213c1ddbb9555",
+      "cropping": "crops.json; use explicit per-item x,y,w,h, not exact thirds"
+    }
+  ]
+}

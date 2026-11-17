@@ -1,0 +1,154 @@
+{
+  "schema": 1,
+  "createdAt": "2026-11-13T08:24:37.733Z",
+  "fixture": "docs/contractor-patches/village-clarity/verification/perf-final.json",
+  "fixtureSha256": "9daa278b1bbf27456f7e29a3cc66973a3c7582a0b91a389b1552b4311cf95951",
+  "harnessSha256": "1e84ef96c04efd4c473c691e7ef4221d35112181099d83c2425374db5a2fee42",
+  "nodeVersion": "v24.19.0",
+  "routeSamples": 2052,
+  "extraBoundarySamples": 36,
+  "residentIds": [
+    "elowen",
+    "rowan",
+    "mabel",
+    "tansy",
+    "opal",
+    "cinder",
+    "corvus",
+    "baron",
+    "granny",
+    "vesper"
+  ],
+  "renderedIds": [
+    "elowen",
+    "rowan",
+    "mabel",
+    "tansy",
+    "opal",
+    "cinder",
+    "granny",
+    "vesper"
+  ],
+  "obstacleCount": 141,
+  "method": "Pure Node live resident resolver workload: exact saved fixture and captured owner positions from both measured route passes, with 18 transient 0.1-second resident routine steps per row. Adds ordinary and actual Rowan counter boundary samples. Uses real residentSpot, hall plans, gates, obstacles and residentTalkPoint. Counts swept clearances through a test-bundle-only increment. One warmup per path, five interleaved full/nearby trials; identical immutable samples. talkMilliseconds includes actual talkSpot clearance work. Excludes controller, scene and rendering costs; these timings do not measure normal game CPU, hardware FPS or whole-game speedup.",
+  "parity": true,
+  "baseline": [
+    {
+      "milliseconds": 17112.599234999998,
+      "talkCalls": 16704,
+      "sweepCalls": 17162,
+      "talkMilliseconds": 16929.827576000134,
+      "nearbyByKind": {
+        "near-boundary": 24,
+        "counter-boundary": 3
+      },
+      "nearbySha256": "7a6bd141767700ca84ba511dac39c6421bf118e05837df067f73352dab4b4861"
+    },
+    {
+      "milliseconds": 19771.023895,
+      "talkCalls": 16704,
+      "sweepCalls": 17162,
+      "talkMilliseconds": 19419.506135000025,
+      "nearbyByKind": {
+        "near-boundary": 24,
+        "counter-boundary": 3
+      },
+      "nearbySha256": "7a6bd141767700ca84ba511dac39c6421bf118e05837df067f73352dab4b4861"
+    },
+    {
+      "milliseconds": 18403.885057,
+      "talkCalls": 16704,
+      "sweepCalls": 17162,
+      "talkMilliseconds": 18235.23591300004,
+      "nearbyByKind": {
+        "near-boundary": 24,
+        "counter-boundary": 3
+      },
+      "nearbySha256": "7a6bd141767700ca84ba511dac39c6421bf118e05837df067f73352dab4b4861"
+    },
+    {
+      "milliseconds": 18182.02971500001,
+      "talkCalls": 16704,
+      "sweepCalls": 17162,
+      "talkMilliseconds": 17878.486256001153,
+      "nearbyByKind": {
+        "near-boundary": 24,
+        "counter-boundary": 3
+      },
+      "nearbySha256": "7a6bd141767700ca84ba511dac39c6421bf118e05837df067f73352dab4b4861"
+    },
+    {
+      "milliseconds": 19060.368384999994,
+      "talkCalls": 16704,
+      "sweepCalls": 17162,
+      "talkMilliseconds": 18852.444308000137,
+      "nearbyByKind": {
+        "near-boundary": 24,
+        "counter-boundary": 3
+      },
+      "nearbySha256": "7a6bd141767700ca84ba511dac39c6421bf118e05837df067f73352dab4b4861"
+    }
+  ],
+  "optimized": [
+    {
+      "milliseconds": 92.3231120000055,
+      "talkCalls": 32,
+      "sweepCalls": 29,
+      "talkMilliseconds": 21.66366799997195,
+      "nearbyByKind": {
+        "near-boundary": 24,
+        "counter-boundary": 3
+      },
+      "nearbySha256": "7a6bd141767700ca84ba511dac39c6421bf118e05837df067f73352dab4b4861"
+    },
+    {
+      "milliseconds": 125.02755400000024,
+      "talkCalls": 32,
+      "sweepCalls": 29,
+      "talkMilliseconds": 62.94823999999062,
+      "nearbyByKind": {
+        "near-boundary": 24,
+        "counter-boundary": 3
+      },
+      "nearbySha256": "7a6bd141767700ca84ba511dac39c6421bf118e05837df067f73352dab4b4861"
+    },
+    {
+      "milliseconds": 104.71528799999214,
+      "talkCalls": 32,
+      "sweepCalls": 29,
+      "talkMilliseconds": 33.25231600002735,
+      "nearbyByKind": {
+        "near-boundary": 24,
+        "counter-boundary": 3
+      },
+      "nearbySha256": "7a6bd141767700ca84ba511dac39c6421bf118e05837df067f73352dab4b4861"
+    },
+    {
+      "milliseconds": 134.78216799999063,
+      "talkCalls": 32,
+      "sweepCalls": 29,
+      "talkMilliseconds": 32.65905999999086,
+      "nearbyByKind": {
+        "near-boundary": 24,
+        "counter-boundary": 3
+      },
+      "nearbySha256": "7a6bd141767700ca84ba511dac39c6421bf118e05837df067f73352dab4b4861"
+    },
+    {
+      "milliseconds": 86.08130199999141,
+      "talkCalls": 32,
+      "sweepCalls": 29,
+      "talkMilliseconds": 53.58093900003587,
+      "nearbyByKind": {
+        "near-boundary": 24,
+        "counter-boundary": 3
+      },
+      "nearbySha256": "7a6bd141767700ca84ba511dac39c6421bf118e05837df067f73352dab4b4861"
+    }
+  ],
+  "limitations": [
+    "This is a resolver microbenchmark, not a rendered scene or normal gameplay frame measurement.",
+    "Five interleaved trials ran in a shared execution environment while controller checks were active. Deterministic call counts and descriptor hashes are the primary evidence; wall time is illustrative and is not hardware FPS or a whole-game speedup claim.",
+    "The preserved captured route has no nearby residents. Thirty-six additional ordinary and actual counter boundary samples validate nonempty canonical descriptor parity."
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "artifactCommit": "79fa5dd3bb9e2a849362ab39aadd236a614a8c23",
+  "files": [
+    {
+      "name": "Pumpkin-Patch-Village-Interaction-Fixes.apk",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/79fa5dd3bb9e2a849362ab39aadd236a614a8c23/Pumpkin-Patch-Village-Interaction-Fixes.apk",
+      "bytes": 42429422,
+      "sha256": "d0d91bfab180dd32c6aada8fc048b7b792585cd07d93390a69550a4379210ceb",
+      "status": 200
+    },
+    {
+      "name": "Pumpkin-Patch-Village-Interaction-Fixes-Android-Patch.zip",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/79fa5dd3bb9e2a849362ab39aadd236a614a8c23/Pumpkin-Patch-Village-Interaction-Fixes-Android-Patch.zip",
+      "bytes": 39348,
+      "sha256": "841e4babaad2687016f3104c054e0ffecace40d4d8037a45d14a294278d59cd3",
+      "status": 200
+    }
+  ]
+}

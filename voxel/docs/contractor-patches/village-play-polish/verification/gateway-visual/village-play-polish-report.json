@@ -1,0 +1,157 @@
+{
+  "mode": "gateway-visual",
+  "date": "2026-11-08T20:31:43.944Z",
+  "html": "/workspace/Pumpkin-Patch-Village-Play-Polish.html",
+  "sha256": "bc7d34a08760e36b9e1004a48dae2b63d74b576dcce6622de648c3d3b60cd79e",
+  "bytes": 58258944,
+  "sourceCommit": "a1965f00630a78366e555c8c9066921bdde9e0db",
+  "checks": [
+    {
+      "pass": true,
+      "label": "Normal gateway frame has no browser or shader errors",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "Exact standalone gateway view uses no external assets",
+      "detail": []
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "screenshots": [
+    {
+      "file": "05-farm-village-gateway.png",
+      "preferences": "normal glow/shadows enabled for this shot unless identified in report"
+    }
+  ],
+  "layouts": [],
+  "scope": "One normal-renderer farm gateway photograph from exact unchanged final HTML. Declared quiet level20 finished-tour fixture, empty visitors/arriving, paused simulation, management camera focused near authored gateway. No runtime edits, no CSS injection.",
+  "workingTree": " M smoke.mjs\n?? docs/contractor-patches/village-play-polish/verification/\n?? tools/pad-cursor-dom-qa.mjs\n?? tools/village-play-polish-css-delta-qa.mjs\n?? tools/village-play-polish-gateway-photo.mjs\n?? tools/village-play-polish-qa.mjs\n",
+  "sourceHashes": {
+    "src/main.js": {
+      "bytes": 79664,
+      "sha256": "5feaf046e63fb4088def68b468107d2a18eacde12bd9355e3f28a34200cc16ec"
+    },
+    "src/scene.js": {
+      "bytes": 94160,
+      "sha256": "597311a5a0f428ce113a6ebb1759c9a712a93b67f4d74863a8381ccc2a1afd0f"
+    },
+    "src/player-control.js": {
+      "bytes": 27447,
+      "sha256": "9205679c7ef2c0eddb7fd826773886fc426f1954fe479ca16092b1f2789acd60"
+    },
+    "src/village-game.js": {
+      "bytes": 39090,
+      "sha256": "1ce8190dc0b7e83b029a6ec36e2657913ce323dcf37c0558b470c4b25935d53c"
+    },
+    "src/village-view.js": {
+      "bytes": 32499,
+      "sha256": "76e18249086f6a78a0833ba42ad8434ac2076b3eab14b3a3144ab1d1af845d12"
+    },
+    "src/village-world.js": {
+      "bytes": 87445,
+      "sha256": "bcac6db35e10c1b94c32788ff2d761c8f24ef1be67271a7c1d5587eebea00de3"
+    },
+    "src/village-grass.js": {
+      "bytes": 7193,
+      "sha256": "aa39ea4a3a40f6425852ac86bb80285addb0190c31377ce4fb910121636d881d"
+    },
+    "src/village-visibility.js": {
+      "bytes": 1711,
+      "sha256": "1baaf9b7d1275d4d4c1acc503d549a7169f144b006c36a273b3604177c4a6770"
+    },
+    "src/village-proximity.js": {
+      "bytes": 3437,
+      "sha256": "b398a24f33e14e221e601512bc77c534fe6e075e22cf60f1a00ad8ed71e84f5d"
+    },
+    "src/village-wanderers.js": {
+      "bytes": 4033,
+      "sha256": "e677531d1f9acf7cdb2afd8e0e0b5c92113a1a87a0010dfcaa504192333e2bc5"
+    },
+    "src/sprite-rim.js": {
+      "bytes": 1416,
+      "sha256": "532cda9e0ae0f1d543b4072452551b57a14682d3104e5d40624e8cd18639001d"
+    },
+    "src/ui/village-controls.js": {
+      "bytes": 20213,
+      "sha256": "a5b2d84ae2503f3377be74827dbdcd22f9d02d1e53b27cac96c3663e11f6548f"
+    },
+    "src/ui/village-controls.css": {
+      "bytes": 11075,
+      "sha256": "0ec2ebfbd41fb7d3c8d735a35d0d388c056f13607a22092f135b6ea029c5d3cc"
+    },
+    "src/ui/village-map.js": {
+      "bytes": 12061,
+      "sha256": "0bf23fc68eb625ae4be45554e614ec0d8c1f1567015c8175a2ce495283c1fd70"
+    },
+    "src/ui/village-chapters.js": {
+      "bytes": 22322,
+      "sha256": "df1b5370dba7b9800c3fb61fbad81c269dff72032929dff33d568665195cabc7"
+    },
+    "src/ui/village-conversation.js": {
+      "bytes": 8361,
+      "sha256": "c449a1d3694512a99bf58a0d02e48b2fd0085ad8438eccc7a6225f0fa7f19a27"
+    },
+    "src/ui/village-conversation.css": {
+      "bytes": 6395,
+      "sha256": "9dfcc9564b5e37b3bb39a42b62a735f2570213b21d222e712d4d165d4bc391ea"
+    },
+    "src/ui/pad-cursor.js": {
+      "bytes": 9376,
+      "sha256": "e94e45e88ae2ed03d3a0bde24c876f6c3b35008124d37029dada4db628ac18b5"
+    },
+    "src/ui/home-sheets.js": {
+      "bytes": 60570,
+      "sha256": "cb7972bd95ed8ba5a60e70e378a4bbbca6256a3f3f2137425bc1a300e216ce1a"
+    },
+    "assets/terrain/grass-tile.webp": {
+      "bytes": 101386,
+      "sha256": "ccc2158587d4a03d1e7f51e811b6655fdc7f07b1a3cd2f46341bf5d67f95d2a0"
+    },
+    "assets/village-ui-icons/village-ui.webp": {
+      "bytes": 185926,
+      "sha256": "30a3161c98941584c485fded006d80a98722f20c86945045e9b67cba82277347"
+    }
+  },
+  "gateway": {
+    "x": 37.8,
+    "z": 15.1,
+    "halfWidth": 1,
+    "approach": {
+      "x": 37.8,
+      "z": 16.7
+    },
+    "zone": {
+      "x0": 37.059999999999995,
+      "x1": 38.54,
+      "z0": 14.75,
+      "z1": 15.45
+    },
+    "lane": [
+      [
+        31.6,
+        15.6
+      ],
+      [
+        34.4,
+        17.2
+      ],
+      [
+        37.8,
+        17.2
+      ],
+      [
+        37.8,
+        13.65
+      ]
+    ],
+    "clearance": {
+      "x0": 35.7,
+      "x1": 39.75,
+      "z0": 13.2,
+      "z1": 18.3
+    }
+  },
+  "passed": true
+}

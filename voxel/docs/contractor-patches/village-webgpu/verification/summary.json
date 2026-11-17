@@ -1,0 +1,135 @@
+{
+  "source_runtime": "b1915b64c111b4085a91997e7a35208bb3565813",
+  "source_branch": "contractor/village-webgpu",
+  "base_source": "bebcb1910a1794db70d7c2c91c67550603119739",
+  "fidelity_checkpoint": "c4852e1",
+  "save_version": 20,
+  "final_html": {
+    "bytes": 61710319,
+    "sha256": "56dc1a9a99b354c46ac9b8beef379a769669171e34c10cecf9d53a55cf88f849"
+  },
+  "source_rebuild_byte_identical": true,
+  "rebuild_sha256": "56dc1a9a99b354c46ac9b8beef379a769669171e34c10cecf9d53a55cf88f849",
+  "build_warnings": 0,
+  "build_log_sha256": "6472b09d18a336269ffe6ce9593c2a7498f345ca71aabcfd06f4cb41ebb3a1a9",
+  "full_tests": {
+    "command": "npm test",
+    "passed": 1483,
+    "failed": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 508978.634291,
+    "log_sha256": "331f3575cf11494bbf55992954e5426802b5eb520e4c8f9118c4ea6e4c6b698e",
+    "scope": "Network-enabled test sandbox permits Node/Python child-process bookkeeping. An earlier restricted-sandbox art-check EPERM was environmental; the complete rerun passes. A final reveal-only renderer fix was made while earlier independent rules tests ran; all six relevant renderer cases ran afterward, as recorded in this log. Final frozen HTML browser checks and compatibility smoke independently cover the shipped build."
+  },
+  "gpu_checks": 20,
+  "webgl_checks": 11,
+  "compatibility_checks": 54,
+  "compatibility_draws_held": true,
+  "smoke_log_sha256": "babb605f95c9adc28ff3e18f791e3bc6acf73ad39d252f9d1115d134b1d31695",
+  "gpu_report_sha256": "18762a297bfedd22f3feaa629562a9a52ef5f71a09d30fb468294c9d2660478e",
+  "webgl_report_sha256": "909c60932716895ea6baaf28c106d8c92e1d7596041119bc1e0576bcb6d4fccf",
+  "qa_harness_sha256": "8ff271b98bbaca6be31f68b7cd5288107be7e4f38e9bebdea6ef49619b62878a",
+  "actual_source_ao": {
+    "meshes": 111,
+    "instances": 81699,
+    "bytes": 653592
+  },
+  "actual_shared_pbr": {
+    "textures": 3,
+    "size": 256,
+    "surfaces": 4,
+    "bytes": 1048572,
+    "materialsSeen": 547,
+    "additionalDraws": 0
+  },
+  "actual_gpu_warm": {
+    "requested": "auto",
+    "backend": "webgpu",
+    "stage": "ready",
+    "reason": null,
+    "failureStack": null,
+    "frames": 13,
+    "actualBackend": "webgpu",
+    "renderFrames": 14,
+    "completedFrames": 13,
+    "inFlight": true,
+    "maxFramesInFlight": 1,
+    "skippedSubmissions": 455,
+    "mirroredObjects": 2526,
+    "ownedGeometryViews": 584,
+    "ownedLineGeometries": 0,
+    "lights": {
+      "point": 8,
+      "hemisphere": 1,
+      "directional": 2,
+      "ambient": 0
+    },
+    "materials": {
+      "ready": true,
+      "converted": 1897,
+      "effectMaterials": 6,
+      "unsupported": 0,
+      "roles": {
+        "ground-detail": 1,
+        "finish": 1097,
+        "pbr-atlas": 717,
+        "water": 14,
+        "voxel-ao": 111,
+        "alpha-hash": 434,
+        "grass": 306,
+        "native-fade": 2,
+        "crisp-sprite": 25,
+        "sprite-rim": 15,
+        "cutout-shadow": 25,
+        "moon-rim": 10
+      },
+      "derivedInstanceBytes": 4950132,
+      "textureWrappers": 30
+    },
+    "calls": 408,
+    "triangles": 1871658,
+    "renderPasses": 16,
+    "shaderCache": {
+      "normalizedStages": 299,
+      "builders": 408,
+      "vertexPrograms": 202,
+      "fragmentPrograms": 49
+    },
+    "textures": 98,
+    "bufferWidth": 960,
+    "bufferHeight": 540,
+    "post": {
+      "hdr": true,
+      "bloom": true,
+      "shadows": true,
+      "displayGrade": true,
+      "fxaa": true,
+      "glowScale": 1,
+      "toneMapping": "ACES",
+      "output": "sRGB"
+    }
+  },
+  "renderer_scope": "Genuine WebGPU for the village where API/adapter/materials work; original WebGL for unsupported devices, farm, house and rides. Canonical map capture uses the retained WebGL renderer. All UI stays HTML/CSS.",
+  "staging": {
+    "owner": "natalie",
+    "duskClock": 1800,
+    "wallClock": "2026-11-13T21:00:00Z",
+    "randomSeed": 20261113,
+    "referencePose": {
+      "x": 87,
+      "z": -16.5,
+      "yaw": 0,
+      "pitch": 0.20943951023931953,
+      "distance": 7.6
+    }
+  },
+  "limits": [
+    "Dawn SwiftShader and software WebGL establish execution, not physical phone/TV FPS.",
+    "The normal browser checks use a declared progressed save, native RAF and actual renderers; no held game draws or manually rendered game frames.",
+    "The 54 compatibility checks hold draws and are separately scoped.",
+    "Earlier fidelity dialogue/controller previews use exact checkpoint HTML 6c71a20f and are labelled separately; no physical Bluetooth certification.",
+    "No APK is rebuilt."
+  ]
+}

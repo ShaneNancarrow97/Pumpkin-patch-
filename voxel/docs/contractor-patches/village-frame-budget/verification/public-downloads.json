@@ -1,0 +1,21 @@
+{
+  "artifactCommit": "ad2e841c406a7f64d2cd17529ae5b18d5988e851",
+  "checks": [
+    {
+      "file": "Pumpkin-Patch-Smooth-Village.html",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/ad2e841c406a7f64d2cd17529ae5b18d5988e851/Pumpkin-Patch-Smooth-Village.html",
+      "httpStatus": 200,
+      "bytes": 61815329,
+      "sha256": "ac84f3f317131a77c4efc1c1994d621626d683f5db6aeaa4538b357330caf4a0",
+      "matchesTestedArtifact": true
+    },
+    {
+      "file": "Pumpkin-Patch-Smooth-Village.zip",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/ad2e841c406a7f64d2cd17529ae5b18d5988e851/Pumpkin-Patch-Smooth-Village.zip",
+      "httpStatus": 200,
+      "bytes": 43995712,
+      "sha256": "4657f025f84b94e6b5828e7d4f245f494d808d4dcbea49c3ccd7472fcab6bf12",
+      "matchesTestedArtifact": true
+    }
+  ]
+}

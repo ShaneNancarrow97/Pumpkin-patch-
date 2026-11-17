@@ -1,0 +1,47 @@
+{
+  "front": {
+    "file": "front-repair.png"
+  },
+  "frontRight": {
+    "file": "frontRight.png",
+    "order": [
+      4,
+      5,
+      6,
+      7,
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  "right": {
+    "file": "right.png",
+    "order": [
+      4,
+      5,
+      6,
+      7,
+      0,
+      1,
+      2,
+      3
+    ],
+    "override0": "shane-right-phase0-repair.png"
+  },
+  "backRight": {
+    "file": "backRight.png"
+  },
+  "back": {
+    "file": "back.png"
+  },
+  "backLeft": {
+    "file": "backLeft.png"
+  },
+  "left": {
+    "file": "left.png"
+  },
+  "frontLeft": {
+    "file": "frontLeft.png"
+  }
+}
